@@ -1,0 +1,732 @@
+[
+ {
+  "id": "c01",
+  "title": "Caesar Cipher",
+  "category": "Strings",
+  "difficulty": "Easy",
+  "description": "<p>Encrypt a message using a Caesar cipher: shift every letter forward by <code>k</code> positions in the alphabet, wrapping around from <code>z</code> to <code>a</code>. Uppercase letters stay uppercase, lowercase stay lowercase. All other characters (digits, spaces, punctuation) are unchanged.</p><h4>Input</h4><ul><li>Line 1: the message <code>s</code></li><li>Line 2: an integer <code>k</code> (0 &le; k &le; 1000)</li></ul><h4>Output</h4><p>The encrypted message.</p>",
+  "solution": "s = input()\nk = int(input()) % 26\nr = []\nfor c in s:\n    if 'a' <= c <= 'z':\n        r.append(chr((ord(c) - 97 + k) % 26 + 97))\n    elif 'A' <= c <= 'Z':\n        r.append(chr((ord(c) - 65 + k) % 26 + 65))\n    else:\n        r.append(c)\nprint(''.join(r))\n",
+  "tests": [
+   {
+    "input": "abc\n1\n",
+    "output": "bcd\n",
+    "hidden": false
+   },
+   {
+    "input": "Hello, World!\n3\n",
+    "output": "Khoor, Zruog!\n",
+    "hidden": false
+   },
+   {
+    "input": "xyz\n3\n",
+    "output": "abc\n",
+    "hidden": true
+   },
+   {
+    "input": "Zebra\n0\n",
+    "output": "Zebra\n",
+    "hidden": true
+   },
+   {
+    "input": "Python 3.12\n26\n",
+    "output": "Python 3.12\n",
+    "hidden": true
+   },
+   {
+    "input": "The quick brown fox\n13\n",
+    "output": "Gur dhvpx oebja sbk\n",
+    "hidden": true
+   },
+   {
+    "input": "aZ\n1000\n",
+    "output": "mL\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "c02",
+  "title": "Palindrome Sentence",
+  "category": "Strings",
+  "difficulty": "Easy",
+  "description": "<p>Determine whether a sentence is a palindrome when you ignore case and every character that is not a letter or digit.</p><h4>Input</h4><p>A single line <code>s</code>.</p><h4>Output</h4><p><code>YES</code> if it is a palindrome, otherwise <code>NO</code>.</p>",
+  "solution": "s = input()\nt = [c.lower() for c in s if c.isalnum()]\nprint(\"YES\" if t == t[::-1] else \"NO\")\n",
+  "tests": [
+   {
+    "input": "A man, a plan, a canal: Panama\n",
+    "output": "YES\n",
+    "hidden": false
+   },
+   {
+    "input": "race a car\n",
+    "output": "NO\n",
+    "hidden": false
+   },
+   {
+    "input": "Was it a car or a cat I saw?\n",
+    "output": "YES\n",
+    "hidden": true
+   },
+   {
+    "input": "a\n",
+    "output": "YES\n",
+    "hidden": true
+   },
+   {
+    "input": "12321\n",
+    "output": "YES\n",
+    "hidden": true
+   },
+   {
+    "input": "ab\n",
+    "output": "NO\n",
+    "hidden": true
+   },
+   {
+    "input": "No 'x' in Nixon\n",
+    "output": "YES\n",
+    "hidden": true
+   },
+   {
+    "input": "!!!\n",
+    "output": "YES\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "c03",
+  "title": "Anagram Check",
+  "category": "Strings",
+  "difficulty": "Easy",
+  "description": "<p>Two words are anagrams if one can be formed by rearranging the letters of the other. Comparison is case-insensitive.</p><h4>Input</h4><ul><li>Line 1: word <code>a</code></li><li>Line 2: word <code>b</code></li></ul><h4>Output</h4><p><code>YES</code> if they are anagrams, otherwise <code>NO</code>.</p>",
+  "solution": "a = input().lower()\nb = input().lower()\nprint(\"YES\" if sorted(a) == sorted(b) else \"NO\")\n",
+  "tests": [
+   {
+    "input": "listen\nsilent\n",
+    "output": "YES\n",
+    "hidden": false
+   },
+   {
+    "input": "hello\nworld\n",
+    "output": "NO\n",
+    "hidden": false
+   },
+   {
+    "input": "Dormitory\nDirtyRoom\n",
+    "output": "YES\n",
+    "hidden": true
+   },
+   {
+    "input": "a\na\n",
+    "output": "YES\n",
+    "hidden": true
+   },
+   {
+    "input": "abc\nabcd\n",
+    "output": "NO\n",
+    "hidden": true
+   },
+   {
+    "input": "aab\nabb\n",
+    "output": "NO\n",
+    "hidden": true
+   },
+   {
+    "input": "Triangle\nIntegral\n",
+    "output": "YES\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "c04",
+  "title": "Vowels and Consonants",
+  "category": "Strings",
+  "difficulty": "Easy",
+  "description": "<p>Count the vowels (<code>a e i o u</code>, either case) and the consonants (all other English letters) in a line. Non-letter characters are ignored.</p><h4>Input</h4><p>A single line <code>s</code>.</p><h4>Output</h4><p>Two lines: <code>Vowels: V</code> and <code>Consonants: C</code>.</p>",
+  "solution": "s = input()\nv = c = 0\nfor ch in s:\n    if ch.isalpha() and ch.isascii():\n        if ch.lower() in 'aeiou':\n            v += 1\n        else:\n            c += 1\nprint(\"Vowels:\", v)\nprint(\"Consonants:\", c)\n",
+  "tests": [
+   {
+    "input": "Hello World\n",
+    "output": "Vowels: 3\nConsonants: 7\n",
+    "hidden": false
+   },
+   {
+    "input": "Programming is fun!\n",
+    "output": "Vowels: 5\nConsonants: 11\n",
+    "hidden": false
+   },
+   {
+    "input": "AEIOU\n",
+    "output": "Vowels: 5\nConsonants: 0\n",
+    "hidden": true
+   },
+   {
+    "input": "rhythm\n",
+    "output": "Vowels: 0\nConsonants: 6\n",
+    "hidden": true
+   },
+   {
+    "input": "12345\n",
+    "output": "Vowels: 0\nConsonants: 0\n",
+    "hidden": true
+   },
+   {
+    "input": "a\n",
+    "output": "Vowels: 1\nConsonants: 0\n",
+    "hidden": true
+   },
+   {
+    "input": "The Quick Brown Fox Jumps\n",
+    "output": "Vowels: 6\nConsonants: 15\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "c05",
+  "title": "Reverse Each Word",
+  "category": "Strings",
+  "difficulty": "Easy",
+  "description": "<p>Reverse the letters of every word in a sentence while keeping the words in their original order. Words are separated by single spaces.</p><h4>Input</h4><p>A single line of words separated by single spaces.</p><h4>Output</h4><p>The sentence with each word reversed.</p>",
+  "solution": "print(' '.join(w[::-1] for w in input().split(' ')))\n",
+  "tests": [
+   {
+    "input": "hello world\n",
+    "output": "olleh dlrow\n",
+    "hidden": false
+   },
+   {
+    "input": "CodeChum is fun\n",
+    "output": "muhCedoC si nuf\n",
+    "hidden": false
+   },
+   {
+    "input": "a\n",
+    "output": "a\n",
+    "hidden": true
+   },
+   {
+    "input": "abc\n",
+    "output": "cba\n",
+    "hidden": true
+   },
+   {
+    "input": "racecar level noon\n",
+    "output": "racecar level noon\n",
+    "hidden": true
+   },
+   {
+    "input": "I love Python 3\n",
+    "output": "I evol nohtyP 3\n",
+    "hidden": true
+   },
+   {
+    "input": "ab cd ef gh\n",
+    "output": "ba dc fe hg\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "c06",
+  "title": "Capitalize Each Word",
+  "category": "Strings",
+  "difficulty": "Easy",
+  "description": "<p>Make the first character of each word uppercase and the rest of the word lowercase. Words are separated by single spaces.</p><h4>Input</h4><p>A single line of words separated by single spaces.</p><h4>Output</h4><p>The sentence with every word capitalized.</p>",
+  "solution": "print(' '.join(w[:1].upper() + w[1:].lower() for w in input().split(' ')))\n",
+  "tests": [
+   {
+    "input": "hello world\n",
+    "output": "Hello World\n",
+    "hidden": false
+   },
+   {
+    "input": "tHE qUICK bROWN fOX\n",
+    "output": "The Quick Brown Fox\n",
+    "hidden": false
+   },
+   {
+    "input": "python\n",
+    "output": "Python\n",
+    "hidden": true
+   },
+   {
+    "input": "a b c\n",
+    "output": "A B C\n",
+    "hidden": true
+   },
+   {
+    "input": "123abc def\n",
+    "output": "123abc Def\n",
+    "hidden": true
+   },
+   {
+    "input": "ALL CAPS HERE\n",
+    "output": "All Caps Here\n",
+    "hidden": true
+   },
+   {
+    "input": "x\n",
+    "output": "X\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "c07",
+  "title": "Run-Length Encoding",
+  "category": "Strings",
+  "difficulty": "Medium",
+  "description": "<p>Compress a string using run-length encoding: each maximal run of the same character is written as the character followed by the length of the run. For example, <code>aaabb</code> becomes <code>a3b2</code>.</p><h4>Input</h4><p>A single non-empty string <code>s</code> of lowercase letters.</p><h4>Output</h4><p>The encoded string.</p>",
+  "solution": "s = input()\nr = []\ni = 0\nwhile i < len(s):\n    j = i\n    while j < len(s) and s[j] == s[i]:\n        j += 1\n    r.append(s[i] + str(j - i))\n    i = j\nprint(''.join(r))\n",
+  "tests": [
+   {
+    "input": "aaabb\n",
+    "output": "a3b2\n",
+    "hidden": false
+   },
+   {
+    "input": "abc\n",
+    "output": "a1b1c1\n",
+    "hidden": false
+   },
+   {
+    "input": "a\n",
+    "output": "a1\n",
+    "hidden": true
+   },
+   {
+    "input": "aaaaaaaaaaaa\n",
+    "output": "a12\n",
+    "hidden": true
+   },
+   {
+    "input": "aabbaa\n",
+    "output": "a2b2a2\n",
+    "hidden": true
+   },
+   {
+    "input": "zzzyyyxxxw\n",
+    "output": "z3y3x3w1\n",
+    "hidden": true
+   },
+   {
+    "input": "abbcccdddd\n",
+    "output": "a1b2c3d4\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "c08",
+  "title": "Missing Letters",
+  "category": "Strings",
+  "difficulty": "Medium",
+  "description": "<p>A pangram is a sentence that uses every letter of the alphabet at least once. Find which letters (case-insensitive) are missing from the given sentence.</p><h4>Input</h4><p>A single line <code>s</code>.</p><h4>Output</h4><p>The missing letters in lowercase, in alphabetical order, with no spaces. If none are missing, print <code>PANGRAM</code>.</p>",
+  "solution": "s = set(input().lower())\nm = ''.join(c for c in 'abcdefghijklmnopqrstuvwxyz' if c not in s)\nprint(m if m else \"PANGRAM\")\n",
+  "tests": [
+   {
+    "input": "The quick brown fox jumps over the lazy dog\n",
+    "output": "PANGRAM\n",
+    "hidden": false
+   },
+   {
+    "input": "hello world\n",
+    "output": "abcfgijkmnpqstuvxyz\n",
+    "hidden": false
+   },
+   {
+    "input": "abcdefghijklmnopqrstuvwxy\n",
+    "output": "z\n",
+    "hidden": true
+   },
+   {
+    "input": "12345\n",
+    "output": "abcdefghijklmnopqrstuvwxyz\n",
+    "hidden": true
+   },
+   {
+    "input": "Pack my box with five dozen liquor jugs\n",
+    "output": "PANGRAM\n",
+    "hidden": true
+   },
+   {
+    "input": "ABCDEFGHIJKLM\n",
+    "output": "nopqrstuvwxyz\n",
+    "hidden": true
+   },
+   {
+    "input": "zyxwvutsrqponmlkjihgfedcbaZ\n",
+    "output": "PANGRAM\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "c09",
+  "title": "Most Frequent Letter",
+  "category": "Strings",
+  "difficulty": "Medium",
+  "description": "<p>Find the letter that appears most often in the text, ignoring case and non-letter characters. If several letters tie, choose the one that comes first alphabetically. The text contains at least one letter.</p><h4>Input</h4><p>A single line <code>s</code>.</p><h4>Output</h4><p>The most frequent letter in lowercase followed by a space and its count.</p>",
+  "solution": "s = input().lower()\ncnt = {}\nfor c in s:\n    if 'a' <= c <= 'z':\n        cnt[c] = cnt.get(c, 0) + 1\nbest = min(cnt, key=lambda c: (-cnt[c], c))\nprint(best, cnt[best])\n",
+  "tests": [
+   {
+    "input": "hello world\n",
+    "output": "l 3\n",
+    "hidden": false
+   },
+   {
+    "input": "Mississippi\n",
+    "output": "i 4\n",
+    "hidden": false
+   },
+   {
+    "input": "abcabc\n",
+    "output": "a 2\n",
+    "hidden": true
+   },
+   {
+    "input": "Z\n",
+    "output": "z 1\n",
+    "hidden": true
+   },
+   {
+    "input": "zzz yyy\n",
+    "output": "y 3\n",
+    "hidden": true
+   },
+   {
+    "input": "AaBbCcAa 123!\n",
+    "output": "a 4\n",
+    "hidden": true
+   },
+   {
+    "input": "The quick brown fox jumps over the lazy dog\n",
+    "output": "o 4\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "c10",
+  "title": "Toggle Case",
+  "category": "Strings",
+  "difficulty": "Easy",
+  "description": "<p>Change every uppercase letter to lowercase and every lowercase letter to uppercase. Other characters are unchanged.</p><h4>Input</h4><p>A single line <code>s</code>.</p><h4>Output</h4><p>The toggled string.</p>",
+  "solution": "s = input()\nprint(''.join(c.lower() if c.isupper() else c.upper() for c in s))\n",
+  "tests": [
+   {
+    "input": "Hello World\n",
+    "output": "hELLO wORLD\n",
+    "hidden": false
+   },
+   {
+    "input": "CodeChum\n",
+    "output": "cODEcHUM\n",
+    "hidden": false
+   },
+   {
+    "input": "abc\n",
+    "output": "ABC\n",
+    "hidden": true
+   },
+   {
+    "input": "XYZ\n",
+    "output": "xyz\n",
+    "hidden": true
+   },
+   {
+    "input": "123 !@#\n",
+    "output": "123 !@#\n",
+    "hidden": true
+   },
+   {
+    "input": "pYtHoN 3.12\n",
+    "output": "PyThOn 3.12\n",
+    "hidden": true
+   },
+   {
+    "input": "a\n",
+    "output": "A\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "c11",
+  "title": "Count Set Bits",
+  "category": "Bitwise",
+  "difficulty": "Easy",
+  "description": "<p>Count the number of <code>1</code> bits in the binary representation of a non-negative integer <code>n</code>. Try to use bitwise operators (<code>&amp;</code>, <code>&gt;&gt;</code>).</p><h4>Input</h4><p>A single integer <code>n</code> (0 &le; n &le; 10<sup>18</sup>).</p><h4>Output</h4><p>The number of set bits.</p>",
+  "solution": "n = int(input())\nc = 0\nwhile n:\n    n &= n - 1\n    c += 1\nprint(c)\n",
+  "tests": [
+   {
+    "input": "5\n",
+    "output": "2\n",
+    "hidden": false
+   },
+   {
+    "input": "7\n",
+    "output": "3\n",
+    "hidden": false
+   },
+   {
+    "input": "0\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "1\n",
+    "output": "1\n",
+    "hidden": true
+   },
+   {
+    "input": "1024\n",
+    "output": "1\n",
+    "hidden": true
+   },
+   {
+    "input": "255\n",
+    "output": "8\n",
+    "hidden": true
+   },
+   {
+    "input": "1000000000000000000\n",
+    "output": "24\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "c12",
+  "title": "Power of Two",
+  "category": "Bitwise",
+  "difficulty": "Easy",
+  "description": "<p>Determine whether a given integer <code>n</code> is a power of two. Hint: a positive power of two has exactly one set bit, so <code>n &amp; (n - 1)</code> is <code>0</code>.</p><h4>Input</h4><p>A single integer <code>n</code> (-10<sup>9</sup> &le; n &le; 10<sup>18</sup>).</p><h4>Output</h4><p><code>YES</code> if <code>n</code> is a power of two, otherwise <code>NO</code>.</p>",
+  "solution": "n = int(input())\nprint(\"YES\" if n > 0 and n & (n - 1) == 0 else \"NO\")\n",
+  "tests": [
+   {
+    "input": "16\n",
+    "output": "YES\n",
+    "hidden": false
+   },
+   {
+    "input": "18\n",
+    "output": "NO\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n",
+    "output": "YES\n",
+    "hidden": true
+   },
+   {
+    "input": "0\n",
+    "output": "NO\n",
+    "hidden": true
+   },
+   {
+    "input": "-8\n",
+    "output": "NO\n",
+    "hidden": true
+   },
+   {
+    "input": "1073741824\n",
+    "output": "YES\n",
+    "hidden": true
+   },
+   {
+    "input": "1152921504606846975\n",
+    "output": "NO\n",
+    "hidden": true
+   },
+   {
+    "input": "576460752303423488\n",
+    "output": "YES\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "c13",
+  "title": "Decimal to Binary",
+  "category": "Bitwise",
+  "difficulty": "Easy",
+  "description": "<p>Convert a non-negative integer <code>n</code> to its binary representation <b>without</b> using <code>bin()</code> or <code>format()</code>. Use <code>&amp; 1</code> and <code>&gt;&gt;</code> instead.</p><h4>Input</h4><p>A single integer <code>n</code> (0 &le; n &le; 10<sup>18</sup>).</p><h4>Output</h4><p>The binary representation of <code>n</code> with no leading zeros (<code>0</code> for zero).</p>",
+  "solution": "n = int(input())\nif n == 0:\n    print(0)\nelse:\n    d = []\n    while n:\n        d.append(str(n & 1))\n        n >>= 1\n    print(''.join(reversed(d)))\n",
+  "tests": [
+   {
+    "input": "10\n",
+    "output": "1010\n",
+    "hidden": false
+   },
+   {
+    "input": "5\n",
+    "output": "101\n",
+    "hidden": false
+   },
+   {
+    "input": "0\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "1\n",
+    "output": "1\n",
+    "hidden": true
+   },
+   {
+    "input": "255\n",
+    "output": "11111111\n",
+    "hidden": true
+   },
+   {
+    "input": "1024\n",
+    "output": "10000000000\n",
+    "hidden": true
+   },
+   {
+    "input": "1000000000000000000\n",
+    "output": "110111100000101101101011001110100111011001000000000000000000\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "c14",
+  "title": "Find the Single Number",
+  "category": "Bitwise",
+  "difficulty": "Medium",
+  "description": "<p>Every number in the list appears exactly twice except for one number that appears once. Find that number. Hint: <code>x ^ x = 0</code> and <code>x ^ 0 = x</code>, so XOR-ing all numbers leaves only the single one.</p><h4>Input</h4><ul><li>Line 1: an odd integer <code>n</code> (1 &le; n &le; 10<sup>5</sup>)</li><li>Line 2: <code>n</code> space-separated integers</li></ul><h4>Output</h4><p>The number that appears only once.</p>",
+  "solution": "n = int(input())\nr = 0\nfor x in map(int, input().split()):\n    r ^= x\nprint(r)\n",
+  "tests": [
+   {
+    "input": "5\n4 1 2 1 2\n",
+    "output": "4\n",
+    "hidden": false
+   },
+   {
+    "input": "3\n7 3 7\n",
+    "output": "3\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n42\n",
+    "output": "42\n",
+    "hidden": true
+   },
+   {
+    "input": "7\n10 20 30 40 30 20 10\n",
+    "output": "40\n",
+    "hidden": true
+   },
+   {
+    "input": "5\n0 5 5 9 9\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "9\n1000000 1 2 3 4 4 3 2 1\n",
+    "output": "1000000\n",
+    "hidden": true
+   },
+   {
+    "input": "3\n-5 -5 -3\n",
+    "output": "-3\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "c15",
+  "title": "Flip the Bits",
+  "category": "Bitwise",
+  "difficulty": "Medium",
+  "description": "<p>Flip every bit of a positive integer <code>n</code> within its own bit-length (no leading zeros), then print the resulting number. For example, <code>5</code> is <code>101</code>; flipping gives <code>010</code> = <code>2</code>. Hint: XOR with a mask of all ones of the same length.</p><h4>Input</h4><p>A single integer <code>n</code> (1 &le; n &le; 10<sup>18</sup>).</p><h4>Output</h4><p>The integer obtained after flipping the bits.</p>",
+  "solution": "n = int(input())\nmask = (1 << n.bit_length()) - 1\nprint(n ^ mask)\n",
+  "tests": [
+   {
+    "input": "5\n",
+    "output": "2\n",
+    "hidden": false
+   },
+   {
+    "input": "10\n",
+    "output": "5\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "7\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "8\n",
+    "output": "7\n",
+    "hidden": true
+   },
+   {
+    "input": "1000000000000000000\n",
+    "output": "152921504606846975\n",
+    "hidden": true
+   },
+   {
+    "input": "2\n",
+    "output": "1\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "c16",
+  "title": "Hamming Distance",
+  "category": "Bitwise",
+  "difficulty": "Medium",
+  "description": "<p>The Hamming distance between two integers is the number of bit positions at which their binary representations differ. Hint: count the set bits of <code>a ^ b</code>.</p><h4>Input</h4><p>Two non-negative integers <code>a</code> and <code>b</code> on one line, separated by a space (0 &le; a, b &le; 10<sup>18</sup>).</p><h4>Output</h4><p>The Hamming distance between <code>a</code> and <code>b</code>.</p>",
+  "solution": "a, b = map(int, input().split())\nx = a ^ b\nc = 0\nwhile x:\n    c += x & 1\n    x >>= 1\nprint(c)\n",
+  "tests": [
+   {
+    "input": "1 4\n",
+    "output": "2\n",
+    "hidden": false
+   },
+   {
+    "input": "3 1\n",
+    "output": "1\n",
+    "hidden": false
+   },
+   {
+    "input": "0 0\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "7 7\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "0 255\n",
+    "output": "8\n",
+    "hidden": true
+   },
+   {
+    "input": "1000000000000000000 0\n",
+    "output": "24\n",
+    "hidden": true
+   },
+   {
+    "input": "12 10\n",
+    "output": "2\n",
+    "hidden": true
+   }
+  ]
+ }
+]

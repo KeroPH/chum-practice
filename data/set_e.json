@@ -1,0 +1,667 @@
+[
+ {
+  "id": "e01",
+  "title": "Solid Square",
+  "category": "Patterns",
+  "difficulty": "Easy",
+  "description": "<p>Given an integer <code>n</code>, print a solid square of asterisks (<code>*</code>) with <code>n</code> rows and <code>n</code> columns. Stars are printed side by side with no spaces between them.</p><h4>Input</h4><p>A single integer <code>n</code> (1 &le; n &le; 20).</p><h4>Output</h4><p>Print <code>n</code> lines, each containing <code>n</code> asterisks.</p><p>Example for input <code>4</code>:</p><pre>****\n****\n****\n****</pre>",
+  "solution": "n = int(input())\nfor _ in range(n):\n    print(\"*\" * n)\n",
+  "tests": [
+   {
+    "input": "4\n",
+    "output": "****\n****\n****\n****\n",
+    "hidden": false
+   },
+   {
+    "input": "5\n",
+    "output": "*****\n*****\n*****\n*****\n*****\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n",
+    "output": "*\n",
+    "hidden": true
+   },
+   {
+    "input": "2\n",
+    "output": "**\n**\n",
+    "hidden": true
+   },
+   {
+    "input": "3\n",
+    "output": "***\n***\n***\n",
+    "hidden": true
+   },
+   {
+    "input": "7\n",
+    "output": "*******\n*******\n*******\n*******\n*******\n*******\n*******\n",
+    "hidden": true
+   },
+   {
+    "input": "9\n",
+    "output": "*********\n*********\n*********\n*********\n*********\n*********\n*********\n*********\n*********\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "e02",
+  "title": "Hollow Square",
+  "category": "Patterns",
+  "difficulty": "Easy",
+  "description": "<p>Given an integer <code>n</code>, print a hollow square of size <code>n x n</code>. Only the border is made of asterisks (<code>*</code>); the inside is filled with spaces.</p><h4>Input</h4><p>A single integer <code>n</code> (1 &le; n &le; 20).</p><h4>Output</h4><p>Print <code>n</code> lines forming the hollow square. Do not print any trailing spaces.</p><p>Example for input <code>4</code>:</p><pre>****\n*  *\n*  *\n****</pre>",
+  "solution": "n = int(input())\nfor i in range(n):\n    if i == 0 or i == n - 1:\n        print(\"*\" * n)\n    else:\n        print(\"*\" + \" \" * (n - 2) + \"*\")\n",
+  "tests": [
+   {
+    "input": "4\n",
+    "output": "****\n*  *\n*  *\n****\n",
+    "hidden": false
+   },
+   {
+    "input": "5\n",
+    "output": "*****\n*   *\n*   *\n*   *\n*****\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n",
+    "output": "*\n",
+    "hidden": true
+   },
+   {
+    "input": "2\n",
+    "output": "**\n**\n",
+    "hidden": true
+   },
+   {
+    "input": "3\n",
+    "output": "***\n* *\n***\n",
+    "hidden": true
+   },
+   {
+    "input": "7\n",
+    "output": "*******\n*     *\n*     *\n*     *\n*     *\n*     *\n*******\n",
+    "hidden": true
+   },
+   {
+    "input": "9\n",
+    "output": "*********\n*       *\n*       *\n*       *\n*       *\n*       *\n*       *\n*       *\n*********\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "e03",
+  "title": "Star Right Triangle",
+  "category": "Patterns",
+  "difficulty": "Easy",
+  "description": "<p>Given an integer <code>n</code>, print a left-aligned right triangle of asterisks. Row <code>i</code> (1-based) contains exactly <code>i</code> stars, printed side by side.</p><h4>Input</h4><p>A single integer <code>n</code> (1 &le; n &le; 20).</p><h4>Output</h4><p>Print <code>n</code> lines; line <code>i</code> has <code>i</code> asterisks.</p><p>Example for input <code>4</code>:</p><pre>*\n**\n***\n****</pre>",
+  "solution": "n = int(input())\nfor i in range(1, n + 1):\n    print(\"*\" * i)\n",
+  "tests": [
+   {
+    "input": "4\n",
+    "output": "*\n**\n***\n****\n",
+    "hidden": false
+   },
+   {
+    "input": "5\n",
+    "output": "*\n**\n***\n****\n*****\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n",
+    "output": "*\n",
+    "hidden": true
+   },
+   {
+    "input": "2\n",
+    "output": "*\n**\n",
+    "hidden": true
+   },
+   {
+    "input": "3\n",
+    "output": "*\n**\n***\n",
+    "hidden": true
+   },
+   {
+    "input": "7\n",
+    "output": "*\n**\n***\n****\n*****\n******\n*******\n",
+    "hidden": true
+   },
+   {
+    "input": "9\n",
+    "output": "*\n**\n***\n****\n*****\n******\n*******\n********\n*********\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "e04",
+  "title": "Inverted Right Triangle",
+  "category": "Patterns",
+  "difficulty": "Easy",
+  "description": "<p>Given an integer <code>n</code>, print a left-aligned right triangle of asterisks turned upside down: the first row has <code>n</code> stars and each following row has one star fewer.</p><h4>Input</h4><p>A single integer <code>n</code> (1 &le; n &le; 20).</p><h4>Output</h4><p>Print <code>n</code> lines; line <code>i</code> (1-based) has <code>n - i + 1</code> asterisks.</p><p>Example for input <code>4</code>:</p><pre>****\n***\n**\n*</pre>",
+  "solution": "n = int(input())\nfor i in range(n, 0, -1):\n    print(\"*\" * i)\n",
+  "tests": [
+   {
+    "input": "4\n",
+    "output": "****\n***\n**\n*\n",
+    "hidden": false
+   },
+   {
+    "input": "5\n",
+    "output": "*****\n****\n***\n**\n*\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n",
+    "output": "*\n",
+    "hidden": true
+   },
+   {
+    "input": "2\n",
+    "output": "**\n*\n",
+    "hidden": true
+   },
+   {
+    "input": "3\n",
+    "output": "***\n**\n*\n",
+    "hidden": true
+   },
+   {
+    "input": "7\n",
+    "output": "*******\n******\n*****\n****\n***\n**\n*\n",
+    "hidden": true
+   },
+   {
+    "input": "9\n",
+    "output": "*********\n********\n*******\n******\n*****\n****\n***\n**\n*\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "e05",
+  "title": "Mirrored Right Triangle",
+  "category": "Patterns",
+  "difficulty": "Easy",
+  "description": "<p>Given an integer <code>n</code>, print a <b>right-aligned</b> right triangle of asterisks. Row <code>i</code> (1-based) has <code>n - i</code> leading spaces followed by <code>i</code> stars.</p><h4>Input</h4><p>A single integer <code>n</code> (1 &le; n &le; 20).</p><h4>Output</h4><p>Print <code>n</code> lines forming the right-aligned triangle. Do not print any trailing spaces.</p><p>Example for input <code>4</code>:</p><pre>   *\n  **\n ***\n****</pre>",
+  "solution": "n = int(input())\nfor i in range(1, n + 1):\n    print(\" \" * (n - i) + \"*\" * i)\n",
+  "tests": [
+   {
+    "input": "4\n",
+    "output": "   *\n  **\n ***\n****\n",
+    "hidden": false
+   },
+   {
+    "input": "5\n",
+    "output": "    *\n   **\n  ***\n ****\n*****\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n",
+    "output": "*\n",
+    "hidden": true
+   },
+   {
+    "input": "2\n",
+    "output": " *\n**\n",
+    "hidden": true
+   },
+   {
+    "input": "3\n",
+    "output": "  *\n **\n***\n",
+    "hidden": true
+   },
+   {
+    "input": "7\n",
+    "output": "      *\n     **\n    ***\n   ****\n  *****\n ******\n*******\n",
+    "hidden": true
+   },
+   {
+    "input": "9\n",
+    "output": "        *\n       **\n      ***\n     ****\n    *****\n   ******\n  *******\n ********\n*********\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "e06",
+  "title": "Centered Pyramid",
+  "category": "Patterns",
+  "difficulty": "Medium",
+  "description": "<p>Given an integer <code>n</code>, print a centered pyramid of asterisks with <code>n</code> rows. Row <code>i</code> (1-based) has <code>n - i</code> leading spaces followed by <code>2i - 1</code> stars.</p><h4>Input</h4><p>A single integer <code>n</code> (1 &le; n &le; 20).</p><h4>Output</h4><p>Print <code>n</code> lines forming the pyramid. Do not print any trailing spaces.</p><p>Example for input <code>4</code>:</p><pre>   *\n  ***\n *****\n*******</pre>",
+  "solution": "n = int(input())\nfor i in range(1, n + 1):\n    print(\" \" * (n - i) + \"*\" * (2 * i - 1))\n",
+  "tests": [
+   {
+    "input": "4\n",
+    "output": "   *\n  ***\n *****\n*******\n",
+    "hidden": false
+   },
+   {
+    "input": "5\n",
+    "output": "    *\n   ***\n  *****\n *******\n*********\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n",
+    "output": "*\n",
+    "hidden": true
+   },
+   {
+    "input": "2\n",
+    "output": " *\n***\n",
+    "hidden": true
+   },
+   {
+    "input": "3\n",
+    "output": "  *\n ***\n*****\n",
+    "hidden": true
+   },
+   {
+    "input": "7\n",
+    "output": "      *\n     ***\n    *****\n   *******\n  *********\n ***********\n*************\n",
+    "hidden": true
+   },
+   {
+    "input": "9\n",
+    "output": "        *\n       ***\n      *****\n     *******\n    *********\n   ***********\n  *************\n ***************\n*****************\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "e07",
+  "title": "Inverted Pyramid",
+  "category": "Patterns",
+  "difficulty": "Medium",
+  "description": "<p>Given an integer <code>n</code>, print a centered pyramid of asterisks turned upside down. The first row has <code>2n - 1</code> stars with no leading spaces; each following row has one more leading space and two fewer stars, ending with a single star.</p><h4>Input</h4><p>A single integer <code>n</code> (1 &le; n &le; 20).</p><h4>Output</h4><p>Print <code>n</code> lines forming the inverted pyramid. Do not print any trailing spaces.</p><p>Example for input <code>4</code>:</p><pre>*******\n *****\n  ***\n   *</pre>",
+  "solution": "n = int(input())\nfor i in range(n, 0, -1):\n    print(\" \" * (n - i) + \"*\" * (2 * i - 1))\n",
+  "tests": [
+   {
+    "input": "4\n",
+    "output": "*******\n *****\n  ***\n   *\n",
+    "hidden": false
+   },
+   {
+    "input": "5\n",
+    "output": "*********\n *******\n  *****\n   ***\n    *\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n",
+    "output": "*\n",
+    "hidden": true
+   },
+   {
+    "input": "2\n",
+    "output": "***\n *\n",
+    "hidden": true
+   },
+   {
+    "input": "3\n",
+    "output": "*****\n ***\n  *\n",
+    "hidden": true
+   },
+   {
+    "input": "7\n",
+    "output": "*************\n ***********\n  *********\n   *******\n    *****\n     ***\n      *\n",
+    "hidden": true
+   },
+   {
+    "input": "9\n",
+    "output": "*****************\n ***************\n  *************\n   ***********\n    *********\n     *******\n      *****\n       ***\n        *\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "e08",
+  "title": "Hollow Pyramid",
+  "category": "Patterns",
+  "difficulty": "Medium",
+  "description": "<p>Given an integer <code>n</code>, print a hollow centered pyramid with <code>n</code> rows. The pyramid has the same outline as a solid pyramid (row <code>i</code> is <code>2i - 1</code> characters wide after <code>n - i</code> leading spaces), but only its edges are stars: the first and last character of each row, plus the entire bottom row.</p><h4>Input</h4><p>A single integer <code>n</code> (1 &le; n &le; 20).</p><h4>Output</h4><p>Print <code>n</code> lines forming the hollow pyramid. Do not print any trailing spaces.</p><p>Example for input <code>4</code>:</p><pre>   *\n  * *\n *   *\n*******</pre>",
+  "solution": "n = int(input())\nfor i in range(1, n + 1):\n    pad = \" \" * (n - i)\n    if i == 1:\n        print(pad + \"*\")\n    elif i == n:\n        print(\"*\" * (2 * n - 1))\n    else:\n        print(pad + \"*\" + \" \" * (2 * i - 3) + \"*\")\n",
+  "tests": [
+   {
+    "input": "4\n",
+    "output": "   *\n  * *\n *   *\n*******\n",
+    "hidden": false
+   },
+   {
+    "input": "5\n",
+    "output": "    *\n   * *\n  *   *\n *     *\n*********\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n",
+    "output": "*\n",
+    "hidden": true
+   },
+   {
+    "input": "2\n",
+    "output": " *\n***\n",
+    "hidden": true
+   },
+   {
+    "input": "3\n",
+    "output": "  *\n * *\n*****\n",
+    "hidden": true
+   },
+   {
+    "input": "7\n",
+    "output": "      *\n     * *\n    *   *\n   *     *\n  *       *\n *         *\n*************\n",
+    "hidden": true
+   },
+   {
+    "input": "9\n",
+    "output": "        *\n       * *\n      *   *\n     *     *\n    *       *\n   *         *\n  *           *\n *             *\n*****************\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "e09",
+  "title": "Hollow Diamond",
+  "category": "Patterns",
+  "difficulty": "Hard",
+  "description": "<p>Given an integer <code>n</code>, print a hollow diamond made of asterisks. The diamond has <code>2n - 1</code> rows and its widest row (the middle one) is <code>2n - 1</code> characters wide. Only the outline is drawn with stars; the inside is filled with spaces. The top half is a hollow pyramid without its base, and the bottom half mirrors the top.</p><h4>Input</h4><p>A single integer <code>n</code> (1 &le; n &le; 20).</p><h4>Output</h4><p>Print <code>2n - 1</code> lines forming the hollow diamond. Do not print any trailing spaces.</p><p>Example for input <code>4</code>:</p><pre>   *\n  * *\n *   *\n*     *\n *   *\n  * *\n   *</pre>",
+  "solution": "n = int(input())\nrows = list(range(1, n + 1)) + list(range(n - 1, 0, -1))\nfor k in rows:\n    pad = \" \" * (n - k)\n    if k == 1:\n        print(pad + \"*\")\n    else:\n        print(pad + \"*\" + \" \" * (2 * k - 3) + \"*\")\n",
+  "tests": [
+   {
+    "input": "4\n",
+    "output": "   *\n  * *\n *   *\n*     *\n *   *\n  * *\n   *\n",
+    "hidden": false
+   },
+   {
+    "input": "5\n",
+    "output": "    *\n   * *\n  *   *\n *     *\n*       *\n *     *\n  *   *\n   * *\n    *\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n",
+    "output": "*\n",
+    "hidden": true
+   },
+   {
+    "input": "2\n",
+    "output": " *\n* *\n *\n",
+    "hidden": true
+   },
+   {
+    "input": "3\n",
+    "output": "  *\n * *\n*   *\n * *\n  *\n",
+    "hidden": true
+   },
+   {
+    "input": "7\n",
+    "output": "      *\n     * *\n    *   *\n   *     *\n  *       *\n *         *\n*           *\n *         *\n  *       *\n   *     *\n    *   *\n     * *\n      *\n",
+    "hidden": true
+   },
+   {
+    "input": "9\n",
+    "output": "        *\n       * *\n      *   *\n     *     *\n    *       *\n   *         *\n  *           *\n *             *\n*               *\n *             *\n  *           *\n   *         *\n    *       *\n     *     *\n      *   *\n       * *\n        *\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "e10",
+  "title": "X Marks the Spot",
+  "category": "Patterns",
+  "difficulty": "Medium",
+  "description": "<p>Given an <b>odd</b> integer <code>n</code>, print an <code>X</code> shape of asterisks inside an <code>n x n</code> grid. Position <code>(i, j)</code> (0-based) holds a star when it lies on either diagonal, i.e. <code>j == i</code> or <code>j == n - 1 - i</code>; every other position is a space.</p><h4>Input</h4><p>A single <b>odd</b> integer <code>n</code> (1 &le; n &le; 21).</p><h4>Output</h4><p>Print <code>n</code> lines forming the X. Do not print any trailing spaces.</p><p>Example for input <code>5</code>:</p><pre>*   *\n * *\n  *\n * *\n*   *</pre>",
+  "solution": "n = int(input())\nfor i in range(n):\n    row = \"\".join(\"*\" if j == i or j == n - 1 - i else \" \" for j in range(n))\n    print(row.rstrip())\n",
+  "tests": [
+   {
+    "input": "5\n",
+    "output": "*   *\n * *\n  *\n * *\n*   *\n",
+    "hidden": false
+   },
+   {
+    "input": "3\n",
+    "output": "* *\n *\n* *\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n",
+    "output": "*\n",
+    "hidden": true
+   },
+   {
+    "input": "7\n",
+    "output": "*     *\n *   *\n  * *\n   *\n  * *\n *   *\n*     *\n",
+    "hidden": true
+   },
+   {
+    "input": "9\n",
+    "output": "*       *\n *     *\n  *   *\n   * *\n    *\n   * *\n  *   *\n *     *\n*       *\n",
+    "hidden": true
+   },
+   {
+    "input": "11\n",
+    "output": "*         *\n *       *\n  *     *\n   *   *\n    * *\n     *\n    * *\n   *   *\n  *     *\n *       *\n*         *\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "e11",
+  "title": "Plus Sign",
+  "category": "Patterns",
+  "difficulty": "Medium",
+  "description": "<p>Given an <b>odd</b> integer <code>n</code>, print a plus sign (<code>+</code>) made of asterisks inside an <code>n x n</code> grid. The middle row is completely filled with stars, and every other row contains a single star in the middle column.</p><h4>Input</h4><p>A single <b>odd</b> integer <code>n</code> (1 &le; n &le; 21).</p><h4>Output</h4><p>Print <code>n</code> lines forming the plus sign. Do not print any trailing spaces.</p><p>Example for input <code>5</code>:</p><pre>  *\n  *\n*****\n  *\n  *</pre>",
+  "solution": "n = int(input())\nm = n // 2\nfor i in range(n):\n    if i == m:\n        print(\"*\" * n)\n    else:\n        print(\" \" * m + \"*\")\n",
+  "tests": [
+   {
+    "input": "5\n",
+    "output": "  *\n  *\n*****\n  *\n  *\n",
+    "hidden": false
+   },
+   {
+    "input": "3\n",
+    "output": " *\n***\n *\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n",
+    "output": "*\n",
+    "hidden": true
+   },
+   {
+    "input": "7\n",
+    "output": "   *\n   *\n   *\n*******\n   *\n   *\n   *\n",
+    "hidden": true
+   },
+   {
+    "input": "9\n",
+    "output": "    *\n    *\n    *\n    *\n*********\n    *\n    *\n    *\n    *\n",
+    "hidden": true
+   },
+   {
+    "input": "11\n",
+    "output": "     *\n     *\n     *\n     *\n     *\n***********\n     *\n     *\n     *\n     *\n     *\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "e12",
+  "title": "Right-Pointing Arrow",
+  "category": "Patterns",
+  "difficulty": "Medium",
+  "description": "<p>Given an integer <code>n</code>, print a sideways triangle that points to the right. The number of stars grows from <code>1</code> up to <code>n</code> and then shrinks back down to <code>1</code>, giving <code>2n - 1</code> rows in total. Rows are left-aligned and the stars are printed side by side.</p><h4>Input</h4><p>A single integer <code>n</code> (1 &le; n &le; 20).</p><h4>Output</h4><p>Print <code>2n - 1</code> lines forming the arrow.</p><p>Example for input <code>4</code>:</p><pre>*\n**\n***\n****\n***\n**\n*</pre>",
+  "solution": "n = int(input())\nfor i in list(range(1, n + 1)) + list(range(n - 1, 0, -1)):\n    print(\"*\" * i)\n",
+  "tests": [
+   {
+    "input": "4\n",
+    "output": "*\n**\n***\n****\n***\n**\n*\n",
+    "hidden": false
+   },
+   {
+    "input": "5\n",
+    "output": "*\n**\n***\n****\n*****\n****\n***\n**\n*\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n",
+    "output": "*\n",
+    "hidden": true
+   },
+   {
+    "input": "2\n",
+    "output": "*\n**\n*\n",
+    "hidden": true
+   },
+   {
+    "input": "3\n",
+    "output": "*\n**\n***\n**\n*\n",
+    "hidden": true
+   },
+   {
+    "input": "7\n",
+    "output": "*\n**\n***\n****\n*****\n******\n*******\n******\n*****\n****\n***\n**\n*\n",
+    "hidden": true
+   },
+   {
+    "input": "9\n",
+    "output": "*\n**\n***\n****\n*****\n******\n*******\n********\n*********\n********\n*******\n******\n*****\n****\n***\n**\n*\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "e13",
+  "title": "Checkerboard",
+  "category": "Patterns",
+  "difficulty": "Medium",
+  "description": "<p>Given an integer <code>n</code>, print an <code>n x n</code> checkerboard using the characters <code>#</code> and <code>.</code> (no spaces). The top-left cell is <code>#</code>, and the characters alternate both across each row and down each column: cell <code>(i, j)</code> (0-based) is <code>#</code> when <code>i + j</code> is even, otherwise <code>.</code>.</p><h4>Input</h4><p>A single integer <code>n</code> (1 &le; n &le; 20).</p><h4>Output</h4><p>Print <code>n</code> lines, each containing <code>n</code> characters.</p><p>Example for input <code>4</code>:</p><pre>#.#.\n.#.#\n#.#.\n.#.#</pre>",
+  "solution": "n = int(input())\nfor i in range(n):\n    print(\"\".join(\"#\" if (i + j) % 2 == 0 else \".\" for j in range(n)))\n",
+  "tests": [
+   {
+    "input": "4\n",
+    "output": "#.#.\n.#.#\n#.#.\n.#.#\n",
+    "hidden": false
+   },
+   {
+    "input": "5\n",
+    "output": "#.#.#\n.#.#.\n#.#.#\n.#.#.\n#.#.#\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n",
+    "output": "#\n",
+    "hidden": true
+   },
+   {
+    "input": "2\n",
+    "output": "#.\n.#\n",
+    "hidden": true
+   },
+   {
+    "input": "3\n",
+    "output": "#.#\n.#.\n#.#\n",
+    "hidden": true
+   },
+   {
+    "input": "7\n",
+    "output": "#.#.#.#\n.#.#.#.\n#.#.#.#\n.#.#.#.\n#.#.#.#\n.#.#.#.\n#.#.#.#\n",
+    "hidden": true
+   },
+   {
+    "input": "9\n",
+    "output": "#.#.#.#.#\n.#.#.#.#.\n#.#.#.#.#\n.#.#.#.#.\n#.#.#.#.#\n.#.#.#.#.\n#.#.#.#.#\n.#.#.#.#.\n#.#.#.#.#\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "e14",
+  "title": "Hollow Rectangle",
+  "category": "Patterns",
+  "difficulty": "Easy",
+  "description": "<p>Given two integers <code>R</code> and <code>C</code>, print a hollow rectangle with <code>R</code> rows and <code>C</code> columns. The border is made of asterisks (<code>*</code>) and the inside is filled with spaces. If <code>R</code> or <code>C</code> is 1 or 2, the rectangle has no inside and is completely filled with stars.</p><h4>Input</h4><p>A single line with two space-separated integers <code>R C</code> (1 &le; R, C &le; 20).</p><h4>Output</h4><p>Print <code>R</code> lines forming the hollow rectangle. Do not print any trailing spaces.</p><p>Example for input <code>4 6</code>:</p><pre>******\n*    *\n*    *\n******</pre>",
+  "solution": "r, c = map(int, input().split())\nfor i in range(r):\n    if i == 0 or i == r - 1 or c <= 2:\n        print(\"*\" * c)\n    else:\n        print(\"*\" + \" \" * (c - 2) + \"*\")\n",
+  "tests": [
+   {
+    "input": "4 6\n",
+    "output": "******\n*    *\n*    *\n******\n",
+    "hidden": false
+   },
+   {
+    "input": "3 3\n",
+    "output": "***\n* *\n***\n",
+    "hidden": false
+   },
+   {
+    "input": "1 1\n",
+    "output": "*\n",
+    "hidden": true
+   },
+   {
+    "input": "1 5\n",
+    "output": "*****\n",
+    "hidden": true
+   },
+   {
+    "input": "5 1\n",
+    "output": "*\n*\n*\n*\n*\n",
+    "hidden": true
+   },
+   {
+    "input": "2 2\n",
+    "output": "**\n**\n",
+    "hidden": true
+   },
+   {
+    "input": "7 9\n",
+    "output": "*********\n*       *\n*       *\n*       *\n*       *\n*       *\n*********\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "e15",
+  "title": "Butterfly",
+  "category": "Patterns",
+  "difficulty": "Hard",
+  "description": "<p>Given an integer <code>n</code>, print a butterfly pattern with <code>2n - 1</code> rows. In the top half, row <code>i</code> (1 to <code>n</code>) consists of <code>i</code> stars, then <code>2(n - i)</code> spaces, then <code>i</code> stars, so the two wings meet in row <code>n</code> as <code>2n</code> stars. The bottom half mirrors the top half (rows <code>n - 1</code> down to <code>1</code>).</p><h4>Input</h4><p>A single integer <code>n</code> (1 &le; n &le; 20).</p><h4>Output</h4><p>Print <code>2n - 1</code> lines forming the butterfly.</p><p>Example for input <code>4</code>:</p><pre>*      *\n**    **\n***  ***\n********\n***  ***\n**    **\n*      *</pre>",
+  "solution": "n = int(input())\nfor i in list(range(1, n + 1)) + list(range(n - 1, 0, -1)):\n    print(\"*\" * i + \" \" * (2 * (n - i)) + \"*\" * i)\n",
+  "tests": [
+   {
+    "input": "4\n",
+    "output": "*      *\n**    **\n***  ***\n********\n***  ***\n**    **\n*      *\n",
+    "hidden": false
+   },
+   {
+    "input": "5\n",
+    "output": "*        *\n**      **\n***    ***\n****  ****\n**********\n****  ****\n***    ***\n**      **\n*        *\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n",
+    "output": "**\n",
+    "hidden": true
+   },
+   {
+    "input": "2\n",
+    "output": "*  *\n****\n*  *\n",
+    "hidden": true
+   },
+   {
+    "input": "3\n",
+    "output": "*    *\n**  **\n******\n**  **\n*    *\n",
+    "hidden": true
+   },
+   {
+    "input": "7\n",
+    "output": "*            *\n**          **\n***        ***\n****      ****\n*****    *****\n******  ******\n**************\n******  ******\n*****    *****\n****      ****\n***        ***\n**          **\n*            *\n",
+    "hidden": true
+   },
+   {
+    "input": "9\n",
+    "output": "*                *\n**              **\n***            ***\n****          ****\n*****        *****\n******      ******\n*******    *******\n********  ********\n******************\n********  ********\n*******    *******\n******      ******\n*****        *****\n****          ****\n***            ***\n**              **\n*                *\n",
+    "hidden": true
+   }
+  ]
+ }
+]

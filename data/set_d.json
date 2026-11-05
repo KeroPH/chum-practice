@@ -1,0 +1,732 @@
+[
+ {
+  "id": "d01",
+  "title": "Matrix Transpose",
+  "category": "Matrices",
+  "difficulty": "Easy",
+  "description": "<p>Given an <code>R x C</code> matrix, print its transpose (a <code>C x R</code> matrix where row <code>i</code> is column <code>i</code> of the original).</p><h4>Input</h4><p>The first line contains two integers <code>R C</code>. The next <code>R</code> lines each contain <code>C</code> space-separated integers.</p><h4>Output</h4><p>Print the <code>C</code> rows of the transposed matrix, each with <code>R</code> space-separated integers.</p>",
+  "solution": "r, c = map(int, input().split())\na = [list(map(int, input().split())) for _ in range(r)]\nfor j in range(c):\n    print(\" \".join(str(a[i][j]) for i in range(r)))\n",
+  "tests": [
+   {
+    "input": "2 3\n1 2 3\n4 5 6\n",
+    "output": "1 4\n2 5\n3 6\n",
+    "hidden": false
+   },
+   {
+    "input": "2 2\n1 2\n3 4\n",
+    "output": "1 3\n2 4\n",
+    "hidden": false
+   },
+   {
+    "input": "1 1\n7\n",
+    "output": "7\n",
+    "hidden": true
+   },
+   {
+    "input": "1 4\n1 2 3 4\n",
+    "output": "1\n2\n3\n4\n",
+    "hidden": true
+   },
+   {
+    "input": "3 1\n5\n6\n7\n",
+    "output": "5 6 7\n",
+    "hidden": true
+   },
+   {
+    "input": "3 3\n-1 0 2\n3 -4 5\n6 7 -8\n",
+    "output": "-1 3 6\n0 -4 7\n2 5 -8\n",
+    "hidden": true
+   },
+   {
+    "input": "4 2\n10 20\n30 40\n50 60\n70 80\n",
+    "output": "10 30 50 70\n20 40 60 80\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "d02",
+  "title": "Rotate Matrix 90° Clockwise",
+  "category": "Matrices",
+  "difficulty": "Medium",
+  "description": "<p>Rotate the given <code>R x C</code> matrix 90 degrees clockwise and print the result (a <code>C x R</code> matrix).</p><h4>Input</h4><p>The first line contains two integers <code>R C</code>. The next <code>R</code> lines each contain <code>C</code> space-separated integers.</p><h4>Output</h4><p>Print the <code>C</code> rows of the rotated matrix, each with <code>R</code> space-separated integers.</p><p>Example: <code>[[1,2],[3,4]]</code> becomes <code>[[3,1],[4,2]]</code>.</p>",
+  "solution": "r, c = map(int, input().split())\na = [list(map(int, input().split())) for _ in range(r)]\nfor j in range(c):\n    print(\" \".join(str(a[i][j]) for i in range(r - 1, -1, -1)))\n",
+  "tests": [
+   {
+    "input": "3 3\n1 2 3\n4 5 6\n7 8 9\n",
+    "output": "7 4 1\n8 5 2\n9 6 3\n",
+    "hidden": false
+   },
+   {
+    "input": "2 3\n1 2 3\n4 5 6\n",
+    "output": "4 1\n5 2\n6 3\n",
+    "hidden": false
+   },
+   {
+    "input": "1 1\n42\n",
+    "output": "42\n",
+    "hidden": true
+   },
+   {
+    "input": "1 4\n1 2 3 4\n",
+    "output": "1\n2\n3\n4\n",
+    "hidden": true
+   },
+   {
+    "input": "3 1\n1\n2\n3\n",
+    "output": "3 2 1\n",
+    "hidden": true
+   },
+   {
+    "input": "2 2\n-5 3\n0 -1\n",
+    "output": "0 -5\n-1 3\n",
+    "hidden": true
+   },
+   {
+    "input": "4 4\n1 2 3 4\n5 6 7 8\n9 10 11 12\n13 14 15 16\n",
+    "output": "13 9 5 1\n14 10 6 2\n15 11 7 3\n16 12 8 4\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "d03",
+  "title": "Spiral Order Traversal",
+  "category": "Matrices",
+  "difficulty": "Medium",
+  "description": "<p>Print the elements of an <code>R x C</code> matrix in spiral order: start at the top-left corner, move right, then down, then left, then up, and continue spiraling inward clockwise.</p><h4>Input</h4><p>The first line contains two integers <code>R C</code>. The next <code>R</code> lines each contain <code>C</code> space-separated integers.</p><h4>Output</h4><p>Print all elements in spiral order on a single line, separated by spaces.</p>",
+  "solution": "r, c = map(int, input().split())\na = [list(map(int, input().split())) for _ in range(r)]\nres = []\ntop, bot, left, right = 0, r - 1, 0, c - 1\nwhile top <= bot and left <= right:\n    for j in range(left, right + 1):\n        res.append(a[top][j])\n    top += 1\n    for i in range(top, bot + 1):\n        res.append(a[i][right])\n    right -= 1\n    if top <= bot:\n        for j in range(right, left - 1, -1):\n            res.append(a[bot][j])\n        bot -= 1\n    if left <= right:\n        for i in range(bot, top - 1, -1):\n            res.append(a[i][left])\n        left += 1\nprint(\" \".join(map(str, res)))\n",
+  "tests": [
+   {
+    "input": "3 3\n1 2 3\n4 5 6\n7 8 9\n",
+    "output": "1 2 3 6 9 8 7 4 5\n",
+    "hidden": false
+   },
+   {
+    "input": "3 4\n1 2 3 4\n5 6 7 8\n9 10 11 12\n",
+    "output": "1 2 3 4 8 12 11 10 9 5 6 7\n",
+    "hidden": false
+   },
+   {
+    "input": "1 1\n5\n",
+    "output": "5\n",
+    "hidden": true
+   },
+   {
+    "input": "1 3\n1 2 3\n",
+    "output": "1 2 3\n",
+    "hidden": true
+   },
+   {
+    "input": "3 1\n1\n2\n3\n",
+    "output": "1 2 3\n",
+    "hidden": true
+   },
+   {
+    "input": "4 2\n1 2\n3 4\n5 6\n7 8\n",
+    "output": "1 2 4 6 8 7 5 3\n",
+    "hidden": true
+   },
+   {
+    "input": "4 4\n1 2 3 4\n5 6 7 8\n9 10 11 12\n13 14 15 16\n",
+    "output": "1 2 3 4 8 12 16 15 14 13 9 5 6 7 11 10\n",
+    "hidden": true
+   },
+   {
+    "input": "2 2\n-1 -2\n-3 -4\n",
+    "output": "-1 -2 -4 -3\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "d04",
+  "title": "Sum of Both Diagonals",
+  "category": "Matrices",
+  "difficulty": "Easy",
+  "description": "<p>Given a square matrix, compute the sum of the elements on the main diagonal and the anti-diagonal. If the matrix has an odd size, the center element belongs to both diagonals but must be counted only <b>once</b>.</p><h4>Input</h4><p>The first line contains two integers <code>R C</code> (always <code>R = C</code>). The next <code>R</code> lines each contain <code>C</code> space-separated integers.</p><h4>Output</h4><p>Print a single integer: the diagonal sum.</p>",
+  "solution": "r, c = map(int, input().split())\na = [list(map(int, input().split())) for _ in range(r)]\nn = r\ns = 0\nfor i in range(n):\n    s += a[i][i]\n    if i != n - 1 - i:\n        s += a[i][n - 1 - i]\nprint(s)\n",
+  "tests": [
+   {
+    "input": "3 3\n1 2 3\n4 5 6\n7 8 9\n",
+    "output": "25\n",
+    "hidden": false
+   },
+   {
+    "input": "2 2\n1 2\n3 4\n",
+    "output": "10\n",
+    "hidden": false
+   },
+   {
+    "input": "1 1\n7\n",
+    "output": "7\n",
+    "hidden": true
+   },
+   {
+    "input": "2 2\n-1 -2\n-3 -4\n",
+    "output": "-10\n",
+    "hidden": true
+   },
+   {
+    "input": "4 4\n1 2 3 4\n5 6 7 8\n9 10 11 12\n13 14 15 16\n",
+    "output": "68\n",
+    "hidden": true
+   },
+   {
+    "input": "5 5\n1 0 0 0 1\n0 1 0 1 0\n0 0 5 0 0\n0 1 0 1 0\n1 0 0 0 1\n",
+    "output": "13\n",
+    "hidden": true
+   },
+   {
+    "input": "2 2\n0 0\n0 0\n",
+    "output": "0\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "d05",
+  "title": "Row With Maximum Sum",
+  "category": "Matrices",
+  "difficulty": "Easy",
+  "description": "<p>Find the row of the matrix with the largest sum of elements. If several rows tie, choose the one that appears first.</p><h4>Input</h4><p>The first line contains two integers <code>R C</code>. The next <code>R</code> lines each contain <code>C</code> space-separated integers.</p><h4>Output</h4><p>Print two integers separated by a space: the 1-based index of that row and its sum.</p>",
+  "solution": "r, c = map(int, input().split())\na = [list(map(int, input().split())) for _ in range(r)]\nbest = 0\nfor i in range(1, r):\n    if sum(a[i]) > sum(a[best]):\n        best = i\nprint(best + 1, sum(a[best]))\n",
+  "tests": [
+   {
+    "input": "3 3\n1 2 3\n4 5 6\n1 1 1\n",
+    "output": "2 15\n",
+    "hidden": false
+   },
+   {
+    "input": "3 2\n5 5\n10 0\n3 3\n",
+    "output": "1 10\n",
+    "hidden": false
+   },
+   {
+    "input": "1 1\n-7\n",
+    "output": "1 -7\n",
+    "hidden": true
+   },
+   {
+    "input": "3 2\n-1 -2\n-3 -4\n-1 -1\n",
+    "output": "3 -2\n",
+    "hidden": true
+   },
+   {
+    "input": "1 3\n0 0 0\n",
+    "output": "1 0\n",
+    "hidden": true
+   },
+   {
+    "input": "4 1\n1\n9\n9\n2\n",
+    "output": "2 9\n",
+    "hidden": true
+   },
+   {
+    "input": "4 3\n3 -3 10\n100 -50 -40\n2 2 2\n7 7 -1\n",
+    "output": "4 13\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "d06",
+  "title": "Matrix Multiplication",
+  "category": "Matrices",
+  "difficulty": "Medium",
+  "description": "<p>Multiply matrix <code>A</code> (size <code>R1 x C1</code>) by matrix <code>B</code> (size <code>R2 x C2</code>). Multiplication is only possible when <code>C1 = R2</code>; otherwise print <code>Invalid</code>.</p><h4>Input</h4><p>First, matrix <code>A</code>: a line <code>R1 C1</code> followed by <code>R1</code> rows. Then matrix <code>B</code>: a line <code>R2 C2</code> followed by <code>R2</code> rows.</p><h4>Output</h4><p>Print the <code>R1 x C2</code> product matrix, one row per line with space-separated integers, or <code>Invalid</code>.</p>",
+  "solution": "r1, c1 = map(int, input().split())\na = [list(map(int, input().split())) for _ in range(r1)]\nr2, c2 = map(int, input().split())\nb = [list(map(int, input().split())) for _ in range(r2)]\nif c1 != r2:\n    print(\"Invalid\")\nelse:\n    for i in range(r1):\n        print(\" \".join(str(sum(a[i][k] * b[k][j] for k in range(c1))) for j in range(c2)))\n",
+  "tests": [
+   {
+    "input": "2 2\n1 2\n3 4\n2 2\n5 6\n7 8\n",
+    "output": "19 22\n43 50\n",
+    "hidden": false
+   },
+   {
+    "input": "1 3\n1 2 3\n3 1\n4\n5\n6\n",
+    "output": "32\n",
+    "hidden": false
+   },
+   {
+    "input": "2 2\n1 2\n3 4\n1 3\n1 2 3\n",
+    "output": "Invalid\n",
+    "hidden": true
+   },
+   {
+    "input": "1 1\n3\n1 1\n-4\n",
+    "output": "-12\n",
+    "hidden": true
+   },
+   {
+    "input": "3 1\n1\n2\n3\n1 2\n4 5\n",
+    "output": "4 5\n8 10\n12 15\n",
+    "hidden": true
+   },
+   {
+    "input": "2 2\n1 0\n0 1\n2 2\n9 -8\n7 6\n",
+    "output": "9 -8\n7 6\n",
+    "hidden": true
+   },
+   {
+    "input": "2 3\n2 -1 0\n1 3 -2\n3 2\n1 2\n0 -1\n4 5\n",
+    "output": "2 5\n-7 -11\n",
+    "hidden": true
+   },
+   {
+    "input": "1 3\n1 2 3\n1 3\n1 2 3\n",
+    "output": "Invalid\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "d07",
+  "title": "Symmetric Matrix Check",
+  "category": "Matrices",
+  "difficulty": "Easy",
+  "description": "<p>A matrix is <b>symmetric</b> if it is square and equal to its own transpose (<code>a[i][j] = a[j][i]</code> for all <code>i, j</code>). Determine whether the given matrix is symmetric. A non-square matrix is never symmetric.</p><h4>Input</h4><p>The first line contains two integers <code>R C</code>. The next <code>R</code> lines each contain <code>C</code> space-separated integers.</p><h4>Output</h4><p>Print <code>Symmetric</code> or <code>Not Symmetric</code>.</p>",
+  "solution": "r, c = map(int, input().split())\na = [list(map(int, input().split())) for _ in range(r)]\nok = r == c and all(a[i][j] == a[j][i] for i in range(r) for j in range(c))\nprint(\"Symmetric\" if ok else \"Not Symmetric\")\n",
+  "tests": [
+   {
+    "input": "3 3\n1 2 3\n2 5 6\n3 6 9\n",
+    "output": "Symmetric\n",
+    "hidden": false
+   },
+   {
+    "input": "2 2\n1 2\n3 4\n",
+    "output": "Not Symmetric\n",
+    "hidden": false
+   },
+   {
+    "input": "1 1\n8\n",
+    "output": "Symmetric\n",
+    "hidden": true
+   },
+   {
+    "input": "2 3\n1 2 3\n2 1 2\n",
+    "output": "Not Symmetric\n",
+    "hidden": true
+   },
+   {
+    "input": "2 2\n-1 4\n4 -1\n",
+    "output": "Symmetric\n",
+    "hidden": true
+   },
+   {
+    "input": "3 3\n0 1 2\n1 0 3\n2 4 0\n",
+    "output": "Not Symmetric\n",
+    "hidden": true
+   },
+   {
+    "input": "2 2\n0 0\n0 0\n",
+    "output": "Symmetric\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "d08",
+  "title": "Snake Row Traversal",
+  "category": "Matrices",
+  "difficulty": "Easy",
+  "description": "<p>Traverse the matrix in a snake (zigzag) pattern: read the 1st row left to right, the 2nd row right to left, the 3rd row left to right, and so on.</p><h4>Input</h4><p>The first line contains two integers <code>R C</code>. The next <code>R</code> lines each contain <code>C</code> space-separated integers.</p><h4>Output</h4><p>Print all elements in snake order on a single line, separated by spaces.</p>",
+  "solution": "r, c = map(int, input().split())\na = [list(map(int, input().split())) for _ in range(r)]\nres = []\nfor i in range(r):\n    res.extend(a[i] if i % 2 == 0 else a[i][::-1])\nprint(\" \".join(map(str, res)))\n",
+  "tests": [
+   {
+    "input": "3 3\n1 2 3\n4 5 6\n7 8 9\n",
+    "output": "1 2 3 6 5 4 7 8 9\n",
+    "hidden": false
+   },
+   {
+    "input": "4 2\n1 2\n3 4\n5 6\n7 8\n",
+    "output": "1 2 4 3 5 6 8 7\n",
+    "hidden": false
+   },
+   {
+    "input": "1 1\n4\n",
+    "output": "4\n",
+    "hidden": true
+   },
+   {
+    "input": "1 5\n1 2 3 4 5\n",
+    "output": "1 2 3 4 5\n",
+    "hidden": true
+   },
+   {
+    "input": "3 1\n1\n2\n3\n",
+    "output": "1 2 3\n",
+    "hidden": true
+   },
+   {
+    "input": "2 3\n-1 -2 -3\n-4 -5 -6\n",
+    "output": "-1 -2 -3 -6 -5 -4\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "d09",
+  "title": "Set Matrix Zeros",
+  "category": "Matrices",
+  "difficulty": "Medium",
+  "description": "<p>For every element of the matrix that is <code>0</code> in the <b>original</b> matrix, set its entire row and entire column to <code>0</code>. Print the resulting matrix.</p><h4>Input</h4><p>The first line contains two integers <code>R C</code>. The next <code>R</code> lines each contain <code>C</code> space-separated integers.</p><h4>Output</h4><p>Print the resulting <code>R x C</code> matrix, one row per line with space-separated integers.</p>",
+  "solution": "r, c = map(int, input().split())\na = [list(map(int, input().split())) for _ in range(r)]\nzr = {i for i in range(r) for j in range(c) if a[i][j] == 0}\nzc = {j for i in range(r) for j in range(c) if a[i][j] == 0}\nfor i in range(r):\n    print(\" \".join(\"0\" if i in zr or j in zc else str(a[i][j]) for j in range(c)))\n",
+  "tests": [
+   {
+    "input": "3 3\n1 1 1\n1 0 1\n1 1 1\n",
+    "output": "1 0 1\n0 0 0\n1 0 1\n",
+    "hidden": false
+   },
+   {
+    "input": "3 4\n0 1 2 0\n3 4 5 2\n1 3 1 5\n",
+    "output": "0 0 0 0\n0 4 5 0\n0 3 1 0\n",
+    "hidden": false
+   },
+   {
+    "input": "1 1\n0\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "1 1\n5\n",
+    "output": "5\n",
+    "hidden": true
+   },
+   {
+    "input": "2 2\n1 2\n3 4\n",
+    "output": "1 2\n3 4\n",
+    "hidden": true
+   },
+   {
+    "input": "2 3\n-1 2 3\n4 -5 0\n",
+    "output": "-1 2 0\n0 0 0\n",
+    "hidden": true
+   },
+   {
+    "input": "1 5\n1 0 3 4 5\n",
+    "output": "0 0 0 0 0\n",
+    "hidden": true
+   },
+   {
+    "input": "3 1\n1\n0\n3\n",
+    "output": "0\n0\n0\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "d10",
+  "title": "Primes in a Range",
+  "category": "Math",
+  "difficulty": "Easy",
+  "description": "<p>Print all prime numbers between <code>A</code> and <code>B</code> inclusive. A prime is an integer greater than 1 whose only divisors are 1 and itself.</p><h4>Input</h4><p>One line with two integers <code>A B</code> (<code>A &le; B</code>, values may be negative).</p><h4>Output</h4><p>Print the primes in increasing order separated by spaces. If there are none, print <code>None</code>.</p>",
+  "solution": "a, b = map(int, input().split())\ndef is_prime(n):\n    if n < 2:\n        return False\n    i = 2\n    while i * i <= n:\n        if n % i == 0:\n            return False\n        i += 1\n    return True\nps = [x for x in range(a, b + 1) if is_prime(x)]\nprint(\" \".join(map(str, ps)) if ps else \"None\")\n",
+  "tests": [
+   {
+    "input": "1 20\n",
+    "output": "2 3 5 7 11 13 17 19\n",
+    "hidden": false
+   },
+   {
+    "input": "10 30\n",
+    "output": "11 13 17 19 23 29\n",
+    "hidden": false
+   },
+   {
+    "input": "24 28\n",
+    "output": "None\n",
+    "hidden": true
+   },
+   {
+    "input": "2 2\n",
+    "output": "2\n",
+    "hidden": true
+   },
+   {
+    "input": "-10 3\n",
+    "output": "2 3\n",
+    "hidden": true
+   },
+   {
+    "input": "1 1\n",
+    "output": "None\n",
+    "hidden": true
+   },
+   {
+    "input": "90 110\n",
+    "output": "97 101 103 107 109\n",
+    "hidden": true
+   },
+   {
+    "input": "-5 -1\n",
+    "output": "None\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "d11",
+  "title": "GCD and LCM",
+  "category": "Math",
+  "difficulty": "Easy",
+  "description": "<p>Given two positive integers <code>A</code> and <code>B</code>, compute their greatest common divisor (GCD) and least common multiple (LCM).</p><h4>Input</h4><p>One line with two positive integers <code>A B</code>.</p><h4>Output</h4><p>Print two lines: <code>GCD = g</code> and <code>LCM = l</code>.</p>",
+  "solution": "a, b = map(int, input().split())\nx, y = a, b\nwhile y:\n    x, y = y, x % y\nprint(\"GCD =\", x)\nprint(\"LCM =\", a * b // x)\n",
+  "tests": [
+   {
+    "input": "12 18\n",
+    "output": "GCD = 6\nLCM = 36\n",
+    "hidden": false
+   },
+   {
+    "input": "7 5\n",
+    "output": "GCD = 1\nLCM = 35\n",
+    "hidden": false
+   },
+   {
+    "input": "1 1\n",
+    "output": "GCD = 1\nLCM = 1\n",
+    "hidden": true
+   },
+   {
+    "input": "100 10\n",
+    "output": "GCD = 10\nLCM = 100\n",
+    "hidden": true
+   },
+   {
+    "input": "17 17\n",
+    "output": "GCD = 17\nLCM = 17\n",
+    "hidden": true
+   },
+   {
+    "input": "48 180\n",
+    "output": "GCD = 12\nLCM = 720\n",
+    "hidden": true
+   },
+   {
+    "input": "123456 7890\n",
+    "output": "GCD = 6\nLCM = 162344640\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "d12",
+  "title": "Armstrong Number",
+  "category": "Math",
+  "difficulty": "Easy",
+  "description": "<p>An <b>Armstrong number</b> is a non-negative integer equal to the sum of its digits, each raised to the power of the number of digits. For example, <code>153 = 1<sup>3</sup> + 5<sup>3</sup> + 3<sup>3</sup></code>.</p><h4>Input</h4><p>A single non-negative integer <code>N</code>.</p><h4>Output</h4><p>Print <code>Armstrong</code> if <code>N</code> is an Armstrong number, otherwise <code>Not Armstrong</code>.</p>",
+  "solution": "s = input().strip()\nn = int(s)\nd = str(n)\nprint(\"Armstrong\" if sum(int(ch) ** len(d) for ch in d) == n else \"Not Armstrong\")\n",
+  "tests": [
+   {
+    "input": "153\n",
+    "output": "Armstrong\n",
+    "hidden": false
+   },
+   {
+    "input": "123\n",
+    "output": "Not Armstrong\n",
+    "hidden": false
+   },
+   {
+    "input": "0\n",
+    "output": "Armstrong\n",
+    "hidden": true
+   },
+   {
+    "input": "9\n",
+    "output": "Armstrong\n",
+    "hidden": true
+   },
+   {
+    "input": "10\n",
+    "output": "Not Armstrong\n",
+    "hidden": true
+   },
+   {
+    "input": "9474\n",
+    "output": "Armstrong\n",
+    "hidden": true
+   },
+   {
+    "input": "9475\n",
+    "output": "Not Armstrong\n",
+    "hidden": true
+   },
+   {
+    "input": "370\n",
+    "output": "Armstrong\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "d13",
+  "title": "Decimal to Base B",
+  "category": "Math",
+  "difficulty": "Medium",
+  "description": "<p>Convert a decimal integer <code>N</code> to base <code>B</code> (2 &le; B &le; 16). Use digits <code>0-9</code> and uppercase letters <code>A-F</code> for values 10-15. If <code>N</code> is negative, prefix the result with <code>-</code>.</p><h4>Input</h4><p>One line with two integers <code>N B</code>.</p><h4>Output</h4><p>Print <code>N</code> written in base <code>B</code>.</p>",
+  "solution": "n, b = map(int, input().split())\ndigits = \"0123456789ABCDEF\"\nif n == 0:\n    print(0)\nelse:\n    neg = n < 0\n    n = abs(n)\n    s = \"\"\n    while n:\n        s = digits[n % b] + s\n        n //= b\n    print((\"-\" if neg else \"\") + s)\n",
+  "tests": [
+   {
+    "input": "10 2\n",
+    "output": "1010\n",
+    "hidden": false
+   },
+   {
+    "input": "255 16\n",
+    "output": "FF\n",
+    "hidden": false
+   },
+   {
+    "input": "0 7\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "-26 3\n",
+    "output": "-222\n",
+    "hidden": true
+   },
+   {
+    "input": "1 2\n",
+    "output": "1\n",
+    "hidden": true
+   },
+   {
+    "input": "100 8\n",
+    "output": "144\n",
+    "hidden": true
+   },
+   {
+    "input": "48879 16\n",
+    "output": "BEEF\n",
+    "hidden": true
+   },
+   {
+    "input": "35 10\n",
+    "output": "35\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "d14",
+  "title": "Number Right Triangle",
+  "category": "Patterns",
+  "difficulty": "Easy",
+  "description": "<p>Print a right triangle of <code>N</code> rows, where row <code>i</code> contains the numbers <code>1</code> to <code>i</code> separated by single spaces.</p><h4>Input</h4><p>A single integer <code>N</code> (N &ge; 1).</p><h4>Output</h4><p>The triangle, with no trailing spaces. Example for <code>N = 4</code>:</p><pre>1\n1 2\n1 2 3\n1 2 3 4</pre>",
+  "solution": "n = int(input())\nfor i in range(1, n + 1):\n    print(\" \".join(str(k) for k in range(1, i + 1)))\n",
+  "tests": [
+   {
+    "input": "4\n",
+    "output": "1\n1 2\n1 2 3\n1 2 3 4\n",
+    "hidden": false
+   },
+   {
+    "input": "2\n",
+    "output": "1\n1 2\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n",
+    "output": "1\n",
+    "hidden": true
+   },
+   {
+    "input": "5\n",
+    "output": "1\n1 2\n1 2 3\n1 2 3 4\n1 2 3 4 5\n",
+    "hidden": true
+   },
+   {
+    "input": "3\n",
+    "output": "1\n1 2\n1 2 3\n",
+    "hidden": true
+   },
+   {
+    "input": "10\n",
+    "output": "1\n1 2\n1 2 3\n1 2 3 4\n1 2 3 4 5\n1 2 3 4 5 6\n1 2 3 4 5 6 7\n1 2 3 4 5 6 7 8\n1 2 3 4 5 6 7 8 9\n1 2 3 4 5 6 7 8 9 10\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "d15",
+  "title": "Star Diamond",
+  "category": "Patterns",
+  "difficulty": "Medium",
+  "description": "<p>Print a diamond made of <code>*</code> with <code>2N - 1</code> rows. Row <code>i</code> of the top half (<code>i = 1..N</code>) has <code>N - i</code> leading spaces followed by <code>2i - 1</code> stars; the bottom half mirrors the top (without repeating the middle row).</p><h4>Input</h4><p>A single integer <code>N</code> (N &ge; 1).</p><h4>Output</h4><p>The diamond, with no trailing spaces. Example for <code>N = 3</code>:</p><pre>  *\n ***\n*****\n ***\n  *</pre>",
+  "solution": "n = int(input())\nrows = list(range(1, n + 1)) + list(range(n - 1, 0, -1))\nfor i in rows:\n    print(\" \" * (n - i) + \"*\" * (2 * i - 1))\n",
+  "tests": [
+   {
+    "input": "3\n",
+    "output": "  *\n ***\n*****\n ***\n  *\n",
+    "hidden": false
+   },
+   {
+    "input": "2\n",
+    "output": " *\n***\n *\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n",
+    "output": "*\n",
+    "hidden": true
+   },
+   {
+    "input": "4\n",
+    "output": "   *\n  ***\n *****\n*******\n *****\n  ***\n   *\n",
+    "hidden": true
+   },
+   {
+    "input": "5\n",
+    "output": "    *\n   ***\n  *****\n *******\n*********\n *******\n  *****\n   ***\n    *\n",
+    "hidden": true
+   },
+   {
+    "input": "7\n",
+    "output": "      *\n     ***\n    *****\n   *******\n  *********\n ***********\n*************\n ***********\n  *********\n   *******\n    *****\n     ***\n      *\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "d16",
+  "title": "Pascal's Triangle",
+  "category": "Patterns",
+  "difficulty": "Medium",
+  "description": "<p>Print the first <code>N</code> rows of Pascal's triangle. Each row starts and ends with <code>1</code>, and every inner number is the sum of the two numbers directly above it in the previous row. Print rows left-aligned.</p><h4>Input</h4><p>A single integer <code>N</code> (N &ge; 1).</p><h4>Output</h4><p><code>N</code> lines; numbers in each row separated by single spaces, no trailing spaces. Example for <code>N = 5</code>:</p><pre>1\n1 1\n1 2 1\n1 3 3 1\n1 4 6 4 1</pre>",
+  "solution": "n = int(input())\nrow = [1]\nfor _ in range(n):\n    print(\" \".join(map(str, row)))\n    row = [1] + [row[k] + row[k + 1] for k in range(len(row) - 1)] + [1]\n",
+  "tests": [
+   {
+    "input": "5\n",
+    "output": "1\n1 1\n1 2 1\n1 3 3 1\n1 4 6 4 1\n",
+    "hidden": false
+   },
+   {
+    "input": "3\n",
+    "output": "1\n1 1\n1 2 1\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n",
+    "output": "1\n",
+    "hidden": true
+   },
+   {
+    "input": "2\n",
+    "output": "1\n1 1\n",
+    "hidden": true
+   },
+   {
+    "input": "7\n",
+    "output": "1\n1 1\n1 2 1\n1 3 3 1\n1 4 6 4 1\n1 5 10 10 5 1\n1 6 15 20 15 6 1\n",
+    "hidden": true
+   },
+   {
+    "input": "10\n",
+    "output": "1\n1 1\n1 2 1\n1 3 3 1\n1 4 6 4 1\n1 5 10 10 5 1\n1 6 15 20 15 6 1\n1 7 21 35 35 21 7 1\n1 8 28 56 70 56 28 8 1\n1 9 36 84 126 126 84 36 9 1\n",
+    "hidden": true
+   }
+  ]
+ }
+]

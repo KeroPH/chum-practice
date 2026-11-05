@@ -1,0 +1,677 @@
+[
+ {
+  "id": "f01",
+  "title": "Floyd's Triangle",
+  "category": "Patterns",
+  "difficulty": "Easy",
+  "description": "<p>Print Floyd's triangle with <code>n</code> rows. Row <code>i</code> contains <code>i</code> consecutive integers, continuing the count from the previous row and starting at 1.</p><h4>Input</h4><p>A single integer <code>n</code> (1 &le; n &le; 15).</p><h4>Output</h4><p>Print <code>n</code> lines. Numbers on a line are separated by exactly one space. No leading or trailing spaces.</p><h4>Example</h4><p>Input:</p><pre>4</pre><p>Output:</p><pre>1\n2 3\n4 5 6\n7 8 9 10</pre>",
+  "solution": "n = int(input())\nk = 1\nfor i in range(1, n + 1):\n    row = []\n    for _ in range(i):\n        row.append(str(k))\n        k += 1\n    print(\" \".join(row))\n",
+  "tests": [
+   {
+    "input": "4\n",
+    "output": "1\n2 3\n4 5 6\n7 8 9 10\n",
+    "hidden": false
+   },
+   {
+    "input": "3\n",
+    "output": "1\n2 3\n4 5 6\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n",
+    "output": "1\n",
+    "hidden": true
+   },
+   {
+    "input": "2\n",
+    "output": "1\n2 3\n",
+    "hidden": true
+   },
+   {
+    "input": "6\n",
+    "output": "1\n2 3\n4 5 6\n7 8 9 10\n11 12 13 14 15\n16 17 18 19 20 21\n",
+    "hidden": true
+   },
+   {
+    "input": "10\n",
+    "output": "1\n2 3\n4 5 6\n7 8 9 10\n11 12 13 14 15\n16 17 18 19 20 21\n22 23 24 25 26 27 28\n29 30 31 32 33 34 35 36\n37 38 39 40 41 42 43 44 45\n46 47 48 49 50 51 52 53 54 55\n",
+    "hidden": true
+   },
+   {
+    "input": "15\n",
+    "output": "1\n2 3\n4 5 6\n7 8 9 10\n11 12 13 14 15\n16 17 18 19 20 21\n22 23 24 25 26 27 28\n29 30 31 32 33 34 35 36\n37 38 39 40 41 42 43 44 45\n46 47 48 49 50 51 52 53 54 55\n56 57 58 59 60 61 62 63 64 65 66\n67 68 69 70 71 72 73 74 75 76 77 78\n79 80 81 82 83 84 85 86 87 88 89 90 91\n92 93 94 95 96 97 98 99 100 101 102 103 104 105\n106 107 108 109 110 111 112 113 114 115 116 117 118 119 120\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "f02",
+  "title": "Repeated Number Triangle",
+  "category": "Patterns",
+  "difficulty": "Easy",
+  "description": "<p>Print a right triangle with <code>n</code> rows where row <code>i</code> contains the number <code>i</code> repeated <code>i</code> times.</p><h4>Input</h4><p>A single integer <code>n</code> (1 &le; n &le; 20).</p><h4>Output</h4><p>Print <code>n</code> lines. Numbers on a line are separated by exactly one space. No leading or trailing spaces.</p><h4>Example</h4><p>Input:</p><pre>4</pre><p>Output:</p><pre>1\n2 2\n3 3 3\n4 4 4 4</pre>",
+  "solution": "n = int(input())\nfor i in range(1, n + 1):\n    print(\" \".join([str(i)] * i))\n",
+  "tests": [
+   {
+    "input": "4\n",
+    "output": "1\n2 2\n3 3 3\n4 4 4 4\n",
+    "hidden": false
+   },
+   {
+    "input": "3\n",
+    "output": "1\n2 2\n3 3 3\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n",
+    "output": "1\n",
+    "hidden": true
+   },
+   {
+    "input": "2\n",
+    "output": "1\n2 2\n",
+    "hidden": true
+   },
+   {
+    "input": "5\n",
+    "output": "1\n2 2\n3 3 3\n4 4 4 4\n5 5 5 5 5\n",
+    "hidden": true
+   },
+   {
+    "input": "9\n",
+    "output": "1\n2 2\n3 3 3\n4 4 4 4\n5 5 5 5 5\n6 6 6 6 6 6\n7 7 7 7 7 7 7\n8 8 8 8 8 8 8 8\n9 9 9 9 9 9 9 9 9\n",
+    "hidden": true
+   },
+   {
+    "input": "12\n",
+    "output": "1\n2 2\n3 3 3\n4 4 4 4\n5 5 5 5 5\n6 6 6 6 6 6\n7 7 7 7 7 7 7\n8 8 8 8 8 8 8 8\n9 9 9 9 9 9 9 9 9\n10 10 10 10 10 10 10 10 10 10\n11 11 11 11 11 11 11 11 11 11 11\n12 12 12 12 12 12 12 12 12 12 12 12\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "f03",
+  "title": "Inverted Number Triangle",
+  "category": "Patterns",
+  "difficulty": "Easy",
+  "description": "<p>Print an inverted number triangle with <code>n</code> rows. The first row contains <code>1 2 ... n</code>, and each following row has one number fewer (dropping the largest), until the last row contains only <code>1</code>.</p><h4>Input</h4><p>A single integer <code>n</code> (1 &le; n &le; 20).</p><h4>Output</h4><p>Print <code>n</code> lines. Numbers on a line are separated by exactly one space. No leading or trailing spaces.</p><h4>Example</h4><p>Input:</p><pre>4</pre><p>Output:</p><pre>1 2 3 4\n1 2 3\n1 2\n1</pre>",
+  "solution": "n = int(input())\nfor i in range(n, 0, -1):\n    print(\" \".join(str(j) for j in range(1, i + 1)))\n",
+  "tests": [
+   {
+    "input": "4\n",
+    "output": "1 2 3 4\n1 2 3\n1 2\n1\n",
+    "hidden": false
+   },
+   {
+    "input": "5\n",
+    "output": "1 2 3 4 5\n1 2 3 4\n1 2 3\n1 2\n1\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n",
+    "output": "1\n",
+    "hidden": true
+   },
+   {
+    "input": "2\n",
+    "output": "1 2\n1\n",
+    "hidden": true
+   },
+   {
+    "input": "3\n",
+    "output": "1 2 3\n1 2\n1\n",
+    "hidden": true
+   },
+   {
+    "input": "8\n",
+    "output": "1 2 3 4 5 6 7 8\n1 2 3 4 5 6 7\n1 2 3 4 5 6\n1 2 3 4 5\n1 2 3 4\n1 2 3\n1 2\n1\n",
+    "hidden": true
+   },
+   {
+    "input": "12\n",
+    "output": "1 2 3 4 5 6 7 8 9 10 11 12\n1 2 3 4 5 6 7 8 9 10 11\n1 2 3 4 5 6 7 8 9 10\n1 2 3 4 5 6 7 8 9\n1 2 3 4 5 6 7 8\n1 2 3 4 5 6 7\n1 2 3 4 5 6\n1 2 3 4 5\n1 2 3 4\n1 2 3\n1 2\n1\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "f04",
+  "title": "Palindrome Number Pyramid",
+  "category": "Patterns",
+  "difficulty": "Medium",
+  "description": "<p>Print a centered pyramid of <code>n</code> rows. Row <code>i</code> (1-based) shows the digits counting up from 1 to <code>i</code> and back down to 1, written together with no spaces (e.g. row 3 is <code>12321</code>).</p><h4>Input</h4><p>A single integer <code>n</code> (1 &le; n &le; 9).</p><h4>Output</h4><p>Print <code>n</code> lines. Row <code>i</code> starts with exactly <code>n - i</code> leading spaces, followed by the digits with no spaces between them. No trailing spaces.</p><h4>Example</h4><p>Input:</p><pre>4</pre><p>Output:</p><pre>   1\n  121\n 12321\n1234321</pre>",
+  "solution": "n = int(input())\nfor i in range(1, n + 1):\n    up = \"\".join(str(j) for j in range(1, i + 1))\n    print(\" \" * (n - i) + up + up[-2::-1])\n",
+  "tests": [
+   {
+    "input": "4\n",
+    "output": "   1\n  121\n 12321\n1234321\n",
+    "hidden": false
+   },
+   {
+    "input": "3\n",
+    "output": "  1\n 121\n12321\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n",
+    "output": "1\n",
+    "hidden": true
+   },
+   {
+    "input": "2\n",
+    "output": " 1\n121\n",
+    "hidden": true
+   },
+   {
+    "input": "5\n",
+    "output": "    1\n   121\n  12321\n 1234321\n123454321\n",
+    "hidden": true
+   },
+   {
+    "input": "7\n",
+    "output": "      1\n     121\n    12321\n   1234321\n  123454321\n 12345654321\n1234567654321\n",
+    "hidden": true
+   },
+   {
+    "input": "9\n",
+    "output": "        1\n       121\n      12321\n     1234321\n    123454321\n   12345654321\n  1234567654321\n 123456787654321\n12345678987654321\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "f05",
+  "title": "Binary Triangle",
+  "category": "Patterns",
+  "difficulty": "Easy",
+  "description": "<p>Print a right triangle of <code>n</code> rows made of alternating 1s and 0s. The value at row <code>i</code>, column <code>j</code> (both 1-based) is <code>1</code> if <code>i + j</code> is even and <code>0</code> otherwise. So every row ends in <code>1</code>, and odd rows start with <code>1</code> while even rows start with <code>0</code>.</p><h4>Input</h4><p>A single integer <code>n</code> (1 &le; n &le; 20).</p><h4>Output</h4><p>Print <code>n</code> lines. Values on a line are separated by exactly one space. No leading or trailing spaces.</p><h4>Example</h4><p>Input:</p><pre>5</pre><p>Output:</p><pre>1\n0 1\n1 0 1\n0 1 0 1\n1 0 1 0 1</pre>",
+  "solution": "n = int(input())\nfor i in range(1, n + 1):\n    print(\" \".join(\"1\" if (i + j) % 2 == 0 else \"0\" for j in range(1, i + 1)))\n",
+  "tests": [
+   {
+    "input": "5\n",
+    "output": "1\n0 1\n1 0 1\n0 1 0 1\n1 0 1 0 1\n",
+    "hidden": false
+   },
+   {
+    "input": "4\n",
+    "output": "1\n0 1\n1 0 1\n0 1 0 1\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n",
+    "output": "1\n",
+    "hidden": true
+   },
+   {
+    "input": "2\n",
+    "output": "1\n0 1\n",
+    "hidden": true
+   },
+   {
+    "input": "3\n",
+    "output": "1\n0 1\n1 0 1\n",
+    "hidden": true
+   },
+   {
+    "input": "8\n",
+    "output": "1\n0 1\n1 0 1\n0 1 0 1\n1 0 1 0 1\n0 1 0 1 0 1\n1 0 1 0 1 0 1\n0 1 0 1 0 1 0 1\n",
+    "hidden": true
+   },
+   {
+    "input": "12\n",
+    "output": "1\n0 1\n1 0 1\n0 1 0 1\n1 0 1 0 1\n0 1 0 1 0 1\n1 0 1 0 1 0 1\n0 1 0 1 0 1 0 1\n1 0 1 0 1 0 1 0 1\n0 1 0 1 0 1 0 1 0 1\n1 0 1 0 1 0 1 0 1 0 1\n0 1 0 1 0 1 0 1 0 1 0 1\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "f06",
+  "title": "Alphabet Triangle",
+  "category": "Patterns",
+  "difficulty": "Easy",
+  "description": "<p>Print a right triangle of <code>n</code> rows using uppercase letters. Row <code>i</code> contains the first <code>i</code> letters of the alphabet: <code>A</code>, then <code>A B</code>, then <code>A B C</code>, and so on.</p><h4>Input</h4><p>A single integer <code>n</code> (1 &le; n &le; 26).</p><h4>Output</h4><p>Print <code>n</code> lines. Letters on a line are separated by exactly one space. No leading or trailing spaces.</p><h4>Example</h4><p>Input:</p><pre>4</pre><p>Output:</p><pre>A\nA B\nA B C\nA B C D</pre>",
+  "solution": "n = int(input())\nfor i in range(1, n + 1):\n    print(\" \".join(chr(65 + j) for j in range(i)))\n",
+  "tests": [
+   {
+    "input": "4\n",
+    "output": "A\nA B\nA B C\nA B C D\n",
+    "hidden": false
+   },
+   {
+    "input": "3\n",
+    "output": "A\nA B\nA B C\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n",
+    "output": "A\n",
+    "hidden": true
+   },
+   {
+    "input": "2\n",
+    "output": "A\nA B\n",
+    "hidden": true
+   },
+   {
+    "input": "6\n",
+    "output": "A\nA B\nA B C\nA B C D\nA B C D E\nA B C D E F\n",
+    "hidden": true
+   },
+   {
+    "input": "13\n",
+    "output": "A\nA B\nA B C\nA B C D\nA B C D E\nA B C D E F\nA B C D E F G\nA B C D E F G H\nA B C D E F G H I\nA B C D E F G H I J\nA B C D E F G H I J K\nA B C D E F G H I J K L\nA B C D E F G H I J K L M\n",
+    "hidden": true
+   },
+   {
+    "input": "26\n",
+    "output": "A\nA B\nA B C\nA B C D\nA B C D E\nA B C D E F\nA B C D E F G\nA B C D E F G H\nA B C D E F G H I\nA B C D E F G H I J\nA B C D E F G H I J K\nA B C D E F G H I J K L\nA B C D E F G H I J K L M\nA B C D E F G H I J K L M N\nA B C D E F G H I J K L M N O\nA B C D E F G H I J K L M N O P\nA B C D E F G H I J K L M N O P Q\nA B C D E F G H I J K L M N O P Q R\nA B C D E F G H I J K L M N O P Q R S\nA B C D E F G H I J K L M N O P Q R S T\nA B C D E F G H I J K L M N O P Q R S T U\nA B C D E F G H I J K L M N O P Q R S T U V\nA B C D E F G H I J K L M N O P Q R S T U V W\nA B C D E F G H I J K L M N O P Q R S T U V W X\nA B C D E F G H I J K L M N O P Q R S T U V W X Y\nA B C D E F G H I J K L M N O P Q R S T U V W X Y Z\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "f07",
+  "title": "Letter Pyramid",
+  "category": "Patterns",
+  "difficulty": "Medium",
+  "description": "<p>Print a centered pyramid of <code>n</code> rows. Row <code>i</code> (1-based) shows the letters from <code>A</code> up to the <code>i</code>-th letter and back down to <code>A</code>, written together with no spaces (e.g. row 3 is <code>ABCBA</code>).</p><h4>Input</h4><p>A single integer <code>n</code> (1 &le; n &le; 26).</p><h4>Output</h4><p>Print <code>n</code> lines. Row <code>i</code> starts with exactly <code>n - i</code> leading spaces, followed by the letters with no spaces between them. No trailing spaces.</p><h4>Example</h4><p>Input:</p><pre>4</pre><p>Output:</p><pre>   A\n  ABA\n ABCBA\nABCDCBA</pre>",
+  "solution": "n = int(input())\nfor i in range(1, n + 1):\n    up = \"\".join(chr(65 + j) for j in range(i))\n    print(\" \" * (n - i) + up + up[-2::-1])\n",
+  "tests": [
+   {
+    "input": "4\n",
+    "output": "   A\n  ABA\n ABCBA\nABCDCBA\n",
+    "hidden": false
+   },
+   {
+    "input": "3\n",
+    "output": "  A\n ABA\nABCBA\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n",
+    "output": "A\n",
+    "hidden": true
+   },
+   {
+    "input": "2\n",
+    "output": " A\nABA\n",
+    "hidden": true
+   },
+   {
+    "input": "5\n",
+    "output": "    A\n   ABA\n  ABCBA\n ABCDCBA\nABCDEDCBA\n",
+    "hidden": true
+   },
+   {
+    "input": "10\n",
+    "output": "         A\n        ABA\n       ABCBA\n      ABCDCBA\n     ABCDEDCBA\n    ABCDEFEDCBA\n   ABCDEFGFEDCBA\n  ABCDEFGHGFEDCBA\n ABCDEFGHIHGFEDCBA\nABCDEFGHIJIHGFEDCBA\n",
+    "hidden": true
+   },
+   {
+    "input": "26\n",
+    "output": "                         A\n                        ABA\n                       ABCBA\n                      ABCDCBA\n                     ABCDEDCBA\n                    ABCDEFEDCBA\n                   ABCDEFGFEDCBA\n                  ABCDEFGHGFEDCBA\n                 ABCDEFGHIHGFEDCBA\n                ABCDEFGHIJIHGFEDCBA\n               ABCDEFGHIJKJIHGFEDCBA\n              ABCDEFGHIJKLKJIHGFEDCBA\n             ABCDEFGHIJKLMLKJIHGFEDCBA\n            ABCDEFGHIJKLMNMLKJIHGFEDCBA\n           ABCDEFGHIJKLMNONMLKJIHGFEDCBA\n          ABCDEFGHIJKLMNOPONMLKJIHGFEDCBA\n         ABCDEFGHIJKLMNOPQPONMLKJIHGFEDCBA\n        ABCDEFGHIJKLMNOPQRQPONMLKJIHGFEDCBA\n       ABCDEFGHIJKLMNOPQRSRQPONMLKJIHGFEDCBA\n      ABCDEFGHIJKLMNOPQRSTSRQPONMLKJIHGFEDCBA\n     ABCDEFGHIJKLMNOPQRSTUTSRQPONMLKJIHGFEDCBA\n    ABCDEFGHIJKLMNOPQRSTUVUTSRQPONMLKJIHGFEDCBA\n   ABCDEFGHIJKLMNOPQRSTUVWVUTSRQPONMLKJIHGFEDCBA\n  ABCDEFGHIJKLMNOPQRSTUVWXWVUTSRQPONMLKJIHGFEDCBA\n ABCDEFGHIJKLMNOPQRSTUVWXYXWVUTSRQPONMLKJIHGFEDCBA\nABCDEFGHIJKLMNOPQRSTUVWXYZYXWVUTSRQPONMLKJIHGFEDCBA\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "f08",
+  "title": "Repeated Letter Rows",
+  "category": "Patterns",
+  "difficulty": "Easy",
+  "description": "<p>Print <code>n</code> rows where row <code>i</code> (1-based) contains the <code>i</code>-th uppercase letter of the alphabet repeated <code>i</code> times: <code>A</code>, <code>BB</code>, <code>CCC</code>, and so on.</p><h4>Input</h4><p>A single integer <code>n</code> (1 &le; n &le; 26).</p><h4>Output</h4><p>Print <code>n</code> lines. Letters are written together with no spaces. No leading or trailing spaces.</p><h4>Example</h4><p>Input:</p><pre>4</pre><p>Output:</p><pre>A\nBB\nCCC\nDDDD</pre>",
+  "solution": "n = int(input())\nfor i in range(1, n + 1):\n    print(chr(64 + i) * i)\n",
+  "tests": [
+   {
+    "input": "4\n",
+    "output": "A\nBB\nCCC\nDDDD\n",
+    "hidden": false
+   },
+   {
+    "input": "3\n",
+    "output": "A\nBB\nCCC\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n",
+    "output": "A\n",
+    "hidden": true
+   },
+   {
+    "input": "2\n",
+    "output": "A\nBB\n",
+    "hidden": true
+   },
+   {
+    "input": "7\n",
+    "output": "A\nBB\nCCC\nDDDD\nEEEEE\nFFFFFF\nGGGGGGG\n",
+    "hidden": true
+   },
+   {
+    "input": "15\n",
+    "output": "A\nBB\nCCC\nDDDD\nEEEEE\nFFFFFF\nGGGGGGG\nHHHHHHHH\nIIIIIIIII\nJJJJJJJJJJ\nKKKKKKKKKKK\nLLLLLLLLLLLL\nMMMMMMMMMMMMM\nNNNNNNNNNNNNNN\nOOOOOOOOOOOOOOO\n",
+    "hidden": true
+   },
+   {
+    "input": "26\n",
+    "output": "A\nBB\nCCC\nDDDD\nEEEEE\nFFFFFF\nGGGGGGG\nHHHHHHHH\nIIIIIIIII\nJJJJJJJJJJ\nKKKKKKKKKKK\nLLLLLLLLLLLL\nMMMMMMMMMMMMM\nNNNNNNNNNNNNNN\nOOOOOOOOOOOOOOO\nPPPPPPPPPPPPPPPP\nQQQQQQQQQQQQQQQQQ\nRRRRRRRRRRRRRRRRRR\nSSSSSSSSSSSSSSSSSSS\nTTTTTTTTTTTTTTTTTTTT\nUUUUUUUUUUUUUUUUUUUUU\nVVVVVVVVVVVVVVVVVVVVVV\nWWWWWWWWWWWWWWWWWWWWWWW\nXXXXXXXXXXXXXXXXXXXXXXXX\nYYYYYYYYYYYYYYYYYYYYYYYYY\nZZZZZZZZZZZZZZZZZZZZZZZZZZ\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "f09",
+  "title": "Number Diamond",
+  "category": "Patterns",
+  "difficulty": "Medium",
+  "description": "<p>Print a diamond of numbers with <code>2n - 1</code> rows. The upper half has rows with <code>1</code>, <code>1 2</code>, ..., up to <code>1 2 ... n</code> (the middle row); the lower half shrinks back down to <code>1</code>. A row containing the numbers <code>1</code> to <code>k</code> is centered by indenting it.</p><h4>Input</h4><p>A single integer <code>n</code> (1 &le; n &le; 9).</p><h4>Output</h4><p>Print <code>2n - 1</code> lines. A row with numbers <code>1</code> to <code>k</code> starts with exactly <code>n - k</code> leading spaces, and its numbers are separated by exactly one space. No trailing spaces.</p><h4>Example</h4><p>Input:</p><pre>4</pre><p>Output:</p><pre>   1\n  1 2\n 1 2 3\n1 2 3 4\n 1 2 3\n  1 2\n   1</pre>",
+  "solution": "n = int(input())\nks = list(range(1, n + 1)) + list(range(n - 1, 0, -1))\nfor k in ks:\n    print(\" \" * (n - k) + \" \".join(str(j) for j in range(1, k + 1)))\n",
+  "tests": [
+   {
+    "input": "4\n",
+    "output": "   1\n  1 2\n 1 2 3\n1 2 3 4\n 1 2 3\n  1 2\n   1\n",
+    "hidden": false
+   },
+   {
+    "input": "3\n",
+    "output": "  1\n 1 2\n1 2 3\n 1 2\n  1\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n",
+    "output": "1\n",
+    "hidden": true
+   },
+   {
+    "input": "2\n",
+    "output": " 1\n1 2\n 1\n",
+    "hidden": true
+   },
+   {
+    "input": "5\n",
+    "output": "    1\n   1 2\n  1 2 3\n 1 2 3 4\n1 2 3 4 5\n 1 2 3 4\n  1 2 3\n   1 2\n    1\n",
+    "hidden": true
+   },
+   {
+    "input": "7\n",
+    "output": "      1\n     1 2\n    1 2 3\n   1 2 3 4\n  1 2 3 4 5\n 1 2 3 4 5 6\n1 2 3 4 5 6 7\n 1 2 3 4 5 6\n  1 2 3 4 5\n   1 2 3 4\n    1 2 3\n     1 2\n      1\n",
+    "hidden": true
+   },
+   {
+    "input": "9\n",
+    "output": "        1\n       1 2\n      1 2 3\n     1 2 3 4\n    1 2 3 4 5\n   1 2 3 4 5 6\n  1 2 3 4 5 6 7\n 1 2 3 4 5 6 7 8\n1 2 3 4 5 6 7 8 9\n 1 2 3 4 5 6 7 8\n  1 2 3 4 5 6 7\n   1 2 3 4 5 6\n    1 2 3 4 5\n     1 2 3 4\n      1 2 3\n       1 2\n        1\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "f10",
+  "title": "Concentric Number Square",
+  "category": "Patterns",
+  "difficulty": "Medium",
+  "description": "<p>Print a <code>(2n - 1) x (2n - 1)</code> square made of concentric layers. The outermost layer is filled with <code>n</code>, the next layer inward with <code>n - 1</code>, and so on, until the single center cell contains <code>1</code>.</p><h4>Input</h4><p>A single integer <code>n</code> (1 &le; n &le; 9).</p><h4>Output</h4><p>Print <code>2n - 1</code> lines, each with <code>2n - 1</code> numbers separated by exactly one space. No leading or trailing spaces.</p><h4>Example</h4><p>Input:</p><pre>3</pre><p>Output:</p><pre>3 3 3 3 3\n3 2 2 2 3\n3 2 1 2 3\n3 2 2 2 3\n3 3 3 3 3</pre>",
+  "solution": "n = int(input())\nc = n - 1\nfor i in range(2 * n - 1):\n    print(\" \".join(str(max(abs(i - c), abs(j - c)) + 1) for j in range(2 * n - 1)))\n",
+  "tests": [
+   {
+    "input": "3\n",
+    "output": "3 3 3 3 3\n3 2 2 2 3\n3 2 1 2 3\n3 2 2 2 3\n3 3 3 3 3\n",
+    "hidden": false
+   },
+   {
+    "input": "4\n",
+    "output": "4 4 4 4 4 4 4\n4 3 3 3 3 3 4\n4 3 2 2 2 3 4\n4 3 2 1 2 3 4\n4 3 2 2 2 3 4\n4 3 3 3 3 3 4\n4 4 4 4 4 4 4\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n",
+    "output": "1\n",
+    "hidden": true
+   },
+   {
+    "input": "2\n",
+    "output": "2 2 2\n2 1 2\n2 2 2\n",
+    "hidden": true
+   },
+   {
+    "input": "5\n",
+    "output": "5 5 5 5 5 5 5 5 5\n5 4 4 4 4 4 4 4 5\n5 4 3 3 3 3 3 4 5\n5 4 3 2 2 2 3 4 5\n5 4 3 2 1 2 3 4 5\n5 4 3 2 2 2 3 4 5\n5 4 3 3 3 3 3 4 5\n5 4 4 4 4 4 4 4 5\n5 5 5 5 5 5 5 5 5\n",
+    "hidden": true
+   },
+   {
+    "input": "7\n",
+    "output": "7 7 7 7 7 7 7 7 7 7 7 7 7\n7 6 6 6 6 6 6 6 6 6 6 6 7\n7 6 5 5 5 5 5 5 5 5 5 6 7\n7 6 5 4 4 4 4 4 4 4 5 6 7\n7 6 5 4 3 3 3 3 3 4 5 6 7\n7 6 5 4 3 2 2 2 3 4 5 6 7\n7 6 5 4 3 2 1 2 3 4 5 6 7\n7 6 5 4 3 2 2 2 3 4 5 6 7\n7 6 5 4 3 3 3 3 3 4 5 6 7\n7 6 5 4 4 4 4 4 4 4 5 6 7\n7 6 5 5 5 5 5 5 5 5 5 6 7\n7 6 6 6 6 6 6 6 6 6 6 6 7\n7 7 7 7 7 7 7 7 7 7 7 7 7\n",
+    "hidden": true
+   },
+   {
+    "input": "9\n",
+    "output": "9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9\n9 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 9\n9 8 7 7 7 7 7 7 7 7 7 7 7 7 7 8 9\n9 8 7 6 6 6 6 6 6 6 6 6 6 6 7 8 9\n9 8 7 6 5 5 5 5 5 5 5 5 5 6 7 8 9\n9 8 7 6 5 4 4 4 4 4 4 4 5 6 7 8 9\n9 8 7 6 5 4 3 3 3 3 3 4 5 6 7 8 9\n9 8 7 6 5 4 3 2 2 2 3 4 5 6 7 8 9\n9 8 7 6 5 4 3 2 1 2 3 4 5 6 7 8 9\n9 8 7 6 5 4 3 2 2 2 3 4 5 6 7 8 9\n9 8 7 6 5 4 3 3 3 3 3 4 5 6 7 8 9\n9 8 7 6 5 4 4 4 4 4 4 4 5 6 7 8 9\n9 8 7 6 5 5 5 5 5 5 5 5 5 6 7 8 9\n9 8 7 6 6 6 6 6 6 6 6 6 6 6 7 8 9\n9 8 7 7 7 7 7 7 7 7 7 7 7 7 7 8 9\n9 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 9\n9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "f11",
+  "title": "Multiplication Table Grid",
+  "category": "Patterns",
+  "difficulty": "Medium",
+  "description": "<p>Print the <code>n x n</code> multiplication table: the value at row <code>i</code>, column <code>j</code> (both 1-based) is <code>i * j</code>. Every value is right-aligned to the same width <code>w</code>, where <code>w</code> is the number of digits in the largest value <code>n * n</code>.</p><h4>Input</h4><p>A single integer <code>n</code> (1 &le; n &le; 20).</p><h4>Output</h4><p>Print <code>n</code> lines. Each value is padded on the left with spaces to width <code>w</code>, and consecutive values are separated by exactly one space. No trailing spaces (a line may begin with spaces because of the padding).</p><h4>Example</h4><p>Input:</p><pre>4</pre><p>Output:</p><pre> 1  2  3  4\n 2  4  6  8\n 3  6  9 12\n 4  8 12 16</pre>",
+  "solution": "n = int(input())\nw = len(str(n * n))\nfor i in range(1, n + 1):\n    print(\" \".join(str(i * j).rjust(w) for j in range(1, n + 1)))\n",
+  "tests": [
+   {
+    "input": "4\n",
+    "output": " 1  2  3  4\n 2  4  6  8\n 3  6  9 12\n 4  8 12 16\n",
+    "hidden": false
+   },
+   {
+    "input": "3\n",
+    "output": "1 2 3\n2 4 6\n3 6 9\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n",
+    "output": "1\n",
+    "hidden": true
+   },
+   {
+    "input": "2\n",
+    "output": "1 2\n2 4\n",
+    "hidden": true
+   },
+   {
+    "input": "5\n",
+    "output": " 1  2  3  4  5\n 2  4  6  8 10\n 3  6  9 12 15\n 4  8 12 16 20\n 5 10 15 20 25\n",
+    "hidden": true
+   },
+   {
+    "input": "10\n",
+    "output": "  1   2   3   4   5   6   7   8   9  10\n  2   4   6   8  10  12  14  16  18  20\n  3   6   9  12  15  18  21  24  27  30\n  4   8  12  16  20  24  28  32  36  40\n  5  10  15  20  25  30  35  40  45  50\n  6  12  18  24  30  36  42  48  54  60\n  7  14  21  28  35  42  49  56  63  70\n  8  16  24  32  40  48  56  64  72  80\n  9  18  27  36  45  54  63  72  81  90\n 10  20  30  40  50  60  70  80  90 100\n",
+    "hidden": true
+   },
+   {
+    "input": "12\n",
+    "output": "  1   2   3   4   5   6   7   8   9  10  11  12\n  2   4   6   8  10  12  14  16  18  20  22  24\n  3   6   9  12  15  18  21  24  27  30  33  36\n  4   8  12  16  20  24  28  32  36  40  44  48\n  5  10  15  20  25  30  35  40  45  50  55  60\n  6  12  18  24  30  36  42  48  54  60  66  72\n  7  14  21  28  35  42  49  56  63  70  77  84\n  8  16  24  32  40  48  56  64  72  80  88  96\n  9  18  27  36  45  54  63  72  81  90  99 108\n 10  20  30  40  50  60  70  80  90 100 110 120\n 11  22  33  44  55  66  77  88  99 110 121 132\n 12  24  36  48  60  72  84  96 108 120 132 144\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "f12",
+  "title": "Spiral Number Matrix",
+  "category": "Patterns",
+  "difficulty": "Hard",
+  "description": "<p>Fill an <code>n x n</code> grid with the numbers <code>1</code> to <code>n*n</code> in a clockwise spiral: start at the top-left corner, move right along the top row, then down the right column, then left along the bottom row, then up, and keep spiraling inward. Print the grid with every value right-aligned to width <code>w</code>, where <code>w</code> is the number of digits in <code>n * n</code>.</p><h4>Input</h4><p>A single integer <code>n</code> (1 &le; n &le; 15).</p><h4>Output</h4><p>Print <code>n</code> lines. Each value is padded on the left with spaces to width <code>w</code>, and consecutive values are separated by exactly one space. No trailing spaces (a line may begin with spaces because of the padding).</p><h4>Example</h4><p>Input:</p><pre>4</pre><p>Output:</p><pre> 1  2  3  4\n12 13 14  5\n11 16 15  6\n10  9  8  7</pre>",
+  "solution": "n = int(input())\ng = [[0] * n for _ in range(n)]\ntop, bot, left, right = 0, n - 1, 0, n - 1\nk = 1\nwhile top <= bot and left <= right:\n    for j in range(left, right + 1):\n        g[top][j] = k; k += 1\n    top += 1\n    for i in range(top, bot + 1):\n        g[i][right] = k; k += 1\n    right -= 1\n    if top <= bot:\n        for j in range(right, left - 1, -1):\n            g[bot][j] = k; k += 1\n        bot -= 1\n    if left <= right:\n        for i in range(bot, top - 1, -1):\n            g[i][left] = k; k += 1\n        left += 1\nw = len(str(n * n))\nfor row in g:\n    print(\" \".join(str(v).rjust(w) for v in row))\n",
+  "tests": [
+   {
+    "input": "4\n",
+    "output": " 1  2  3  4\n12 13 14  5\n11 16 15  6\n10  9  8  7\n",
+    "hidden": false
+   },
+   {
+    "input": "3\n",
+    "output": "1 2 3\n8 9 4\n7 6 5\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n",
+    "output": "1\n",
+    "hidden": true
+   },
+   {
+    "input": "2\n",
+    "output": "1 2\n4 3\n",
+    "hidden": true
+   },
+   {
+    "input": "5\n",
+    "output": " 1  2  3  4  5\n16 17 18 19  6\n15 24 25 20  7\n14 23 22 21  8\n13 12 11 10  9\n",
+    "hidden": true
+   },
+   {
+    "input": "7\n",
+    "output": " 1  2  3  4  5  6  7\n24 25 26 27 28 29  8\n23 40 41 42 43 30  9\n22 39 48 49 44 31 10\n21 38 47 46 45 32 11\n20 37 36 35 34 33 12\n19 18 17 16 15 14 13\n",
+    "hidden": true
+   },
+   {
+    "input": "10\n",
+    "output": "  1   2   3   4   5   6   7   8   9  10\n 36  37  38  39  40  41  42  43  44  11\n 35  64  65  66  67  68  69  70  45  12\n 34  63  84  85  86  87  88  71  46  13\n 33  62  83  96  97  98  89  72  47  14\n 32  61  82  95 100  99  90  73  48  15\n 31  60  81  94  93  92  91  74  49  16\n 30  59  80  79  78  77  76  75  50  17\n 29  58  57  56  55  54  53  52  51  18\n 28  27  26  25  24  23  22  21  20  19\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "f13",
+  "title": "Snake Number Grid",
+  "category": "Patterns",
+  "difficulty": "Medium",
+  "description": "<p>Fill an <code>n x n</code> grid with the numbers <code>1</code> to <code>n*n</code> in a zigzag (snake) order: the first row goes left to right, the second row continues right to left, the third row left to right again, and so on. Print the grid with every value right-aligned to width <code>w</code>, where <code>w</code> is the number of digits in <code>n * n</code>.</p><h4>Input</h4><p>A single integer <code>n</code> (1 &le; n &le; 20).</p><h4>Output</h4><p>Print <code>n</code> lines. Each value is padded on the left with spaces to width <code>w</code>, and consecutive values are separated by exactly one space. No trailing spaces (a line may begin with spaces because of the padding).</p><h4>Example</h4><p>Input:</p><pre>4</pre><p>Output:</p><pre> 1  2  3  4\n 8  7  6  5\n 9 10 11 12\n16 15 14 13</pre>",
+  "solution": "n = int(input())\nw = len(str(n * n))\nfor i in range(n):\n    row = list(range(i * n + 1, i * n + n + 1))\n    if i % 2 == 1:\n        row.reverse()\n    print(\" \".join(str(v).rjust(w) for v in row))\n",
+  "tests": [
+   {
+    "input": "4\n",
+    "output": " 1  2  3  4\n 8  7  6  5\n 9 10 11 12\n16 15 14 13\n",
+    "hidden": false
+   },
+   {
+    "input": "3\n",
+    "output": "1 2 3\n6 5 4\n7 8 9\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n",
+    "output": "1\n",
+    "hidden": true
+   },
+   {
+    "input": "2\n",
+    "output": "1 2\n4 3\n",
+    "hidden": true
+   },
+   {
+    "input": "5\n",
+    "output": " 1  2  3  4  5\n10  9  8  7  6\n11 12 13 14 15\n20 19 18 17 16\n21 22 23 24 25\n",
+    "hidden": true
+   },
+   {
+    "input": "8\n",
+    "output": " 1  2  3  4  5  6  7  8\n16 15 14 13 12 11 10  9\n17 18 19 20 21 22 23 24\n32 31 30 29 28 27 26 25\n33 34 35 36 37 38 39 40\n48 47 46 45 44 43 42 41\n49 50 51 52 53 54 55 56\n64 63 62 61 60 59 58 57\n",
+    "hidden": true
+   },
+   {
+    "input": "11\n",
+    "output": "  1   2   3   4   5   6   7   8   9  10  11\n 22  21  20  19  18  17  16  15  14  13  12\n 23  24  25  26  27  28  29  30  31  32  33\n 44  43  42  41  40  39  38  37  36  35  34\n 45  46  47  48  49  50  51  52  53  54  55\n 66  65  64  63  62  61  60  59  58  57  56\n 67  68  69  70  71  72  73  74  75  76  77\n 88  87  86  85  84  83  82  81  80  79  78\n 89  90  91  92  93  94  95  96  97  98  99\n110 109 108 107 106 105 104 103 102 101 100\n111 112 113 114 115 116 117 118 119 120 121\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "f14",
+  "title": "Continuous Alphabet Triangle",
+  "category": "Patterns",
+  "difficulty": "Medium",
+  "description": "<p>Print a right triangle of <code>n</code> rows where row <code>i</code> contains <code>i</code> uppercase letters. The letters continue from row to row in alphabetical order (<code>A</code> / <code>B C</code> / <code>D E F</code> / ...). After <code>Z</code>, wrap around back to <code>A</code>.</p><h4>Input</h4><p>A single integer <code>n</code> (1 &le; n &le; 20).</p><h4>Output</h4><p>Print <code>n</code> lines. Letters on a line are separated by exactly one space. No leading or trailing spaces.</p><h4>Example</h4><p>Input:</p><pre>4</pre><p>Output:</p><pre>A\nB C\nD E F\nG H I J</pre>",
+  "solution": "n = int(input())\nk = 0\nfor i in range(1, n + 1):\n    row = []\n    for _ in range(i):\n        row.append(chr(65 + k % 26))\n        k += 1\n    print(\" \".join(row))\n",
+  "tests": [
+   {
+    "input": "4\n",
+    "output": "A\nB C\nD E F\nG H I J\n",
+    "hidden": false
+   },
+   {
+    "input": "7\n",
+    "output": "A\nB C\nD E F\nG H I J\nK L M N O\nP Q R S T U\nV W X Y Z A B\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n",
+    "output": "A\n",
+    "hidden": true
+   },
+   {
+    "input": "2\n",
+    "output": "A\nB C\n",
+    "hidden": true
+   },
+   {
+    "input": "6\n",
+    "output": "A\nB C\nD E F\nG H I J\nK L M N O\nP Q R S T U\n",
+    "hidden": true
+   },
+   {
+    "input": "9\n",
+    "output": "A\nB C\nD E F\nG H I J\nK L M N O\nP Q R S T U\nV W X Y Z A B\nC D E F G H I J\nK L M N O P Q R S\n",
+    "hidden": true
+   },
+   {
+    "input": "15\n",
+    "output": "A\nB C\nD E F\nG H I J\nK L M N O\nP Q R S T U\nV W X Y Z A B\nC D E F G H I J\nK L M N O P Q R S\nT U V W X Y Z A B C\nD E F G H I J K L M N\nO P Q R S T U V W X Y Z\nA B C D E F G H I J K L M\nN O P Q R S T U V W X Y Z A\nB C D E F G H I J K L M N O P\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "f15",
+  "title": "Number Hourglass",
+  "category": "Patterns",
+  "difficulty": "Hard",
+  "description": "<p>Print an hourglass of numbers with <code>2n - 1</code> rows. The top row is <code>1 2 ... n</code>; each following row drops the largest number and is indented one more space, down to the middle row containing only <code>1</code>; then the rows grow back to <code>1 2 ... n</code>.</p><h4>Input</h4><p>A single integer <code>n</code> (1 &le; n &le; 9).</p><h4>Output</h4><p>Print <code>2n - 1</code> lines. A row with numbers <code>1</code> to <code>k</code> starts with exactly <code>n - k</code> leading spaces, and its numbers are separated by exactly one space. No trailing spaces.</p><h4>Example</h4><p>Input:</p><pre>4</pre><p>Output:</p><pre>1 2 3 4\n 1 2 3\n  1 2\n   1\n  1 2\n 1 2 3\n1 2 3 4</pre>",
+  "solution": "n = int(input())\nks = list(range(n, 0, -1)) + list(range(2, n + 1))\nfor k in ks:\n    print(\" \" * (n - k) + \" \".join(str(j) for j in range(1, k + 1)))\n",
+  "tests": [
+   {
+    "input": "4\n",
+    "output": "1 2 3 4\n 1 2 3\n  1 2\n   1\n  1 2\n 1 2 3\n1 2 3 4\n",
+    "hidden": false
+   },
+   {
+    "input": "3\n",
+    "output": "1 2 3\n 1 2\n  1\n 1 2\n1 2 3\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n",
+    "output": "1\n",
+    "hidden": true
+   },
+   {
+    "input": "2\n",
+    "output": "1 2\n 1\n1 2\n",
+    "hidden": true
+   },
+   {
+    "input": "5\n",
+    "output": "1 2 3 4 5\n 1 2 3 4\n  1 2 3\n   1 2\n    1\n   1 2\n  1 2 3\n 1 2 3 4\n1 2 3 4 5\n",
+    "hidden": true
+   },
+   {
+    "input": "7\n",
+    "output": "1 2 3 4 5 6 7\n 1 2 3 4 5 6\n  1 2 3 4 5\n   1 2 3 4\n    1 2 3\n     1 2\n      1\n     1 2\n    1 2 3\n   1 2 3 4\n  1 2 3 4 5\n 1 2 3 4 5 6\n1 2 3 4 5 6 7\n",
+    "hidden": true
+   },
+   {
+    "input": "9\n",
+    "output": "1 2 3 4 5 6 7 8 9\n 1 2 3 4 5 6 7 8\n  1 2 3 4 5 6 7\n   1 2 3 4 5 6\n    1 2 3 4 5\n     1 2 3 4\n      1 2 3\n       1 2\n        1\n       1 2\n      1 2 3\n     1 2 3 4\n    1 2 3 4 5\n   1 2 3 4 5 6\n  1 2 3 4 5 6 7\n 1 2 3 4 5 6 7 8\n1 2 3 4 5 6 7 8 9\n",
+    "hidden": true
+   }
+  ]
+ }
+]

@@ -1,0 +1,677 @@
+[
+ {
+  "id": "b01",
+  "title": "Rotate Left by K",
+  "category": "Arrays",
+  "difficulty": "Easy",
+  "description": "<p>Given a list of <code>N</code> integers, rotate it to the <b>left</b> by <code>K</code> positions. <code>K</code> may be larger than <code>N</code>.</p><h4>Input</h4><p>The first line contains two integers <code>N</code> and <code>K</code> (<code>1 &le; N</code>, <code>0 &le; K</code>). The second line contains <code>N</code> space-separated integers.</p><h4>Output</h4><p>Print the rotated list on one line, space-separated.</p>",
+  "solution": "n, k = map(int, input().split())\na = input().split()\nk %= n\nprint(' '.join(a[k:] + a[:k]))\n",
+  "tests": [
+   {
+    "input": "5 2\n1 2 3 4 5\n",
+    "output": "3 4 5 1 2\n",
+    "hidden": false
+   },
+   {
+    "input": "3 3\n10 20 30\n",
+    "output": "10 20 30\n",
+    "hidden": false
+   },
+   {
+    "input": "4 5\n7 8 9 1\n",
+    "output": "8 9 1 7\n",
+    "hidden": false
+   },
+   {
+    "input": "1 100\n42\n",
+    "output": "42\n",
+    "hidden": true
+   },
+   {
+    "input": "6 0\n-1 -2 -3 -4 -5 -6\n",
+    "output": "-1 -2 -3 -4 -5 -6\n",
+    "hidden": true
+   },
+   {
+    "input": "10 7\n-13 0 12 12 -14 -6 18 19 15 6\n",
+    "output": "19 15 6 -13 0 12 12 -14 -6 18\n",
+    "hidden": true
+   },
+   {
+    "input": "4 13\n5 5 1 5\n",
+    "output": "5 1 5 5\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "b02",
+  "title": "Zeros to the Back",
+  "category": "Arrays",
+  "difficulty": "Easy",
+  "description": "<p>Move all zeros in the list to the end while keeping the relative order of the non-zero elements.</p><h4>Input</h4><p>The first line contains an integer <code>N</code>. The second line contains <code>N</code> space-separated integers.</p><h4>Output</h4><p>Print the modified list on one line, space-separated.</p>",
+  "solution": "n = int(input())\na = list(map(int, input().split()))\nnz = [x for x in a if x != 0]\nprint(' '.join(map(str, nz + [0] * (n - len(nz)))))\n",
+  "tests": [
+   {
+    "input": "5\n0 1 0 3 12\n",
+    "output": "1 3 12 0 0\n",
+    "hidden": false
+   },
+   {
+    "input": "6\n4 0 -2 0 0 7\n",
+    "output": "4 -2 7 0 0 0\n",
+    "hidden": false
+   },
+   {
+    "input": "3\n0 0 0\n",
+    "output": "0 0 0\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n5\n",
+    "output": "5\n",
+    "hidden": true
+   },
+   {
+    "input": "1\n0\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "4\n1 2 3 4\n",
+    "output": "1 2 3 4\n",
+    "hidden": true
+   },
+   {
+    "input": "8\n0 -5 0 -5 3 0 0 9\n",
+    "output": "-5 -5 3 9 0 0 0 0\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "b03",
+  "title": "Unique in Order",
+  "category": "Arrays",
+  "difficulty": "Easy",
+  "description": "<p>Remove duplicate values from the list, keeping only the <b>first</b> occurrence of each value, in their original order.</p><h4>Input</h4><p>The first line contains an integer <code>N</code>. The second line contains <code>N</code> space-separated integers.</p><h4>Output</h4><p>Print the remaining values on one line, space-separated.</p>",
+  "solution": "n = int(input())\nseen = set()\nres = []\nfor x in input().split():\n    v = int(x)\n    if v not in seen:\n        seen.add(v)\n        res.append(v)\nprint(' '.join(map(str, res)))\n",
+  "tests": [
+   {
+    "input": "6\n3 1 3 2 1 4\n",
+    "output": "3 1 2 4\n",
+    "hidden": false
+   },
+   {
+    "input": "4\n7 7 7 7\n",
+    "output": "7\n",
+    "hidden": false
+   },
+   {
+    "input": "3\n1 2 3\n",
+    "output": "1 2 3\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n-5\n",
+    "output": "-5\n",
+    "hidden": true
+   },
+   {
+    "input": "7\n-1 1 -1 0 1 0 2\n",
+    "output": "-1 1 0 2\n",
+    "hidden": true
+   },
+   {
+    "input": "15\n4 3 3 -1 -4 -3 -3 0 -3 3 -4 3 1 -1 2\n",
+    "output": "4 3 -1 -4 -3 0 1 2\n",
+    "hidden": true
+   },
+   {
+    "input": "6\n9 8 9 8 9 8\n",
+    "output": "9 8\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "b04",
+  "title": "The Missing Number",
+  "category": "Arrays",
+  "difficulty": "Easy",
+  "description": "<p>The numbers <code>1</code> to <code>N</code> were written in some order, but exactly one of them was lost. Find the missing number.</p><h4>Input</h4><p>The first line contains <code>N</code> (<code>N &ge; 1</code>). The second line contains <code>N - 1</code> distinct space-separated integers from <code>1</code> to <code>N</code> (this line is empty when <code>N = 1</code>).</p><h4>Output</h4><p>Print the missing number.</p>",
+  "solution": "n = int(input())\na = list(map(int, input().split()))\nprint(n * (n + 1) // 2 - sum(a))\n",
+  "tests": [
+   {
+    "input": "5\n3 1 5 2\n",
+    "output": "4\n",
+    "hidden": false
+   },
+   {
+    "input": "2\n2\n",
+    "output": "1\n",
+    "hidden": false
+   },
+   {
+    "input": "7\n1 2 3 4 5 6\n",
+    "output": "7\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n\n",
+    "output": "1\n",
+    "hidden": true
+   },
+   {
+    "input": "5\n2 3 4 5\n",
+    "output": "1\n",
+    "hidden": true
+   },
+   {
+    "input": "12\n6 4 9 10 1 3 11 2 8 12 7\n",
+    "output": "5\n",
+    "hidden": true
+   },
+   {
+    "input": "30\n21 27 19 7 12 4 29 6 18 9 25 10 8 2 26 17 14 3 15 16 23 13 1 11 20 28 24 22 30\n",
+    "output": "5\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "b05",
+  "title": "Evens First",
+  "category": "Arrays",
+  "difficulty": "Easy",
+  "description": "<p>Rearrange the list so that all <b>even</b> numbers come first, followed by all <b>odd</b> numbers. Within each group, keep the original relative order. Note that negative numbers can be even or odd too, and <code>0</code> is even.</p><h4>Input</h4><p>The first line contains an integer <code>N</code>. The second line contains <code>N</code> space-separated integers.</p><h4>Output</h4><p>Print the rearranged list on one line, space-separated.</p>",
+  "solution": "n = int(input())\na = list(map(int, input().split()))\nprint(' '.join(map(str, [x for x in a if x % 2 == 0] + [x for x in a if x % 2 != 0])))\n",
+  "tests": [
+   {
+    "input": "6\n1 2 3 4 5 6\n",
+    "output": "2 4 6 1 3 5\n",
+    "hidden": false
+   },
+   {
+    "input": "5\n7 -4 0 -3 8\n",
+    "output": "-4 0 8 7 -3\n",
+    "hidden": false
+   },
+   {
+    "input": "3\n1 3 5\n",
+    "output": "1 3 5\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n2\n",
+    "output": "2\n",
+    "hidden": true
+   },
+   {
+    "input": "4\n-1 -2 -3 -4\n",
+    "output": "-2 -4 -1 -3\n",
+    "hidden": true
+   },
+   {
+    "input": "12\n16 -6 -12 -17 13 -14 19 7 10 -11 10 -6\n",
+    "output": "16 -6 -12 -14 10 10 -6 -17 13 19 7 -11\n",
+    "hidden": true
+   },
+   {
+    "input": "5\n4 4 1 1 4\n",
+    "output": "4 4 4 1 1\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "b06",
+  "title": "Leaders of the List",
+  "category": "Arrays",
+  "difficulty": "Easy",
+  "description": "<p>An element is a <b>leader</b> if it is strictly greater than every element to its right. The last element is always a leader. Print all leaders in the order they appear in the list.</p><h4>Input</h4><p>The first line contains an integer <code>N</code>. The second line contains <code>N</code> space-separated integers.</p><h4>Output</h4><p>Print the leaders on one line, space-separated.</p>",
+  "solution": "n = int(input())\na = list(map(int, input().split()))\nres = []\nbest = None\nfor x in reversed(a):\n    if best is None or x > best:\n        res.append(x)\n        best = x\nprint(' '.join(map(str, reversed(res))))\n",
+  "tests": [
+   {
+    "input": "6\n16 17 4 3 5 2\n",
+    "output": "17 5 2\n",
+    "hidden": false
+   },
+   {
+    "input": "4\n1 2 3 4\n",
+    "output": "4\n",
+    "hidden": false
+   },
+   {
+    "input": "4\n9 7 5 3\n",
+    "output": "9 7 5 3\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n-8\n",
+    "output": "-8\n",
+    "hidden": true
+   },
+   {
+    "input": "3\n5 5 5\n",
+    "output": "5\n",
+    "hidden": true
+   },
+   {
+    "input": "5\n-3 -1 -2 -5 -4\n",
+    "output": "-1 -2 -4\n",
+    "hidden": true
+   },
+   {
+    "input": "12\n27 28 3 20 22 14 21 15 22 29 30 17\n",
+    "output": "30 17\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "b07",
+  "title": "Exactly Twice",
+  "category": "Arrays",
+  "difficulty": "Easy",
+  "description": "<p>Count how many <b>distinct</b> values appear in the list <b>exactly two</b> times.</p><h4>Input</h4><p>The first line contains an integer <code>N</code>. The second line contains <code>N</code> space-separated integers.</p><h4>Output</h4><p>Print the count.</p>",
+  "solution": "n = int(input())\na = input().split()\ncnt = {}\nfor x in a:\n    cnt[int(x)] = cnt.get(int(x), 0) + 1\nprint(sum(1 for v in cnt.values() if v == 2))\n",
+  "tests": [
+   {
+    "input": "8\n1 2 2 3 3 3 4 4\n",
+    "output": "2\n",
+    "hidden": false
+   },
+   {
+    "input": "2\n5 5\n",
+    "output": "1\n",
+    "hidden": false
+   },
+   {
+    "input": "3\n1 2 3\n",
+    "output": "0\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n7\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "6\n-1 -1 -1 -1 2 2\n",
+    "output": "1\n",
+    "hidden": true
+   },
+   {
+    "input": "20\n-1 3 1 5 -1 3 5 3 2 1 1 -2 -1 -1 -5 -5 -3 5 4 2\n",
+    "output": "2\n",
+    "hidden": true
+   },
+   {
+    "input": "7\n0 0 -3 -3 3 3 3\n",
+    "output": "2\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "b08",
+  "title": "Reverse in Groups",
+  "category": "Arrays",
+  "difficulty": "Medium",
+  "description": "<p>Split the list into consecutive groups of <code>K</code> elements (the last group may be smaller) and reverse each group in place.</p><h4>Input</h4><p>The first line contains two integers <code>N</code> and <code>K</code> (<code>1 &le; K</code>). The second line contains <code>N</code> space-separated integers.</p><h4>Output</h4><p>Print the resulting list on one line, space-separated.</p>",
+  "solution": "n, k = map(int, input().split())\na = input().split()\nres = []\nfor i in range(0, n, k):\n    res += a[i:i + k][::-1]\nprint(' '.join(res))\n",
+  "tests": [
+   {
+    "input": "8 3\n1 2 3 4 5 6 7 8\n",
+    "output": "3 2 1 6 5 4 8 7\n",
+    "hidden": false
+   },
+   {
+    "input": "4 2\n1 2 3 4\n",
+    "output": "2 1 4 3\n",
+    "hidden": false
+   },
+   {
+    "input": "3 1\n5 6 7\n",
+    "output": "5 6 7\n",
+    "hidden": false
+   },
+   {
+    "input": "1 4\n9\n",
+    "output": "9\n",
+    "hidden": true
+   },
+   {
+    "input": "5 10\n1 2 3 4 5\n",
+    "output": "5 4 3 2 1\n",
+    "hidden": true
+   },
+   {
+    "input": "11 4\n13 11 3 -8 -4 11 9 12 11 7 15\n",
+    "output": "-8 3 11 13 12 9 11 -4 15 7 11\n",
+    "hidden": true
+   },
+   {
+    "input": "6 6\n-1 -2 -3 -4 -5 -6\n",
+    "output": "-6 -5 -4 -3 -2 -1\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "b09",
+  "title": "Two Sum Indices",
+  "category": "Arrays",
+  "difficulty": "Medium",
+  "description": "<p>Find two different positions <code>i &lt; j</code> (0-based) such that <code>a[i] + a[j] = T</code>. If several pairs exist, choose the one with the smallest <code>j</code>; among those, the smallest <code>i</code>.</p><h4>Input</h4><p>The first line contains two integers <code>N</code> and <code>T</code>. The second line contains <code>N</code> space-separated integers.</p><h4>Output</h4><p>Print <code>i j</code> separated by a space, or <code>-1</code> if no such pair exists.</p>",
+  "solution": "n, t = map(int, input().split())\na = list(map(int, input().split()))\nfirst = {}\nans = '-1'\nfor j, x in enumerate(a):\n    if t - x in first:\n        ans = f\"{first[t - x]} {j}\"\n        break\n    if x not in first:\n        first[x] = j\nprint(ans)\n",
+  "tests": [
+   {
+    "input": "4 9\n2 7 11 15\n",
+    "output": "0 1\n",
+    "hidden": false
+   },
+   {
+    "input": "3 6\n3 2 4\n",
+    "output": "1 2\n",
+    "hidden": false
+   },
+   {
+    "input": "3 100\n1 2 3\n",
+    "output": "-1\n",
+    "hidden": false
+   },
+   {
+    "input": "1 10\n5\n",
+    "output": "-1\n",
+    "hidden": true
+   },
+   {
+    "input": "4 6\n3 3 3 3\n",
+    "output": "0 1\n",
+    "hidden": true
+   },
+   {
+    "input": "5 0\n-4 8 1 -1 5\n",
+    "output": "2 3\n",
+    "hidden": true
+   },
+   {
+    "input": "6 6\n1 5 2 4 3 3\n",
+    "output": "0 1\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "b10",
+  "title": "Best Streak Sum",
+  "category": "Arrays",
+  "difficulty": "Medium",
+  "description": "<p>Find the maximum possible sum of a <b>non-empty contiguous</b> sub-list.</p><h4>Input</h4><p>The first line contains an integer <code>N</code>. The second line contains <code>N</code> space-separated integers.</p><h4>Output</h4><p>Print the maximum sum.</p>",
+  "solution": "n = int(input())\na = list(map(int, input().split()))\nbest = cur = a[0]\nfor x in a[1:]:\n    cur = max(x, cur + x)\n    best = max(best, cur)\nprint(best)\n",
+  "tests": [
+   {
+    "input": "9\n-2 1 -3 4 -1 2 1 -5 4\n",
+    "output": "6\n",
+    "hidden": false
+   },
+   {
+    "input": "3\n1 2 3\n",
+    "output": "6\n",
+    "hidden": false
+   },
+   {
+    "input": "3\n-3 -1 -2\n",
+    "output": "-1\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n-7\n",
+    "output": "-7\n",
+    "hidden": true
+   },
+   {
+    "input": "3\n0 0 0\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "20\n-18 -2 0 9 -14 8 12 -4 8 -9 7 10 -16 -3 11 3 -14 -8 6 -11\n",
+    "output": "32\n",
+    "hidden": true
+   },
+   {
+    "input": "7\n5 -10 6 -1 2 -20 4\n",
+    "output": "7\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "b11",
+  "title": "Merge Two Sorted Lists",
+  "category": "Arrays",
+  "difficulty": "Easy",
+  "description": "<p>You are given two lists, each already sorted in non-decreasing order. Merge them into one sorted list.</p><h4>Input</h4><p>Four lines: <code>N</code>; <code>N</code> sorted integers; <code>M</code>; <code>M</code> sorted integers (<code>N, M &ge; 1</code>).</p><h4>Output</h4><p>Print the merged list on one line, space-separated.</p>",
+  "solution": "n = int(input())\na = list(map(int, input().split()))\nm = int(input())\nb = list(map(int, input().split()))\ni = j = 0\nres = []\nwhile i < n and j < m:\n    if a[i] <= b[j]:\n        res.append(a[i]); i += 1\n    else:\n        res.append(b[j]); j += 1\nres += a[i:] + b[j:]\nprint(' '.join(map(str, res)))\n",
+  "tests": [
+   {
+    "input": "3\n1 4 7\n4\n2 3 8 9\n",
+    "output": "1 2 3 4 7 8 9\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n5\n3\n1 2 3\n",
+    "output": "1 2 3 5\n",
+    "hidden": false
+   },
+   {
+    "input": "3\n1 1 2\n3\n1 2 2\n",
+    "output": "1 1 1 2 2 2\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n-5\n1\n-5\n",
+    "output": "-5 -5\n",
+    "hidden": true
+   },
+   {
+    "input": "3\n-10 -3 0\n2\n-7 4\n",
+    "output": "-10 -7 -3 0 4\n",
+    "hidden": true
+   },
+   {
+    "input": "8\n-20 -20 -15 -15 8 8 14 17\n6\n-18 -13 -8 -5 19 19\n",
+    "output": "-20 -20 -18 -15 -15 -13 -8 -5 8 8 14 17 19 19\n",
+    "hidden": true
+   },
+   {
+    "input": "3\n1 2 3\n3\n4 5 6\n",
+    "output": "1 2 3 4 5 6\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "b12",
+  "title": "Majority Element",
+  "category": "Arrays",
+  "difficulty": "Medium",
+  "description": "<p>A <b>majority element</b> appears <b>more than</b> <code>N / 2</code> times. Find it if it exists.</p><h4>Input</h4><p>The first line contains an integer <code>N</code>. The second line contains <code>N</code> space-separated integers.</p><h4>Output</h4><p>Print the majority element, or <code>NONE</code> if there isn't one.</p>",
+  "solution": "n = int(input())\na = list(map(int, input().split()))\ncand, c = None, 0\nfor x in a:\n    if c == 0:\n        cand = x\n    c += 1 if x == cand else -1\nprint(cand if a.count(cand) * 2 > n else 'NONE')\n",
+  "tests": [
+   {
+    "input": "3\n3 2 3\n",
+    "output": "3\n",
+    "hidden": false
+   },
+   {
+    "input": "4\n1 2 1 2\n",
+    "output": "NONE\n",
+    "hidden": false
+   },
+   {
+    "input": "7\n2 2 1 1 1 2 2\n",
+    "output": "2\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n-9\n",
+    "output": "-9\n",
+    "hidden": true
+   },
+   {
+    "input": "5\n-1 -1 5 -1 5\n",
+    "output": "-1\n",
+    "hidden": true
+   },
+   {
+    "input": "5\n1 2 3 4 5\n",
+    "output": "NONE\n",
+    "hidden": true
+   },
+   {
+    "input": "6\n7 7 7 7 7 7\n",
+    "output": "7\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "b13",
+  "title": "Pairs with Difference K",
+  "category": "Arrays",
+  "difficulty": "Medium",
+  "description": "<p>Count the number of <b>distinct</b> value pairs <code>(x, y)</code> with <code>x</code> and <code>y</code> taken from different positions of the list and <code>y - x = K</code>. Each pair of values is counted once no matter how many times the values repeat.</p><h4>Input</h4><p>The first line contains two integers <code>N</code> and <code>K</code> (<code>K &ge; 0</code>). The second line contains <code>N</code> space-separated integers.</p><h4>Output</h4><p>Print the number of distinct pairs.</p>",
+  "solution": "n, k = map(int, input().split())\na = list(map(int, input().split()))\ncnt = {}\nfor x in a:\n    cnt[x] = cnt.get(x, 0) + 1\nif k == 0:\n    print(sum(1 for v in cnt.values() if v >= 2))\nelse:\n    print(sum(1 for x in cnt if x + k in cnt))\n",
+  "tests": [
+   {
+    "input": "5 2\n3 1 4 1 5\n",
+    "output": "2\n",
+    "hidden": false
+   },
+   {
+    "input": "5 1\n1 2 3 4 5\n",
+    "output": "4\n",
+    "hidden": false
+   },
+   {
+    "input": "5 0\n1 3 1 5 4\n",
+    "output": "1\n",
+    "hidden": false
+   },
+   {
+    "input": "1 0\n10\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "5 2\n-2 0 2 -4 2\n",
+    "output": "3\n",
+    "hidden": true
+   },
+   {
+    "input": "15 3\n6 2 -2 4 6 4 -1 -4 -6 -1 4 3 3 6 1\n",
+    "output": "5\n",
+    "hidden": true
+   },
+   {
+    "input": "5 1\n1 1 1 2 2\n",
+    "output": "1\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "b14",
+  "title": "Frequency Sort",
+  "category": "Arrays",
+  "difficulty": "Hard",
+  "description": "<p>Sort the list so that values that appear <b>more often</b> come first. If two values have the same frequency, the <b>smaller</b> value comes first. Every occurrence of a value is printed (equal values stay together).</p><h4>Input</h4><p>The first line contains an integer <code>N</code>. The second line contains <code>N</code> space-separated integers.</p><h4>Output</h4><p>Print the sorted list on one line, space-separated.</p>",
+  "solution": "n = int(input())\na = list(map(int, input().split()))\ncnt = {}\nfor x in a:\n    cnt[x] = cnt.get(x, 0) + 1\na.sort(key=lambda x: (-cnt[x], x))\nprint(' '.join(map(str, a)))\n",
+  "tests": [
+   {
+    "input": "7\n4 6 2 6 4 4 9\n",
+    "output": "4 4 4 6 6 2 9\n",
+    "hidden": false
+   },
+   {
+    "input": "3\n3 1 2\n",
+    "output": "1 2 3\n",
+    "hidden": false
+   },
+   {
+    "input": "5\n5 5 -1 -1 0\n",
+    "output": "-1 -1 5 5 0\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n8\n",
+    "output": "8\n",
+    "hidden": true
+   },
+   {
+    "input": "8\n-3 2 -3 2 2 7 7 7\n",
+    "output": "2 2 2 7 7 7 -3 -3\n",
+    "hidden": true
+   },
+   {
+    "input": "18\n-3 3 -2 2 4 -3 4 3 -1 -4 1 5 -3 -3 4 -1 3 1\n",
+    "output": "-3 -3 -3 -3 3 3 3 4 4 4 -1 -1 1 1 -4 -2 2 5\n",
+    "hidden": true
+   },
+   {
+    "input": "4\n1 1 1 1\n",
+    "output": "1 1 1 1\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "b15",
+  "title": "Longest Consecutive Values",
+  "category": "Arrays",
+  "difficulty": "Hard",
+  "description": "<p>Find the length of the longest set of values from the list that form a run of consecutive integers (like <code>4, 5, 6, 7</code>). The values may appear in any order in the list, and duplicates count only once.</p><h4>Input</h4><p>The first line contains an integer <code>N</code>. The second line contains <code>N</code> space-separated integers.</p><h4>Output</h4><p>Print the length of the longest run.</p>",
+  "solution": "n = int(input())\ns = set(map(int, input().split()))\nbest = 0\nfor x in s:\n    if x - 1 not in s:\n        y = x\n        while y + 1 in s:\n            y += 1\n        best = max(best, y - x + 1)\nprint(best)\n",
+  "tests": [
+   {
+    "input": "6\n100 4 200 1 3 2\n",
+    "output": "4\n",
+    "hidden": false
+   },
+   {
+    "input": "3\n10 30 20\n",
+    "output": "1\n",
+    "hidden": false
+   },
+   {
+    "input": "6\n0 -1 1 1 2 -2\n",
+    "output": "5\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n5\n",
+    "output": "1\n",
+    "hidden": true
+   },
+   {
+    "input": "3\n7 7 7\n",
+    "output": "1\n",
+    "hidden": true
+   },
+   {
+    "input": "20\n-6 21 -21 3 21 -18 -6 -30 -24 -6 26 -26 -27 23 -8 11 -8 29 19 30\n",
+    "output": "2\n",
+    "hidden": true
+   },
+   {
+    "input": "11\n9 1 4 7 3 -1 0 5 8 -1 6\n",
+    "output": "7\n",
+    "hidden": true
+   }
+  ]
+ }
+]

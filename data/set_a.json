@@ -1,0 +1,707 @@
+[
+ {
+  "id": "a01",
+  "title": "Numbers, Get Em!",
+  "category": "Strings",
+  "difficulty": "Easy",
+  "description": "<p>You are given a string that may contain letters, digits and other symbols. Find the <b>sum of all the digits</b> that appear in the string.</p><p>For example, in <code>Hello12345World!56789</code> the digits are 1, 2, 3, 4, 5, 5, 6, 7, 8, 9, whose sum is <code>50</code>.</p><h4>Input</h4><p>A single line containing the string <code>s</code>.</p><h4>Output</h4><p>A single integer: the sum of all digits in <code>s</code>. If there are no digits, print <code>0</code>.</p>",
+  "solution": "s = input()\nprint(sum(int(ch) for ch in s if ch.isdigit()))\n",
+  "tests": [
+   {
+    "input": "Hello12345World!56789\n",
+    "output": "50\n",
+    "hidden": false
+   },
+   {
+    "input": "1a2b3c4d5e6f7g8h9i0j!@#$\n",
+    "output": "45\n",
+    "hidden": false
+   },
+   {
+    "input": "NoDigitsHere!\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "7\n",
+    "output": "7\n",
+    "hidden": true
+   },
+   {
+    "input": "000\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "a9 b9 c9 d9!\n",
+    "output": "36\n",
+    "hidden": true
+   },
+   {
+    "input": "-5 + 3 = -2\n",
+    "output": "10\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "a02",
+  "title": "Is Subsequence",
+  "category": "Strings",
+  "difficulty": "Easy",
+  "description": "<p>Given two strings <code>S</code> and <code>T</code>, determine whether <code>S</code> is a <b>subsequence</b> of <code>T</code>.</p><p>A subsequence is formed by deleting zero or more characters from <code>T</code> without changing the order of the remaining characters. For example, <code>ace</code> is a subsequence of <code>abcde</code>, but <code>aec</code> is not. The empty string is a subsequence of every string.</p><h4>Input</h4><ul><li>Line 1: the string <code>S</code> (may be empty).</li><li>Line 2: the string <code>T</code>.</li></ul><h4>Output</h4><p>Print <code>True</code> if <code>S</code> is a subsequence of <code>T</code>, otherwise print <code>False</code>.</p>",
+  "solution": "s = input()\nt = input()\ni = 0\nfor ch in t:\n    if i < len(s) and ch == s[i]:\n        i += 1\nprint(i == len(s))\n",
+  "tests": [
+   {
+    "input": "abc\nahbgdc\n",
+    "output": "True\n",
+    "hidden": false
+   },
+   {
+    "input": "axc\nahbgdc\n",
+    "output": "False\n",
+    "hidden": false
+   },
+   {
+    "input": "\nabc\n",
+    "output": "True\n",
+    "hidden": true
+   },
+   {
+    "input": "abc\nabc\n",
+    "output": "True\n",
+    "hidden": true
+   },
+   {
+    "input": "abcd\nabc\n",
+    "output": "False\n",
+    "hidden": true
+   },
+   {
+    "input": "aaa\nbababa\n",
+    "output": "True\n",
+    "hidden": true
+   },
+   {
+    "input": "b\na\n",
+    "output": "False\n",
+    "hidden": true
+   },
+   {
+    "input": "Ab\naAbB\n",
+    "output": "True\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "a03",
+  "title": "Quadratic Equation Solver",
+  "category": "Math",
+  "difficulty": "Medium",
+  "description": "<p>Solve the quadratic equation <code>a·x² + b·x + c = 0</code>. Compute the discriminant <code>D = b² − 4ac</code>.</p><ul><li>If <code>D &gt; 0</code>, there are two real roots. Print <code>Root 1: x1</code> on the first line and <code>Root 2: x2</code> on the second, where <code>x1 = (−b + √D) / (2a)</code> and <code>x2 = (−b − √D) / (2a)</code>.</li><li>If <code>D = 0</code>, print <code>Root: x</code> where <code>x = −b / (2a)</code>.</li><li>If <code>D &lt; 0</code>, print <code>No real roots</code>.</li></ul><p>All roots are printed with exactly <b>2 decimal places</b>.</p><h4>Input</h4><p>Three lines containing the real numbers <code>a</code>, <code>b</code> and <code>c</code>, one per line. It is guaranteed that <code>a ≠ 0</code>.</p><h4>Output</h4><p>The root(s) in the format described above, or <code>No real roots</code>.</p>",
+  "solution": "import math\na = float(input())\nb = float(input())\nc = float(input())\nd = b * b - 4 * a * c\nif d > 0:\n    r1 = (-b + math.sqrt(d)) / (2 * a)\n    r2 = (-b - math.sqrt(d)) / (2 * a)\n    print(f\"Root 1: {r1 + 0.0:.2f}\")\n    print(f\"Root 2: {r2 + 0.0:.2f}\")\nelif d == 0:\n    r = -b / (2 * a)\n    print(f\"Root: {r + 0.0:.2f}\")\nelse:\n    print(\"No real roots\")\n",
+  "tests": [
+   {
+    "input": "1\n-3\n2\n",
+    "output": "Root 1: 2.00\nRoot 2: 1.00\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n2\n1\n",
+    "output": "Root: -1.00\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n1\n1\n",
+    "output": "No real roots\n",
+    "hidden": true
+   },
+   {
+    "input": "2\n0\n-8\n",
+    "output": "Root 1: 2.00\nRoot 2: -2.00\n",
+    "hidden": true
+   },
+   {
+    "input": "1\n0\n0\n",
+    "output": "Root: 0.00\n",
+    "hidden": true
+   },
+   {
+    "input": "-1\n2\n3\n",
+    "output": "Root 1: -1.00\nRoot 2: 3.00\n",
+    "hidden": true
+   },
+   {
+    "input": "0.5\n-1.5\n1\n",
+    "output": "Root 1: 2.00\nRoot 2: 1.00\n",
+    "hidden": true
+   },
+   {
+    "input": "1\n1\n-1\n",
+    "output": "Root 1: 0.62\nRoot 2: -1.62\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "a04",
+  "title": "Shortest Character Distance",
+  "category": "Strings",
+  "difficulty": "Medium",
+  "description": "<p>Given a string <code>s</code> and a character <code>c</code> that occurs in <code>s</code>, compute for every index <code>i</code> the distance from <code>i</code> to the <b>closest</b> occurrence of <code>c</code> in <code>s</code>. The distance between indices <code>i</code> and <code>j</code> is <code>|i − j|</code>.</p><p>For example, for <code>s = loveleetcode</code> and <code>c = e</code> the answer is <code>[3, 2, 1, 0, 1, 0, 0, 1, 2, 2, 1, 0]</code>.</p><h4>Input</h4><ul><li>Line 1: the string <code>s</code>.</li><li>Line 2: a single character <code>c</code> (guaranteed to appear in <code>s</code>).</li></ul><h4>Output</h4><p>The list of distances in Python list format, e.g. <code>[1, 0, 1]</code>.</p>",
+  "solution": "s = input()\nc = input()\nn = len(s)\nres = [n] * n\nprev = -n\nfor i in range(n):\n    if s[i] == c:\n        prev = i\n    res[i] = i - prev\nnxt = 2 * n\nfor i in range(n - 1, -1, -1):\n    if s[i] == c:\n        nxt = i\n    res[i] = min(res[i], nxt - i)\nprint(res)\n",
+  "tests": [
+   {
+    "input": "loveleetcode\ne\n",
+    "output": "[3, 2, 1, 0, 1, 0, 0, 1, 2, 2, 1, 0]\n",
+    "hidden": false
+   },
+   {
+    "input": "aaab\nb\n",
+    "output": "[3, 2, 1, 0]\n",
+    "hidden": false
+   },
+   {
+    "input": "a\na\n",
+    "output": "[0]\n",
+    "hidden": true
+   },
+   {
+    "input": "baaa\nb\n",
+    "output": "[0, 1, 2, 3]\n",
+    "hidden": true
+   },
+   {
+    "input": "abcba\nc\n",
+    "output": "[2, 1, 0, 1, 2]\n",
+    "hidden": true
+   },
+   {
+    "input": "xxxx\nx\n",
+    "output": "[0, 0, 0, 0]\n",
+    "hidden": true
+   },
+   {
+    "input": "zabcdefz\nz\n",
+    "output": "[0, 1, 2, 3, 3, 2, 1, 0]\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "a05",
+  "title": "Balanced Parentheses",
+  "category": "Stacks",
+  "difficulty": "Easy",
+  "description": "<p>Given a string consisting only of the characters <code>(</code>, <code>)</code>, <code>[</code>, <code>]</code>, <code>{</code> and <code>}</code>, determine whether it is <b>balanced</b>: every opening bracket is closed by the same type of bracket, and brackets are closed in the correct order.</p><h4>Input</h4><p>A single line containing the bracket string.</p><h4>Output</h4><p>Print <code>Valid</code> if the string is balanced, otherwise print <code>Invalid</code>.</p>",
+  "solution": "s = input().strip()\npairs = {')': '(', ']': '[', '}': '{'}\nstack = []\nok = True\nfor ch in s:\n    if ch in '([{':\n        stack.append(ch)\n    elif not stack or stack.pop() != pairs[ch]:\n        ok = False\n        break\nprint(\"Valid\" if ok and not stack else \"Invalid\")\n",
+  "tests": [
+   {
+    "input": "()[]{}\n",
+    "output": "Valid\n",
+    "hidden": false
+   },
+   {
+    "input": "([)]\n",
+    "output": "Invalid\n",
+    "hidden": false
+   },
+   {
+    "input": "{[()()]}\n",
+    "output": "Valid\n",
+    "hidden": true
+   },
+   {
+    "input": "(\n",
+    "output": "Invalid\n",
+    "hidden": true
+   },
+   {
+    "input": ")\n",
+    "output": "Invalid\n",
+    "hidden": true
+   },
+   {
+    "input": "(((\n",
+    "output": "Invalid\n",
+    "hidden": true
+   },
+   {
+    "input": "{[]}([])\n",
+    "output": "Valid\n",
+    "hidden": true
+   },
+   {
+    "input": "]()[\n",
+    "output": "Invalid\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "a06",
+  "title": "Balanced Array",
+  "category": "Arrays",
+  "difficulty": "Easy",
+  "description": "<p>Given an array of <code>N</code> integers, determine whether it can be split at some index into a non-empty <b>left part</b> and a non-empty <b>right part</b> (both contiguous, together covering the whole array) such that the sum of the left part equals the sum of the right part.</p><p>For example, <code>1 2 3 6</code> can be split as <code>[1, 2, 3] | [6]</code> (both sums are 6), but no split of <code>1 2 3 3</code> gives equal sums.</p><h4>Input</h4><ul><li>Line 1: an integer <code>N</code> (<code>N ≥ 1</code>).</li><li>Line 2: <code>N</code> space-separated integers.</li></ul><h4>Output</h4><p>Print <code>The array can be split into two parts with equal sum.</code> if such a split exists, otherwise print <code>The array cannot be split into two parts with equal sum.</code></p>",
+  "solution": "n = int(input())\na = list(map(int, input().split()))\ntotal = sum(a)\nleft = 0\nfound = False\nfor i in range(n - 1):\n    left += a[i]\n    if left * 2 == total:\n        found = True\n        break\nif found:\n    print(\"The array can be split into two parts with equal sum.\")\nelse:\n    print(\"The array cannot be split into two parts with equal sum.\")\n",
+  "tests": [
+   {
+    "input": "4\n1 2 3 6\n",
+    "output": "The array can be split into two parts with equal sum.\n",
+    "hidden": false
+   },
+   {
+    "input": "4\n1 2 3 3\n",
+    "output": "The array cannot be split into two parts with equal sum.\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n0\n",
+    "output": "The array cannot be split into two parts with equal sum.\n",
+    "hidden": true
+   },
+   {
+    "input": "2\n5 5\n",
+    "output": "The array can be split into two parts with equal sum.\n",
+    "hidden": true
+   },
+   {
+    "input": "2\n0 0\n",
+    "output": "The array can be split into two parts with equal sum.\n",
+    "hidden": true
+   },
+   {
+    "input": "5\n-1 4 -2 2 1\n",
+    "output": "The array cannot be split into two parts with equal sum.\n",
+    "hidden": true
+   },
+   {
+    "input": "3\n1 -1 0\n",
+    "output": "The array can be split into two parts with equal sum.\n",
+    "hidden": true
+   },
+   {
+    "input": "3\n2 3 4\n",
+    "output": "The array cannot be split into two parts with equal sum.\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "a07",
+  "title": "Find the Lesser in the Most",
+  "category": "Arrays",
+  "difficulty": "Easy",
+  "description": "<p>Given a list of integers, find the value that occurs <b>most frequently</b>. If several values are tied for the highest frequency, print the <b>smallest</b> of them.</p><h4>Input</h4><p>A single line of space-separated integers (at least one).</p><h4>Output</h4><p>A single integer: the smallest among the most frequent values.</p>",
+  "solution": "nums = list(map(int, input().split()))\nfreq = {}\nfor x in nums:\n    freq[x] = freq.get(x, 0) + 1\nbest = max(freq.values())\nprint(min(x for x in freq if freq[x] == best))\n",
+  "tests": [
+   {
+    "input": "1 3 2 3 1 4\n",
+    "output": "1\n",
+    "hidden": false
+   },
+   {
+    "input": "5 5 5 2 2 7\n",
+    "output": "5\n",
+    "hidden": false
+   },
+   {
+    "input": "42\n",
+    "output": "42\n",
+    "hidden": true
+   },
+   {
+    "input": "-3 -1 -3 -1 0\n",
+    "output": "-3\n",
+    "hidden": true
+   },
+   {
+    "input": "9 8 7 6\n",
+    "output": "6\n",
+    "hidden": true
+   },
+   {
+    "input": "4 4 4 4\n",
+    "output": "4\n",
+    "hidden": true
+   },
+   {
+    "input": "10 -10 10 -10 3 3\n",
+    "output": "-10\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "a08",
+  "title": "Duplicate Characters",
+  "category": "Strings",
+  "difficulty": "Easy",
+  "description": "<p>Given a string, find every character that appears <b>more than once</b>. Comparison is case-sensitive (<code>A</code> and <code>a</code> are different) and spaces are ignored.</p><p>Print each duplicated character together with its count, in ascending ASCII order of the characters.</p><h4>Input</h4><p>A single line containing the string.</p><h4>Output</h4><p>For each duplicated character print a line <code>c: count</code>. If no character repeats, print <code>No duplicates</code>.</p>",
+  "solution": "s = input()\nfreq = {}\nfor ch in s:\n    if ch != ' ':\n        freq[ch] = freq.get(ch, 0) + 1\ndups = sorted(ch for ch in freq if freq[ch] > 1)\nif not dups:\n    print(\"No duplicates\")\nelse:\n    for ch in dups:\n        print(f\"{ch}: {freq[ch]}\")\n",
+  "tests": [
+   {
+    "input": "programming\n",
+    "output": "g: 2\nm: 2\nr: 2\n",
+    "hidden": false
+   },
+   {
+    "input": "abc\n",
+    "output": "No duplicates\n",
+    "hidden": false
+   },
+   {
+    "input": "Hello World\n",
+    "output": "l: 3\no: 2\n",
+    "hidden": true
+   },
+   {
+    "input": "aA bB\n",
+    "output": "No duplicates\n",
+    "hidden": true
+   },
+   {
+    "input": "a a a\n",
+    "output": "a: 3\n",
+    "hidden": true
+   },
+   {
+    "input": "x\n",
+    "output": "No duplicates\n",
+    "hidden": true
+   },
+   {
+    "input": "112233!!\n",
+    "output": "!: 2\n1: 2\n2: 2\n3: 2\n",
+    "hidden": true
+   },
+   {
+    "input": "Mississippi\n",
+    "output": "i: 4\np: 2\ns: 4\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "a09",
+  "title": "Valid Number Checker",
+  "category": "Strings",
+  "difficulty": "Medium",
+  "description": "<p>Determine whether a given string represents a valid <b>decimal number</b>. A valid number has:</p><ul><li>an optional sign <code>+</code> or <code>-</code>,</li><li>followed by digits with an optional decimal point (<code>12</code>, <code>12.</code>, <code>12.5</code>, <code>.5</code>) — at least one digit is required,</li><li>optionally followed by an exponent: <code>e</code> or <code>E</code>, an optional sign, and at least one digit (e.g. <code>1e10</code>, <code>2.5E-3</code>).</li></ul><p>Nothing else is allowed (no <code>inf</code>, <code>nan</code>, letters, or internal spaces). Leading and trailing spaces on the line are ignored.</p><h4>Input</h4><p>A single line containing the string.</p><h4>Output</h4><p>Print <code>Valid decimal number</code> or <code>Invalid decimal number</code>.</p>",
+  "solution": "import re\ns = input().strip()\npattern = r'[+-]?(\\d+\\.?\\d*|\\.\\d+)([eE][+-]?\\d+)?'\nif re.fullmatch(pattern, s):\n    print(\"Valid decimal number\")\nelse:\n    print(\"Invalid decimal number\")\n",
+  "tests": [
+   {
+    "input": "3.14\n",
+    "output": "Valid decimal number\n",
+    "hidden": false
+   },
+   {
+    "input": "abc\n",
+    "output": "Invalid decimal number\n",
+    "hidden": false
+   },
+   {
+    "input": "2.5E-3\n",
+    "output": "Valid decimal number\n",
+    "hidden": false
+   },
+   {
+    "input": "-.5\n",
+    "output": "Valid decimal number\n",
+    "hidden": true
+   },
+   {
+    "input": "1e\n",
+    "output": "Invalid decimal number\n",
+    "hidden": true
+   },
+   {
+    "input": ".\n",
+    "output": "Invalid decimal number\n",
+    "hidden": true
+   },
+   {
+    "input": "inf\n",
+    "output": "Invalid decimal number\n",
+    "hidden": true
+   },
+   {
+    "input": "1.2.3\n",
+    "output": "Invalid decimal number\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "a10",
+  "title": "12-Hour to 24-Hour Time Converter",
+  "category": "Strings",
+  "difficulty": "Easy",
+  "description": "<p>Convert a time given in 12-hour format <code>hh:mm AM</code> or <code>hh:mm PM</code> to 24-hour format <code>HH:MM</code>.</p><p>Remember: <code>12:xx AM</code> is <code>00:xx</code>, and <code>12:xx PM</code> is <code>12:xx</code>.</p><h4>Input</h4><p>A single line in the form <code>hh:mm AM</code> or <code>hh:mm PM</code> (<code>01 ≤ hh ≤ 12</code>, <code>00 ≤ mm ≤ 59</code>).</p><h4>Output</h4><p>The time in 24-hour format <code>HH:MM</code>, both parts with two digits.</p>",
+  "solution": "t, period = input().split()\nh, m = map(int, t.split(':'))\nif period == \"AM\":\n    h = 0 if h == 12 else h\nelse:\n    h = 12 if h == 12 else h + 12\nprint(f\"{h:02d}:{m:02d}\")\n",
+  "tests": [
+   {
+    "input": "07:05 PM\n",
+    "output": "19:05\n",
+    "hidden": false
+   },
+   {
+    "input": "12:00 AM\n",
+    "output": "00:00\n",
+    "hidden": false
+   },
+   {
+    "input": "12:30 PM\n",
+    "output": "12:30\n",
+    "hidden": true
+   },
+   {
+    "input": "01:00 AM\n",
+    "output": "01:00\n",
+    "hidden": true
+   },
+   {
+    "input": "11:59 PM\n",
+    "output": "23:59\n",
+    "hidden": true
+   },
+   {
+    "input": "12:59 AM\n",
+    "output": "00:59\n",
+    "hidden": true
+   },
+   {
+    "input": "09:45 AM\n",
+    "output": "09:45\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "a11",
+  "title": "Replace Elements with Greatest Element on Right Side",
+  "category": "Arrays",
+  "difficulty": "Easy",
+  "description": "<p>Given an array of <code>N</code> integers, replace every element with the <b>greatest element among the elements to its right</b>, and replace the last element with <code>-1</code>.</p><p>For example, <code>17 18 5 4 6 1</code> becomes <code>18 6 6 6 1 -1</code>.</p><h4>Input</h4><ul><li>Line 1: an integer <code>N</code> (<code>N ≥ 1</code>).</li><li>Line 2: <code>N</code> space-separated integers.</li></ul><h4>Output</h4><p>The modified array, space-separated, on one line.</p>",
+  "solution": "n = int(input())\na = list(map(int, input().split()))\nres = [0] * n\nmx = -1\nfirst = True\nfor i in range(n - 1, -1, -1):\n    res[i] = -1 if first else mx\n    mx = a[i] if first else max(mx, a[i])\n    first = False\nprint(*res)\n",
+  "tests": [
+   {
+    "input": "6\n17 18 5 4 6 1\n",
+    "output": "18 6 6 6 1 -1\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n400\n",
+    "output": "-1\n",
+    "hidden": false
+   },
+   {
+    "input": "3\n1 2 3\n",
+    "output": "3 3 -1\n",
+    "hidden": true
+   },
+   {
+    "input": "4\n5 5 5 5\n",
+    "output": "5 5 5 -1\n",
+    "hidden": true
+   },
+   {
+    "input": "4\n-5 -2 -9 -7\n",
+    "output": "-2 -7 -7 -1\n",
+    "hidden": true
+   },
+   {
+    "input": "5\n9 7 5 3 1\n",
+    "output": "7 5 3 1 -1\n",
+    "hidden": true
+   },
+   {
+    "input": "2\n0 -3\n",
+    "output": "-3 -1\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "a12",
+  "title": "Basic Calculator",
+  "category": "Basics",
+  "difficulty": "Easy",
+  "description": "<p>Write a simple calculator. Read two numbers and an operator, then print the result of applying the operator to the two numbers (first operand on the left).</p><p>Supported operators: <code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>. If the operation is division and the second number is zero, print <code>Error: Division by zero</code>.</p><h4>Input</h4><ul><li>Line 1: the first number (a real number).</li><li>Line 2: the second number (a real number).</li><li>Line 3: the operator, one of <code>+ - * /</code>.</li></ul><h4>Output</h4><p>The result with exactly <b>2 decimal places</b>, or <code>Error: Division by zero</code>.</p>",
+  "solution": "a = float(input())\nb = float(input())\nop = input().strip()\nif op == '/' and b == 0:\n    print(\"Error: Division by zero\")\nelse:\n    if op == '+':\n        r = a + b\n    elif op == '-':\n        r = a - b\n    elif op == '*':\n        r = a * b\n    else:\n        r = a / b\n    print(f\"{r + 0.0:.2f}\")\n",
+  "tests": [
+   {
+    "input": "5\n3\n+\n",
+    "output": "8.00\n",
+    "hidden": false
+   },
+   {
+    "input": "10\n0\n/\n",
+    "output": "Error: Division by zero\n",
+    "hidden": false
+   },
+   {
+    "input": "7\n2\n/\n",
+    "output": "3.50\n",
+    "hidden": true
+   },
+   {
+    "input": "2.5\n4\n*\n",
+    "output": "10.00\n",
+    "hidden": true
+   },
+   {
+    "input": "3\n10\n-\n",
+    "output": "-7.00\n",
+    "hidden": true
+   },
+   {
+    "input": "-6\n-1.5\n/\n",
+    "output": "4.00\n",
+    "hidden": true
+   },
+   {
+    "input": "0\n5\n*\n",
+    "output": "0.00\n",
+    "hidden": true
+   },
+   {
+    "input": "1.25\n0.5\n-\n",
+    "output": "0.75\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "a13",
+  "title": "Hourglass Pattern",
+  "category": "Patterns",
+  "difficulty": "Medium",
+  "description": "<p>Given an integer <code>n</code>, print an <b>hourglass</b> of stars with <code>2n + 1</code> rows.</p><p>The top row has <code>2n + 1</code> stars. Each following row has 2 fewer stars and is shifted right by one space, until the middle row, which has a single <code>*</code>. The bottom half mirrors the top half. Each row is centered using <b>leading spaces only</b> — there must be no trailing spaces.</p><p>For <code>n = 2</code>:</p><pre>*****\n ***\n  *\n ***\n*****</pre><h4>Input</h4><p>A single integer <code>n</code> (<code>0 ≤ n ≤ 20</code>).</p><h4>Output</h4><p>The hourglass pattern, <code>2n + 1</code> lines.</p>",
+  "solution": "n = int(input())\nfor i in range(n, -1, -1):\n    print(' ' * (n - i) + '*' * (2 * i + 1))\nfor i in range(1, n + 1):\n    print(' ' * (n - i) + '*' * (2 * i + 1))\n",
+  "tests": [
+   {
+    "input": "2\n",
+    "output": "*****\n ***\n  *\n ***\n*****\n",
+    "hidden": false
+   },
+   {
+    "input": "3\n",
+    "output": "*******\n *****\n  ***\n   *\n  ***\n *****\n*******\n",
+    "hidden": false
+   },
+   {
+    "input": "0\n",
+    "output": "*\n",
+    "hidden": true
+   },
+   {
+    "input": "1\n",
+    "output": "***\n *\n***\n",
+    "hidden": true
+   },
+   {
+    "input": "4\n",
+    "output": "*********\n *******\n  *****\n   ***\n    *\n   ***\n  *****\n *******\n*********\n",
+    "hidden": true
+   },
+   {
+    "input": "6\n",
+    "output": "*************\n ***********\n  *********\n   *******\n    *****\n     ***\n      *\n     ***\n    *****\n   *******\n  *********\n ***********\n*************\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "a14",
+  "title": "Return to Origin",
+  "category": "Simulation",
+  "difficulty": "Easy",
+  "description": "<p>A robot starts at position <code>(0, 0)</code> on a 2D grid. It receives a sequence of moves, each being <code>R</code> (right), <code>L</code> (left), <code>U</code> (up) or <code>D</code> (down), each moving it one unit. Determine whether the robot ends up back at the origin after all moves.</p><h4>Input</h4><p>A single line containing the moves string (only characters <code>R</code>, <code>L</code>, <code>U</code>, <code>D</code>).</p><h4>Output</h4><p>Print <code>True</code> if the robot returns to <code>(0, 0)</code>, otherwise <code>False</code>.</p>",
+  "solution": "s = input().strip()\nx = s.count('R') - s.count('L')\ny = s.count('U') - s.count('D')\nprint(x == 0 and y == 0)\n",
+  "tests": [
+   {
+    "input": "UD\n",
+    "output": "True\n",
+    "hidden": false
+   },
+   {
+    "input": "LL\n",
+    "output": "False\n",
+    "hidden": false
+   },
+   {
+    "input": "RRDDLLUU\n",
+    "output": "True\n",
+    "hidden": true
+   },
+   {
+    "input": "U\n",
+    "output": "False\n",
+    "hidden": true
+   },
+   {
+    "input": "RLUDRLUD\n",
+    "output": "True\n",
+    "hidden": true
+   },
+   {
+    "input": "RRRLLLU\n",
+    "output": "False\n",
+    "hidden": true
+   },
+   {
+    "input": "DURDLDRRLL\n",
+    "output": "False\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "a15",
+  "title": "Second Largest Distinct",
+  "category": "Arrays",
+  "difficulty": "Easy",
+  "description": "<p>Given a list of integers, find the <b>second largest distinct</b> value — the largest value that is strictly smaller than the maximum.</p><h4>Input</h4><p>A single line of space-separated integers (at least one).</p><h4>Output</h4><p>The second largest distinct value, or <code>None</code> if it does not exist (e.g. all values are equal).</p>",
+  "solution": "nums = set(map(int, input().split()))\nif len(nums) < 2:\n    print(\"None\")\nelse:\n    nums.remove(max(nums))\n    print(max(nums))\n",
+  "tests": [
+   {
+    "input": "3 1 4 1 5 9 2 6\n",
+    "output": "6\n",
+    "hidden": false
+   },
+   {
+    "input": "7 7 7\n",
+    "output": "None\n",
+    "hidden": false
+   },
+   {
+    "input": "10\n",
+    "output": "None\n",
+    "hidden": true
+   },
+   {
+    "input": "5 5 4 4\n",
+    "output": "4\n",
+    "hidden": true
+   },
+   {
+    "input": "-1 -2 -3\n",
+    "output": "-2\n",
+    "hidden": true
+   },
+   {
+    "input": "0 -5 0\n",
+    "output": "-5\n",
+    "hidden": true
+   },
+   {
+    "input": "100 99 100 99 98\n",
+    "output": "99\n",
+    "hidden": true
+   }
+  ]
+ }
+]
