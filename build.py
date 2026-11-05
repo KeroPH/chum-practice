@@ -79,6 +79,15 @@ def verify(path):
 
 
 def main():
+    if "--no-verify" in sys.argv:  # just bundle data/*.json -> problems.js (sets were verified individually)
+        allp = []
+        for path in sorted(glob.glob(os.path.join(HERE, "data", "*.json"))):
+            with open(path, encoding="utf-8") as f:
+                allp += json.load(f)
+        assert len({p["id"] for p in allp}) == len(allp), "duplicate ids"
+        with open(os.path.join(HERE, "problems.js"), "w", encoding="utf-8") as f:
+            f.write("window.PROBLEMS = " + json.dumps(allp, ensure_ascii=False, separators=(",", ":")) + ";\n")
+        print(f"TOTAL: {len(allp)} problems (not re-verified) -> problems.js"); return
     if len(sys.argv) > 1:
         _, e = verify(sys.argv[1]); sys.exit(1 if e else 0)
     allp, total_err, ids = [], 0, set()

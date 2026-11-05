@@ -1,0 +1,887 @@
+[
+ {
+  "id": "s01",
+  "title": "Courier Distances on a Weighted Tree",
+  "category": "Graphs",
+  "difficulty": "Hard",
+  "timeLimit": 5,
+  "description": "<p>A courier company serves <code>n</code> towns connected by <code>n - 1</code> two-way roads; the roads form a tree (there is exactly one simple route between any two towns). Each road has a length. The company receives <code>q</code> delivery requests; request <code>i</code> asks for the length of the route between towns <code>a<sub>i</sub></code> and <code>b<sub>i</sub></code>.</p><p>To keep the output short, print the <b>sum</b> of the answers of all requests.</p><p>The tree can be very deep (think of a long chain), so walking up the tree for every request is too slow, and deep recursion will crash.</p><h4>Constraints</h4><ul><li>1 &le; n &le; 6&middot;10<sup>4</sup>, 1 &le; q &le; 6&middot;10<sup>4</sup></li><li>1 &le; length &le; 10<sup>6</sup></li><li><code>a<sub>i</sub> = b<sub>i</sub></code> is allowed (distance 0).</li></ul><h4>Input</h4><p>The first line contains <code>n</code>. Each of the next <code>n - 1</code> lines contains <code>u v w</code>: a road of length <code>w</code> between towns <code>u</code> and <code>v</code>. The next line contains <code>q</code>, followed by <code>q</code> lines <code>a b</code>.</p><h4>Output</h4><p>Print one integer: the sum of the distances of all requests.</p><h4>Example</h4><p>Input:</p><pre>5\n1 2 3\n1 3 5\n3 4 2\n3 5 7\n3\n2 4\n4 5\n1 1</pre><p>Output:</p><pre>19</pre>",
+  "solution": "import sys\ndef main():\n    d = sys.stdin.read().split()\n    n = int(d[0]); p = 1\n    adj = [[] for _ in range(n + 1)]\n    for _ in range(n - 1):\n        u = int(d[p]); v = int(d[p + 1]); w = int(d[p + 2]); p += 3\n        adj[u].append(v); adj[u].append(w)\n        adj[v].append(u); adj[v].append(w)\n    q = int(d[p]); p += 1\n    qa = [0] * q; qb = [0] * q\n    qs = [[] for _ in range(n + 1)]\n    for i in range(q):\n        a = int(d[p]); b = int(d[p + 1]); p += 2\n        qa[i] = a; qb[i] = b\n        qs[a].append(i)\n        if b != a:\n            qs[b].append(i)\n    dep = [0] * (n + 1); par = [0] * (n + 1)\n    f = list(range(n + 1)); vis = [False] * (n + 1)\n    total = 0\n    st = [1]\n    while st:\n        x = st.pop()\n        if x < 0:\n            f[-x] = par[-x]\n            continue\n        vis[x] = True\n        for i in qs[x]:\n            o = qa[i] + qb[i] - x\n            if vis[o]:\n                r = o\n                while f[r] != r:\n                    r = f[r]\n                while f[o] != r:\n                    f[o], o = r, f[o]\n                total += dep[qa[i]] + dep[qb[i]] - 2 * dep[r]\n        st.append(-x)\n        a = adj[x]; px = par[x]\n        for j in range(0, len(a), 2):\n            y = a[j]\n            if y != px:\n                par[y] = x\n                dep[y] = dep[x] + a[j + 1]\n                st.append(y)\n    print(total)\nmain()\n",
+  "tests": [
+   {
+    "input": "5\n1 2 3\n1 3 5\n3 4 2\n3 5 7\n3\n2 4\n4 5\n1 1\n",
+    "output": "19\n",
+    "hidden": false
+   },
+   {
+    "input": "2\n1 2 1000000\n2\n1 2\n2 1\n",
+    "output": "2000000\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n3\n1 1\n1 1\n1 1\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "7\n7 6 5\n6 5 4\n4 5 3\n3 4 2\n2 3 1\n1 2 9\n5\n1 7\n7 1\n3 3\n2 6\n5 1\n",
+    "output": "73\n",
+    "hidden": true
+   },
+   {
+    "input": "6\n4 1 10\n4 2 20\n4 3 30\n4 5 40\n4 6 50\n6\n1 2\n3 5\n6 4\n4 4\n5 6\n2 1\n",
+    "output": "270\n",
+    "hidden": true
+   },
+   {
+    "input": "40\n24 27 422694\n26 29 141325\n3 14 896496\n3 20 501088\n24 15 105648\n12 23 916748\n21 32 116667\n16 14 853085\n22 23 252270\n5 8 946740\n2 21 922994\n3 6 276181\n17 19 524429\n15 34 419672\n38 28 738164\n26 15 820288\n35 17 63118\n26 7 815574\n30 14 321913\n14 23 941731\n32 3 408388\n24 33 640650\n39 8 988455\n15 9 924311\n18 36 446381\n15 23 193019\n31 34 907020\n24 40 789363\n17 25 796061\n35 7 802370\n39 34 264942\n38 37 797507\n35 10 136103\n36 3 18761\n4 15 826558\n35 11 956639\n35 38 680342\n13 34 522057\n1 19 43388\n40\n22 30\n36 26\n11 9\n10 21\n28 15\n15 23\n32 7\n19 34\n16 14\n18 20\n4 12\n29 6\n30 28\n9 21\n5 6\n9 7\n16 15\n9 40\n1 21\n37 38\n32 2\n27 26\n10 35\n17 34\n4 37\n29 33\n30 6\n3 10\n30 13\n20 17\n18 14\n28 28\n20 33\n1 16\n18 28\n8 38\n31 29\n2 22\n1 17\n18 16\n",
+    "output": "113822610\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(101)\nn = 60000\nperm = list(range(1, n + 1)); random.shuffle(perm)\nout = [str(n)]\nfor i in range(1, n):\n    j = i - 1 if random.randrange(20) else random.randrange(i)\n    out.append(\"%d %d %d\" % (perm[i], perm[j], random.randint(1, 10**6)))\nq = 60000\nout.append(str(q))\nfor _ in range(q):\n    out.append(\"%d %d\" % (random.randint(1, n), random.randint(1, n)))\nprint(\"\\n\".join(out))\n",
+    "output": "7919939980075\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(102)\nn = 60000\nperm = list(range(1, n + 1)); random.shuffle(perm)\nout = [str(n)]\nfor i in range(1, n):\n    j = random.randrange(max(0, i - 5), i)\n    out.append(\"%d %d %d\" % (perm[j], perm[i], random.randint(1, 10**6)))\nq = 60000\nout.append(str(q))\nfor _ in range(q):\n    a = random.randint(1, n)\n    out.append(\"%d %d\" % (a, a if random.randrange(50) == 0 else random.randint(1, n)))\nprint(\"\\n\".join(out))\n",
+    "output": "198143726301319\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "s02",
+  "title": "Critical Junctions",
+  "category": "Graphs",
+  "difficulty": "Hard",
+  "timeLimit": 5,
+  "description": "<p>A road network has <code>n</code> junctions and <code>m</code> two-way roads. A junction is <b>critical</b> if closing it (together with all roads touching it) increases the number of connected pieces of the network. In other words, count the articulation points of the undirected graph.</p><p>To keep the output short, print the number of critical junctions and the sum of their labels.</p><h4>Constraints</h4><ul><li>1 &le; n &le; 10<sup>5</sup>, 0 &le; m &le; 1.5&middot;10<sup>5</sup></li><li>No road joins a junction to itself, but two junctions may be joined by several roads.</li><li>The network may be disconnected. Use an iterative DFS: the graph can be a very long chain.</li></ul><h4>Input</h4><p>The first line contains <code>n m</code>. Each of the next <code>m</code> lines contains <code>u v</code>.</p><h4>Output</h4><p>Print two lines: the number of critical junctions, and the sum of their labels (<code>0</code> if there are none).</p><h4>Example</h4><p>Input:</p><pre>7 8\n1 2\n2 3\n3 1\n3 4\n4 5\n5 6\n6 4\n6 7</pre><p>Output:</p><pre>3\n13</pre>",
+  "solution": "import sys\ndef main():\n    d = sys.stdin.read().split()\n    n = int(d[0]); m = int(d[1])\n    adj = [[] for _ in range(n + 1)]\n    p = 2\n    for _ in range(m):\n        u = int(d[p]); v = int(d[p + 1]); p += 2\n        adj[u].append(v); adj[v].append(u)\n    tin = [0] * (n + 1); low = [0] * (n + 1); it = [0] * (n + 1)\n    ap = [False] * (n + 1)\n    t = 1\n    for s in range(1, n + 1):\n        if tin[s]:\n            continue\n        tin[s] = low[s] = t; t += 1\n        st = [s]; rootch = 0\n        while st:\n            x = st[-1]\n            a = adj[x]\n            if it[x] < len(a):\n                y = a[it[x]]; it[x] += 1\n                if tin[y]:\n                    if tin[y] < low[x]:\n                        low[x] = tin[y]\n                else:\n                    tin[y] = low[y] = t; t += 1\n                    st.append(y)\n                    if x == s:\n                        rootch += 1\n            else:\n                st.pop()\n                if st:\n                    q = st[-1]\n                    if low[x] < low[q]:\n                        low[q] = low[x]\n                    if q != s and low[x] >= tin[q]:\n                        ap[q] = True\n        if rootch >= 2:\n            ap[s] = True\n    c = 0; sm = 0\n    for v in range(1, n + 1):\n        if ap[v]:\n            c += 1; sm += v\n    print(c)\n    print(sm)\nmain()\n",
+  "tests": [
+   {
+    "input": "7 8\n1 2\n2 3\n3 1\n3 4\n4 5\n5 6\n6 4\n6 7\n",
+    "output": "3\n13\n",
+    "hidden": false
+   },
+   {
+    "input": "4 4\n1 2\n2 3\n3 4\n4 1\n",
+    "output": "0\n0\n",
+    "hidden": false
+   },
+   {
+    "input": "1 0\n",
+    "output": "0\n0\n",
+    "hidden": true
+   },
+   {
+    "input": "2 3\n1 2\n2 1\n1 2\n",
+    "output": "0\n0\n",
+    "hidden": true
+   },
+   {
+    "input": "6 5\n1 2\n1 3\n1 4\n5 6\n2 1\n",
+    "output": "1\n1\n",
+    "hidden": true
+   },
+   {
+    "input": "8 7\n3 1\n1 2\n2 5\n5 8\n8 4\n4 7\n7 6\n",
+    "output": "6\n27\n",
+    "hidden": true
+   },
+   {
+    "input": "30 34\n2 4\n25 3\n3 6\n11 15\n13 4\n18 13\n14 18\n4 20\n9 16\n22 19\n24 21\n22 12\n8 4\n3 17\n20 11\n21 9\n8 10\n30 18\n17 22\n19 18\n19 5\n24 4\n18 28\n18 7\n1 13\n19 26\n27 18\n14 29\n17 23\n14 21\n30 24\n17 26\n9 19\n26 2\n",
+    "output": "12\n158\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(201)\nn = 100000\nperm = list(range(1, n + 1)); random.shuffle(perm)\nE = []\nfor i in range(1, n):\n    E.append((perm[i], perm[random.randrange(max(0, i - 3), i)]))\nfor _ in range(30000):\n    i = random.randrange(n - 6)\n    E.append((perm[i], perm[i + random.randint(1, 5)]))\nrandom.shuffle(E)\nprint(n, len(E))\nprint(\"\\n\".join(\"%d %d\" % e for e in E))\n",
+    "output": "40191\n2018970752\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(202)\nn = 100000\nE = []\nfor _ in range(110000):\n    u = random.randint(1, n); v = random.randint(1, n)\n    while v == u:\n        v = random.randint(1, n)\n    E.append((u, v))\nprint(n, len(E))\nprint(\"\\n\".join(\"%d %d\" % e for e in E))\n",
+    "output": "25163\n1258371199\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(203)\nn = 90000\nE = []\n# chain of cycles (each block a cycle of length 3..6) joined at shared vertices\nv = 1\nnxt = 2\nwhile nxt + 6 <= n:\n    k = random.randint(2, 5)\n    cyc = [v] + list(range(nxt, nxt + k))\n    nxt += k\n    for i in range(len(cyc)):\n        E.append((cyc[i], cyc[(i + 1) % len(cyc)]))\n    v = random.choice(cyc[1:])\nwhile nxt <= n:\n    E.append((nxt, random.randint(1, nxt - 1))); nxt += 1\nperm = list(range(1, n + 1)); random.shuffle(perm)\nE = [(perm[a - 1], perm[b - 1]) for a, b in E]\nrandom.shuffle(E)\nprint(n, len(E))\nprint(\"\\n\".join(\"%d %d\" % e for e in E))\n",
+    "output": "25806\n1163227693\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "s03",
+  "title": "Arrow Maze Repairs",
+  "category": "Graphs",
+  "difficulty": "Hard",
+  "timeLimit": 5,
+  "description": "<p>Every cell of an <code>R x C</code> grid holds an arrow: <code>R</code> (right), <code>L</code> (left), <code>U</code> (up) or <code>D</code> (down). Standing on a cell you may move for free to the neighbouring cell the arrow points at. You may also move to any other neighbouring cell (up, down, left or right, staying inside the grid), but that costs <b>1</b> coin (you repaint the arrow). Find the minimum number of coins needed to walk from the top-left cell to the bottom-right cell.</p><h4>Constraints</h4><ul><li>1 &le; R, C &le; 300</li><li>If the grid is a single cell, the answer is <code>0</code>.</li></ul><h4>Input</h4><p>The first line contains <code>R C</code>. The next <code>R</code> lines each contain a string of <code>C</code> characters from <code>RLUD</code>.</p><h4>Output</h4><p>Print the minimum number of coins.</p><h4>Example</h4><p>Input:</p><pre>3 4\nRRRD\nDLLL\nRRRU</pre><p>Output:</p><pre>0</pre>",
+  "solution": "import sys\nfrom collections import deque\ndef main():\n    d = sys.stdin.read().split()\n    R = int(d[0]); C = int(d[1])\n    g = \"\".join(d[2:2 + R])\n    N = R * C\n    INF = N + 5\n    dist = [INF] * N\n    dist[0] = 0\n    dq = deque([0])\n    pop = dq.popleft; push = dq.append; pushl = dq.appendleft\n    while dq:\n        x = pop()\n        dx = dist[x]\n        r, c = divmod(x, C)\n        ch = g[x]\n        if c + 1 < C:\n            y = x + 1; nd = dx + (ch != 'R')\n            if nd < dist[y]:\n                dist[y] = nd\n                if nd == dx: pushl(y)\n                else: push(y)\n        if c > 0:\n            y = x - 1; nd = dx + (ch != 'L')\n            if nd < dist[y]:\n                dist[y] = nd\n                if nd == dx: pushl(y)\n                else: push(y)\n        if r + 1 < R:\n            y = x + C; nd = dx + (ch != 'D')\n            if nd < dist[y]:\n                dist[y] = nd\n                if nd == dx: pushl(y)\n                else: push(y)\n        if r > 0:\n            y = x - C; nd = dx + (ch != 'U')\n            if nd < dist[y]:\n                dist[y] = nd\n                if nd == dx: pushl(y)\n                else: push(y)\n    print(dist[N - 1])\nmain()\n",
+  "tests": [
+   {
+    "input": "3 4\nRRRD\nDLLL\nRRRU\n",
+    "output": "0\n",
+    "hidden": false
+   },
+   {
+    "input": "2 3\nLLD\nUUL\n",
+    "output": "2\n",
+    "hidden": false
+   },
+   {
+    "input": "1 1\nU\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "1 5\nRRLRR\n",
+    "output": "1\n",
+    "hidden": true
+   },
+   {
+    "input": "4 4\nLLLL\nLLLL\nLLLL\nLLLL\n",
+    "output": "6\n",
+    "hidden": true
+   },
+   {
+    "input": "3 3\nDLR\nRDL\nULR\n",
+    "output": "1\n",
+    "hidden": true
+   },
+   {
+    "input": "12 15\nURLUDLDUDDRRURU\nDDUUUDLDRRDRRRD\nLULLDRLRLUDUURU\nDLDRRLUUUURRULU\nDLURRDLLDURDRLR\nDLRDRDRRDUURULU\nDUDDRDURRRRRRUR\nULRDDLLRDDUDRLU\nRULLUDULLRURRRL\nUULDDURLDRLUDUR\nULUDRUDUDDRURDR\nRRLRUURRRLRLDUR\n",
+    "output": "9\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(301)\nR = C = 300\nprint(R, C)\nfor _ in range(R):\n    print(\"\".join(random.choice(\"RLUD\") for _ in range(C)))\n",
+    "output": "158\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(302)\nR = C = 300\nprint(R, C)\nfor i in range(R):\n    print(\"\".join(random.choice(\"LLLUUUR\") for _ in range(C)))\n",
+    "output": "396\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(303)\nR, C = 300, 300\nprint(R, C)\nfor i in range(R):\n    row = []\n    for j in range(C):\n        if i % 2 == 0:\n            base = 'R' if j < C - 1 else 'D'\n        else:\n            base = 'L' if j > 0 else 'D'\n        if random.randrange(25) == 0:\n            base = random.choice(\"RLUD\")\n        row.append(base)\n    print(\"\".join(row))\n",
+    "output": "106\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "s04",
+  "title": "Rush Hour Route Count",
+  "category": "Graphs",
+  "difficulty": "Hard",
+  "timeLimit": 5,
+  "description": "<p>A city has <code>n</code> intersections and <code>m</code> two-way roads with positive travel times. Find the shortest travel time from intersection <code>1</code> to intersection <code>n</code>, and the number of different routes that achieve it. Two routes are different if their sequences of <b>roads</b> differ (so two parallel roads between the same intersections give different routes). The count can be enormous: print it modulo <code>10<sup>9</sup> + 7</code>.</p><h4>Constraints</h4><ul><li>1 &le; n &le; 10<sup>5</sup>, 0 &le; m &le; 1.5&middot;10<sup>5</sup></li><li>1 &le; time &le; 10<sup>9</sup>; distances may exceed 32-bit range.</li><li>Roads from an intersection to itself and repeated roads may appear.</li><li>If <code>n = 1</code>, the answer is <code>0 1</code> (the empty route).</li></ul><h4>Input</h4><p>The first line contains <code>n m</code>. Each of the next <code>m</code> lines contains <code>u v t</code>.</p><h4>Output</h4><p>Print the shortest time and the number of shortest routes modulo 10<sup>9</sup>+7, separated by a space; print <code>-1</code> if intersection <code>n</code> is unreachable.</p><h4>Example</h4><p>Input:</p><pre>4 5\n1 2 1\n1 3 1\n2 4 1\n3 4 1\n1 4 3</pre><p>Output:</p><pre>2 2</pre>",
+  "solution": "import sys, heapq\ndef main():\n    d = sys.stdin.read().split()\n    n = int(d[0]); m = int(d[1])\n    adj = [[] for _ in range(n + 1)]\n    p = 2\n    for _ in range(m):\n        u = int(d[p]); v = int(d[p + 1]); w = int(d[p + 2]); p += 3\n        adj[u].append((v, w)); adj[v].append((u, w))\n    MOD = 10**9 + 7\n    INF = float('inf')\n    dist = [INF] * (n + 1); cnt = [0] * (n + 1); done = [False] * (n + 1)\n    dist[1] = 0; cnt[1] = 1\n    h = [(0, 1)]\n    while h:\n        du, u = heapq.heappop(h)\n        if done[u]:\n            continue\n        done[u] = True\n        cu = cnt[u]\n        for v, w in adj[u]:\n            nd = du + w\n            dv = dist[v]\n            if nd < dv:\n                dist[v] = nd; cnt[v] = cu\n                heapq.heappush(h, (nd, v))\n            elif nd == dv:\n                cnt[v] = (cnt[v] + cu) % MOD\n    if dist[n] == INF:\n        print(-1)\n    else:\n        print(dist[n], cnt[n])\nmain()\n",
+  "tests": [
+   {
+    "input": "4 5\n1 2 1\n1 3 1\n2 4 1\n3 4 1\n1 4 3\n",
+    "output": "2 2\n",
+    "hidden": false
+   },
+   {
+    "input": "3 1\n1 2 5\n",
+    "output": "-1\n",
+    "hidden": false
+   },
+   {
+    "input": "1 0\n",
+    "output": "0 1\n",
+    "hidden": true
+   },
+   {
+    "input": "2 3\n1 2 7\n2 1 7\n1 2 8\n",
+    "output": "7 2\n",
+    "hidden": true
+   },
+   {
+    "input": "3 4\n1 1 1\n1 2 1000000000\n2 3 1000000000\n2 2 5\n",
+    "output": "2000000000 1\n",
+    "hidden": true
+   },
+   {
+    "input": "5 7\n1 2 2\n1 3 1\n3 2 1\n2 4 1\n3 4 2\n4 5 1\n2 5 2\n",
+    "output": "4 5\n",
+    "hidden": true
+   },
+   {
+    "input": "12 30\n4 6 1\n11 4 2\n7 8 1\n12 10 1\n2 5 1\n6 5 2\n11 3 1\n9 12 1\n10 12 1\n12 1 1\n8 7 1\n12 10 1\n6 12 2\n4 12 2\n4 6 2\n10 11 1\n5 9 2\n10 8 1\n9 2 1\n5 10 2\n6 8 2\n7 10 2\n12 7 2\n7 11 2\n6 12 2\n10 5 2\n11 2 2\n1 10 1\n2 10 1\n4 11 1\n",
+    "output": "1 1\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(401)\nH, W = 200, 250\nn = H * W\nE = []\nfor i in range(H):\n    for j in range(W):\n        v = i * W + j + 1\n        if j + 1 < W: E.append((v, v + 1, 1))\n        if i + 1 < H: E.append((v, v + W, 1))\nfor _ in range(2000):\n    v = random.randint(1, n - W - 1)\n    E.append((v, v + W + 1, 2))\nrandom.shuffle(E)\nprint(n, len(E))\nprint(\"\\n\".join(\"%d %d %d\" % e for e in E))\n",
+    "output": "203 8\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(402)\nn = 50000\nE = []\nfor i in range(2, n + 1):\n    E.append((random.randint(max(1, i - 30), i - 1), i, random.randint(1, 3)))\nfor _ in range(100000):\n    u = random.randint(1, n); v = random.randint(1, n)\n    E.append((u, v, random.randint(1, 3)))\nrandom.shuffle(E)\nprint(n, len(E))\nprint(\"\\n\".join(\"%d %d %d\" % e for e in E))\n",
+    "output": "9 1\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(403)\n# layered graph: 1000 layers of 50 vertices, complete-ish bipartite between layers -> huge counts\nL, K = 600, 50\nn = L * K + 2\nE = []\nfor j in range(K):\n    E.append((1, 2 + j, 1))\n    E.append((2 + (L - 1) * K + j, n, 1))\nfor l in range(L - 1):\n    for j in range(K):\n        for t in range(3):\n            E.append((2 + l * K + j, 2 + (l + 1) * K + random.randrange(K), 1))\nrandom.shuffle(E)\nprint(n, len(E))\nprint(\"\\n\".join(\"%d %d %d\" % e for e in E))\n",
+    "output": "601 487392687\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "s05",
+  "title": "Wormhole Travel Times",
+  "category": "Graphs",
+  "difficulty": "Hard",
+  "timeLimit": 5,
+  "description": "<p>A galaxy has <code>n</code> stations and <code>m</code> one-way wormholes. Travelling through wormhole <code>u v w</code> takes <code>w</code> time units; <code>w</code> may be <b>negative</b> (you arrive before you left). Starting at station <code>s</code> at time 0, for every station determine the earliest possible arrival time. If you can travel around a negative cycle on the way to a station, its arrival time is unbounded below.</p><h4>Constraints</h4><ul><li>1 &le; n &le; 400, 0 &le; m &le; 2500</li><li>-10<sup>6</sup> &le; w &le; 10<sup>6</sup></li><li>Self-loops and repeated wormholes are allowed. A negative self-loop is a negative cycle.</li></ul><h4>Input</h4><p>The first line contains <code>n m s</code>. Each of the next <code>m</code> lines contains <code>u v w</code>.</p><h4>Output</h4><p>Print <code>n</code> lines; line <code>v</code> contains: <code>INF</code> if station <code>v</code> cannot be reached from <code>s</code>; <code>-INF</code> if its arrival time can be made arbitrarily small; otherwise the shortest arrival time. Station <code>s</code> itself has time <code>0</code> unless it is affected by a negative cycle.</p><h4>Example</h4><p>Input:</p><pre>6 7 1\n1 2 4\n2 3 -2\n3 4 1\n4 2 -1\n3 5 3\n1 5 10\n6 1 1</pre><p>Output:</p><pre>0\n-INF\n-INF\n-INF\n-INF\nINF</pre>",
+  "solution": "import sys\nfrom collections import deque\ndef main():\n    d = sys.stdin.read().split()\n    n = int(d[0]); m = int(d[1]); s = int(d[2])\n    E = []\n    p = 3\n    for _ in range(m):\n        E.append((int(d[p]), int(d[p + 1]), int(d[p + 2]))); p += 3\n    INF = float('inf')\n    D = [INF] * (n + 1); D[s] = 0\n    for _ in range(n - 1):\n        ch = False\n        for u, v, w in E:\n            du = D[u]\n            if du != INF and du + w < D[v]:\n                D[v] = du + w; ch = True\n        if not ch:\n            break\n    adj = [[] for _ in range(n + 1)]\n    neg = [False] * (n + 1)\n    q = deque()\n    for u, v, w in E:\n        adj[u].append(v)\n        if D[u] != INF and D[u] + w < D[v] and not neg[v]:\n            neg[v] = True; q.append(v)\n    while q:\n        x = q.popleft()\n        for y in adj[x]:\n            if not neg[y]:\n                neg[y] = True; q.append(y)\n    out = []\n    for v in range(1, n + 1):\n        out.append('-INF' if neg[v] else ('INF' if D[v] == INF else str(D[v])))\n    print('\\n'.join(out))\nmain()\n",
+  "tests": [
+   {
+    "input": "6 7 1\n1 2 4\n2 3 -2\n3 4 1\n4 2 -1\n3 5 3\n1 5 10\n6 1 1\n",
+    "output": "0\n-INF\n-INF\n-INF\n-INF\nINF\n",
+    "hidden": false
+   },
+   {
+    "input": "3 2 1\n1 2 -5\n2 3 -5\n",
+    "output": "0\n-5\n-10\n",
+    "hidden": false
+   },
+   {
+    "input": "1 0 1\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "1 1 1\n1 1 -1\n",
+    "output": "-INF\n",
+    "hidden": true
+   },
+   {
+    "input": "4 4 2\n2 2 0\n2 3 7\n3 1 -9\n1 4 1\n",
+    "output": "-2\n0\n7\n-1\n",
+    "hidden": true
+   },
+   {
+    "input": "5 6 1\n1 2 1\n2 3 1\n3 2 -2\n1 4 5\n4 5 -100\n5 4 100\n",
+    "output": "0\n-INF\n-INF\n5\n-95\n",
+    "hidden": true
+   },
+   {
+    "input": "10 25 3\n10 6 0\n1 7 -3\n8 4 10\n10 3 2\n8 1 9\n8 10 6\n4 9 5\n1 3 1\n3 6 8\n4 2 5\n9 4 2\n9 2 6\n6 10 7\n1 2 6\n4 10 1\n3 2 11\n8 2 4\n6 2 8\n2 6 8\n3 7 11\n6 2 6\n2 1 3\n5 10 9\n1 2 9\n4 7 0\n",
+    "output": "14\n11\n0\nINF\nINF\n8\n11\nINF\nINF\n15\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(501)\nn, m = 400, 2000\npot = [0] + [random.randint(0, 100000) for _ in range(n)]\nE = []\nfor _ in range(m):\n    u = random.randint(1, n); v = random.randint(1, n)\n    E.append((u, v, random.randint(0, 50) + pot[u] - pot[v]))\nprint(n, m, 1)\nprint(\"\\n\".join(\"%d %d %d\" % e for e in E))\n",
+    "output": "0\n46817\n1439\n37509\n52307\n69\n40889\n39765\n14341\n36192\n61371\n-10254\n39117\n37769\n24771\n-11281\n23676\n82485\n34972\n23260\n81237\n-15298\n35366\n55831\n66224\n24014\n-4652\n83663\n22687\n66231\n58911\n32229\n35393\n36921\n70341\n80094\n-2865\n68361\n55427\n8926\n68760\n63920\n18451\n47384\n64220\n7353\n-13592\n79154\n59209\n80262\n39315\n34512\n22725\n5589\n61435\n29320\n31981\n-10417\n73822\n2014\n20783\n11800\n33374\n60054\n73251\n56633\n17005\n53141\n30198\n33571\n32077\n-9667\n32248\n38119\n80587\n48810\n74418\n35550\n37131\n26250\n50599\n48736\n-1080\n78949\n80475\n37528\n26396\n20964\n76779\n56132\n29883\n72555\n-7166\n16216\n49253\n77406\n43818\n55943\n-3791\n12092\n16572\n-13270\n70614\n67853\n81680\n60699\n3732\n38449\n-10245\nINF\n45762\n27437\n13344\n417\n74097\n66793\n77996\n16655\n16314\n58214\n44126\n-14581\n82084\n832\n30393\n71986\n20074\n3678\n-6657\n55632\n67102\n16016\n13308\n57024\n83762\n66647\n15961\n-14864\n-2451\n6520\n-11077\n-10050\n74386\n56747\n43596\n31244\n49129\n-9585\n67166\n-356\n32014\n50868\n53224\n27712\n77632\n61817\n68513\n27426\n79068\n13167\n-11822\n-11073\n80808\n30859\n-11612\n18899\n-3932\n4867\n78331\n31132\n7230\n60714\n38922\n42886\n13882\n33848\n65966\nINF\n63951\n71518\n82140\n26347\n15639\n34052\n7550\n-8957\n41687\n31749\n9895\n23881\n63184\n72915\n25106\n11513\n51858\n-609\n10879\n68921\n18782\n61385\n31484\n-7781\n70641\n65905\n11115\n78275\n-16035\n76698\n-7366\n11368\n69209\n-3849\n45633\n129\n80399\n82653\n8050\n76348\n74548\n18702\n25773\n53503\n9483\n32663\n-7032\n64672\n36799\n3515\n18344\n492\n12398\n19345\n28155\n10388\n2980\n27798\n74515\n36922\n3380\n30509\n-5304\n-9397\n24226\n1460\n83797\n38434\n18614\n38227\n53419\n36783\n59570\n6617\n46922\n65451\n83218\n70804\n-12538\n51958\n325\n23411\n5099\n48440\n25909\n70771\n-6498\n7275\n-10600\n19855\n41228\n-5839\n18016\n49086\n13730\n43065\n20282\n28574\n21352\n-7862\n21151\n1450\n49032\n33526\n81504\n42046\n21525\n67693\n2884\n-8481\n36917\n10784\n-2848\n24118\n41021\n20955\n73333\n-8272\n6678\n54404\n-1128\n42438\n-10760\n67725\n35230\n59509\n18316\n20206\n75989\n78572\n-11682\n40908\n76387\n62176\n81539\n69113\n53140\n56618\n7484\n-2649\n77693\n56053\n29922\n62001\n50490\n44738\n13672\n42820\n37386\n73131\n52514\n76346\n51855\n27919\n13389\n-13291\n62343\n58796\n-12155\n16314\n18904\n37779\n62008\n45139\n42826\n44903\n55078\n-792\n52728\n51976\n72403\n29794\n61406\n83797\n52920\n70075\n48002\n55782\n3617\n64597\n60758\n5828\n74510\n63732\n40206\n-15293\n19997\n10733\n66197\n70730\n-8697\n19843\n-14221\n-10840\n46720\n46018\n39170\n-5186\n8714\n29627\n-15223\n31633\n66706\n-1101\n39047\n70303\n82381\n-15093\n71910\n68191\n52456\n45936\nINF\n25175\n120\n47616\n51810\n-5869\n-11071\n77635\n18455\n28727\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(502)\nn = 400\npot = [0] + [random.randint(0, 100000) for _ in range(n)]\nE = []\nfor _ in range(1800):\n    u = random.randint(1, n); v = random.randint(1, n)\n    E.append((u, v, random.randint(0, 50) + pot[u] - pot[v]))\n# vertices 301..400 form a separate region reachable only through a few edges; plant a negative cycle there\nfor _ in range(150):\n    u = random.randint(301, n); v = random.randint(301, n)\n    E.append((u, v, random.randint(0, 50) + pot[u] - pot[v]))\ncyc = random.sample(range(301, n + 1), 5)\nfor i in range(5):\n    u, v = cyc[i], cyc[(i + 1) % 5]\n    E.append((u, v, pot[u] - pot[v] - (3 if i == 0 else 0)))\nE = [e for e in E if not (e[0] > 300 and e[1] <= 300)]\nrandom.shuffle(E)\nprint(n, len(E), random.randint(1, 300))\nprint(\"\\n\".join(\"%d %d %d\" % e for e in E))\n",
+    "output": "14180\n32822\n58382\n-2189\n34304\n-15237\n-15905\n-11013\n58230\n24524\n-12686\n75064\n-4038\n30769\n14119\n70277\n48059\n38602\nINF\n-4085\n66259\n-6325\n38251\n-9822\n9918\n49784\n-13550\n48191\n5342\n72018\n-2262\n75469\n71369\nINF\n0\n-10756\n57627\n54536\n11758\n76260\nINF\n73818\n22275\n67179\n49024\n63982\n13950\n47940\n78332\n-18418\nINF\n74149\n60562\n10741\n44668\n10279\nINF\n67714\n47492\n29779\n-1489\n15489\n8593\n66015\n52365\n78884\n53054\n41136\n32159\nINF\n57926\n-5532\n76165\n28432\n33735\nINF\n992\n23191\n15951\n68694\n66083\n39499\n47985\n68549\n54373\n66281\n37116\n79454\n31856\n4891\n71059\nINF\n-8969\n8720\n77097\n76986\n38602\n34312\n-2771\n595\n59262\n40653\n68169\n2098\n35079\n-15955\n16228\n79178\n15065\n25669\n15050\n30540\n26546\nINF\n-6995\n-15536\n77705\n75013\n-9207\n-14536\n35502\n24770\n68838\n78072\n22807\n45152\n56887\n-19128\n401\n-8447\n48097\n-5646\n78725\n22977\n22224\n61035\n-11230\n35353\n4062\n18298\n33486\n71779\n15096\n-520\n-12816\n-7792\n39747\n26648\n40939\n76531\n56357\n58339\n79594\n17516\n69525\n51281\n60033\n34703\n10926\n53191\n63765\n2686\n58354\n-16437\n8725\n62111\n54288\nINF\n11098\n58614\n44199\n-7875\n-4477\n-1514\n49892\n42492\n8501\n53948\n-481\n48929\n-1058\n125\n1983\n-7169\n-8679\n24708\n51150\n15786\n4092\n60539\n66534\n32271\n66197\n31185\n18104\n51781\n46599\n61787\n20250\nINF\n-11332\n20590\n27349\n47318\n56458\n22974\n69998\n64485\n-3372\n29461\n47548\n-9922\n49025\n-15689\n-10005\n5631\nINF\n18626\n11253\n20661\n77134\n65777\n11879\n26528\n24053\n43919\n79153\n57421\n31643\n-18664\n-5722\n9867\n49048\n12087\n20249\n57243\n-18687\n23209\n-2775\n70128\n36813\n11544\n46677\n28455\n16296\n79989\n8192\n32015\n18953\n41883\n50444\n2491\n-6042\n44704\n35315\n17941\n71817\n-6156\n-17496\n35588\n79458\n-15588\n34543\n61748\n61300\n26525\n59292\n-7386\n6459\nINF\n12800\n16849\n5923\n-17992\n8125\n71081\n31538\n18294\n29657\n-6217\n-10882\n-6750\n7200\n15805\n32407\n45277\n35795\n46756\n69765\n-16841\n-14138\n19696\n-3291\n974\n13896\n-18037\n18196\n30216\n26069\n15147\n-INF\n-INF\n-INF\n-11666\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n41013\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n45993\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-14121\n-INF\n-INF\n45162\n73322\n-INF\n-INF\nINF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-17457\n3340\n-INF\n43111\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n-INF\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(503)\n# long chain forces many Bellman-Ford rounds; small negative cycle at the very end\nn = 400\nE = []\norder = list(range(1, n + 1)); random.shuffle(order)\nfor i in range(n - 1):\n    E.append((order[i], order[i + 1], random.randint(-1000, 1000)))\nfor _ in range(1500):\n    i = random.randrange(n); j = random.randrange(n)\n    if i < j:\n        E.append((order[i], order[j], 10**6))\nE.append((order[-1], order[-3], -10**6))\nE.sort(key=lambda e: -order.index(e[0]))\nprint(n, len(E), order[0])\nprint(\"\\n\".join(\"%d %d %d\" % e for e in E))\n",
+    "output": "924\n1316\n3162\n3639\n6708\n5068\n7659\n3490\n523\n-2547\n6268\n6090\n3960\n-1350\n-3084\n8651\n-2385\n-3850\n8216\n-3752\n7492\n-2204\n2382\n8747\n-2874\n-985\n2268\n3871\n-566\n9616\n6232\n3760\n-849\n462\n3862\n9431\n5642\n2466\n220\n2234\n4673\n5360\n6516\n1118\n-3985\n7275\n1448\n1785\n-489\n3732\n7371\n6868\n3446\n-1518\n3634\n1543\n-253\n6677\n9040\n3263\n-838\n3621\n3443\n-2281\n5042\n2376\n497\n4684\n6310\n-2014\n-1050\n6241\n4079\n6356\n1435\n-1119\n1542\n-INF\n4631\n-39\n1315\n4092\n7333\n-2503\n1656\n3174\n8022\n-INF\n-5\n7465\n568\n2857\n6985\n2482\n8367\n-118\n4459\n4204\n-345\n2384\n1168\n1670\n4736\n8179\n-1637\n-1658\n7593\n-2009\n2325\n1008\n-1635\n4804\n-208\n1575\n5335\n275\n323\n5025\n5727\n6690\n-635\n4153\n275\n6291\n1881\n710\n5897\n2786\n319\n5879\n7221\n5732\n-1036\n6567\n-1580\n7342\n-1004\n9283\n78\n2040\n4039\n-3341\n-4203\n2845\n-3682\n1410\n7715\n4019\n-11\n3644\n7470\n2453\n3237\n8193\n-153\n7075\n5738\n7519\n9930\n-150\n-304\n2278\n6965\n-899\n7810\n8102\n6170\n6977\n-2055\n2812\n-767\n7872\n4809\n4111\n573\n-1101\n714\n2569\n7260\n-1032\n4076\n-INF\n7862\n1328\n849\n-787\n-1195\n1079\n1927\n-2487\n7250\n-3397\n6518\n-919\n442\n1180\n2961\n-1175\n811\n-324\n6640\n7624\n725\n2829\n-2460\n1054\n4768\n6576\n2146\n6028\n7432\n5379\n390\n4042\n5466\n-4973\n-2117\n2284\n6534\n-544\n940\n1446\n954\n4469\n4700\n788\n890\n-419\n1876\n-1418\n386\n862\n8336\n4282\n1816\n6791\n-948\n-5302\n7364\n-4038\n-519\n161\n-4095\n2235\n-1122\n1709\n4525\n2626\n1624\n7040\n-2987\n5175\n1566\n1932\n7731\n1642\n4813\n8031\n5794\n8465\n2826\n651\n3536\n9398\n3018\n8194\n-2764\n5125\n3345\n2392\n1795\n3654\n7305\n4333\n1985\n3382\n-3228\n3010\n2756\n6172\n-861\n7241\n7920\n2275\n2799\n-3730\n-1984\n5778\n2293\n7298\n4053\n5485\n0\n4142\n3929\n1523\n3275\n2623\n1219\n2400\n2322\n7424\n1541\n2483\n3241\n-4082\n5008\n6438\n4075\n-3336\n4180\n825\n2051\n3390\n5561\n557\n1354\n2735\n-272\n6068\n198\n825\n6154\n3223\n9556\n3560\n6435\n4980\n4685\n-3591\n6516\n-1832\n-1826\n3156\n1735\n4630\n3603\n8684\n861\n5071\n-1093\n924\n8806\n-507\n8988\n2664\n7863\n5847\n5206\n5683\n385\n2705\n6060\n4876\n7495\n5522\n8142\n1863\n-1777\n2370\n-1768\n7413\n1490\n5121\n2072\n-4255\n2476\n8915\n-1564\n-1011\n-4097\n2451\n-4010\n1376\n123\n-3563\n-1095\n2630\n5673\n-4367\n4007\n-4042\n4307\n-3755\n-1243\n7238\n3698\n2083\n1206\n-1569\n3361\n3130\n7826\n1507\n3819\n5773\n6904\n6773\n6091\n4553\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "s06",
+  "title": "Treasure Walk Through One-Way Tunnels",
+  "category": "Graphs",
+  "difficulty": "Impossible",
+  "timeLimit": 5,
+  "description": "<p>A cave has <code>n</code> chambers and <code>m</code> one-way tunnels. Chamber <code>i</code> holds treasure worth <code>a<sub>i</sub></code>. You may start in <b>any</b> chamber, walk through tunnels as long as you like (chambers and tunnels may be revisited) and stop anywhere. The treasure of a chamber is collected the first time you enter it. What is the maximum total value you can collect?</p><h4>Constraints</h4><ul><li>1 &le; n &le; 6&middot;10<sup>4</sup>, 0 &le; m &le; 1.2&middot;10<sup>5</sup></li><li>0 &le; a<sub>i</sub> &le; 10<sup>9</sup> (the answer can exceed 32 bits)</li><li>Self-loops and repeated tunnels may appear. Recursion depth may reach <code>n</code>; use iterative algorithms.</li></ul><h4>Input</h4><p>The first line contains <code>n m</code>. The second line contains <code>a<sub>1</sub> ... a<sub>n</sub></code>. Each of the next <code>m</code> lines contains <code>u v</code>: a tunnel from <code>u</code> to <code>v</code>.</p><h4>Output</h4><p>Print the maximum total treasure.</p><h4>Example</h4><p>Input:</p><pre>6 7\n5 1 1 10 2 7\n1 2\n2 3\n3 1\n3 4\n4 5\n5 4\n2 6</pre><p>Output:</p><pre>19</pre>",
+  "solution": "import sys\ndef main():\n    d = sys.stdin.read().split()\n    n = int(d[0]); m = int(d[1])\n    val = [int(x) for x in d[2:2 + n]]\n    adj = [[] for _ in range(n)]\n    eu = [0] * m; ev = [0] * m\n    p = 2 + n\n    for i in range(m):\n        u = int(d[p]) - 1; v = int(d[p + 1]) - 1; p += 2\n        adj[u].append(v); eu[i] = u; ev[i] = v\n    idx = [-1] * n; low = [0] * n; onst = [False] * n; comp = [-1] * n\n    it = [0] * n; st = []; c = 0; t = 0\n    for s in range(n):\n        if idx[s] != -1:\n            continue\n        idx[s] = low[s] = t; t += 1; st.append(s); onst[s] = True\n        cs = [s]\n        while cs:\n            x = cs[-1]; a = adj[x]\n            if it[x] < len(a):\n                y = a[it[x]]; it[x] += 1\n                if idx[y] == -1:\n                    idx[y] = low[y] = t; t += 1; st.append(y); onst[y] = True; cs.append(y)\n                elif onst[y] and idx[y] < low[x]:\n                    low[x] = idx[y]\n            else:\n                cs.pop()\n                if cs and low[x] < low[cs[-1]]:\n                    low[cs[-1]] = low[x]\n                if low[x] == idx[x]:\n                    while True:\n                        y = st.pop(); onst[y] = False; comp[y] = c\n                        if y == x:\n                            break\n                    c += 1\n    W = [0] * c\n    for v in range(n):\n        W[comp[v]] += val[v]\n    out = [[] for _ in range(c)]\n    for i in range(m):\n        a = comp[eu[i]]; b = comp[ev[i]]\n        if a != b:\n            out[a].append(b)\n    best = [0] * c\n    for k in range(c):  # Tarjan numbers components in reverse topological order\n        b = 0\n        for j in out[k]:\n            if best[j] > b:\n                b = best[j]\n        best[k] = W[k] + b\n    print(max(best))\nmain()\n",
+  "tests": [
+   {
+    "input": "6 7\n5 1 1 10 2 7\n1 2\n2 3\n3 1\n3 4\n4 5\n5 4\n2 6\n",
+    "output": "19\n",
+    "hidden": false
+   },
+   {
+    "input": "3 0\n4 9 2\n",
+    "output": "9\n",
+    "hidden": false
+   },
+   {
+    "input": "1 1\n0\n1 1\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "4 3\n1 1 1 1\n1 2\n3 2\n4 2\n",
+    "output": "2\n",
+    "hidden": true
+   },
+   {
+    "input": "5 6\n3 3 3 3 100\n1 2\n2 1\n2 3\n3 4\n4 3\n5 1\n",
+    "output": "112\n",
+    "hidden": true
+   },
+   {
+    "input": "6 6\n10 1 1 1 1 1\n2 3\n3 4\n4 5\n5 6\n6 2\n1 1\n",
+    "output": "10\n",
+    "hidden": true
+   },
+   {
+    "input": "25 45\n246245600 478721482 478455245 395779357 617947876 289733225 892675396 360931493 577334390 807793540 42925366 990736296 478557211 979524509 717238927 668128692 587637197 418320752 645847985 310275342 941355557 129756528 997742588 122672611 742985478\n3 11\n4 24\n1 21\n19 11\n10 19\n9 4\n21 22\n7 10\n17 5\n14 19\n2 12\n20 5\n19 17\n3 18\n18 22\n9 25\n23 16\n4 18\n15 6\n1 15\n9 7\n22 19\n13 3\n13 6\n16 24\n3 18\n13 18\n11 10\n7 4\n6 4\n18 19\n2 1\n16 19\n9 21\n9 1\n6 23\n4 21\n16 13\n4 21\n22 16\n13 14\n13 15\n11 19\n22 21\n21 18\n",
+    "output": "10666754341\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(601)\nn, m = 60000, 120000\nprint(n, m)\nprint(\" \".join(str(random.randint(0, 10**9)) for _ in range(n)))\n# mostly forward edges along a hidden order plus some backward edges creating many SCCs\norder = list(range(1, n + 1)); random.shuffle(order)\nE = []\nfor _ in range(m):\n    i = random.randrange(n)\n    if random.randrange(10) == 0:\n        j = random.randrange(max(0, i - 20), i + 1)\n    else:\n        j = random.randrange(i, min(n, i + 200))\n    E.append(\"%d %d\" % (order[i], order[j]))\nprint(\"\\n\".join(E))\n",
+    "output": "1037695465546\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(602)\nn = 60000\n# a long path of small cycles (deep recursion killer), values mostly small with a few big ones\nvals = [random.randint(0, 1000) for _ in range(n)]\nfor _ in range(50):\n    vals[random.randrange(n)] = 10**9\nE = []\nfor i in range(n - 1):\n    E.append((i + 1, i + 2))\n    if i % 3 == 2:\n        E.append((i + 2, i - 1))\nfor _ in range(20000):\n    a = random.randint(1, n); b = random.randint(1, n)\n    if a < b:\n        E.append((a, b))\nrandom.shuffle(E)\nprint(n, len(E))\nprint(\" \".join(map(str, vals)))\nprint(\"\\n\".join(\"%d %d\" % e for e in E))\n",
+    "output": "50029939663\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "s07",
+  "title": "Festival Switchboard (Smallest 2-SAT Assignment)",
+  "category": "Graphs",
+  "difficulty": "Impossible",
+  "timeLimit": 5,
+  "description": "<p>The festival lighting has <code>n</code> switches <code>x<sub>1</sub> ... x<sub>n</sub></code>, each OFF (<code>0</code>) or ON (<code>1</code>). The organisers wrote <code>m</code> wishes; each wish is a pair of literals <code>a b</code> meaning \"<i>a</i> OR <i>b</i>\" must hold. A literal <code>+i</code> means \"switch <i>i</i> is ON\" and <code>-i</code> means \"switch <i>i</i> is OFF\".</p><p>Among all settings that satisfy every wish, print the <b>lexicographically smallest</b> one as a 0/1 string (prefer <code>x<sub>1</sub> = 0</code>, then <code>x<sub>2</sub> = 0</code>, and so on).</p><h4>Constraints</h4><ul><li>1 &le; n &le; 3000, 0 &le; m &le; 7000</li><li>1 &le; |a|, |b| &le; n. A wish may repeat a literal (<code>a = b</code>, forcing it) or be a tautology (<code>a = -b</code>).</li><li>Trying all 2<sup>n</sup> settings is hopeless; a correct 2-SAT approach with careful greedy fixing is required.</li></ul><h4>Input</h4><p>The first line contains <code>n m</code>. Each of the next <code>m</code> lines contains two non-zero integers <code>a b</code>.</p><h4>Output</h4><p>Print a string of <code>n</code> characters <code>0</code>/<code>1</code> (character <code>i</code> is the state of switch <code>i</code>), or <code>IMPOSSIBLE</code> if no setting satisfies all wishes.</p><h4>Example</h4><p>Input:</p><pre>4 4\n1 2\n-1 3\n-2 -3\n4 -3</pre><p>Output:</p><pre>0100</pre>",
+  "solution": "import sys\ndef main():\n    d = sys.stdin.read().split()\n    n = int(d[0]); m = int(d[1])\n    N = 2 * n\n    adj = [[] for _ in range(N)]\n    p = 2\n    for _ in range(m):\n        a = int(d[p]); b = int(d[p + 1]); p += 2\n        la = 2 * (a - 1) if a > 0 else 2 * (-a - 1) + 1\n        lb = 2 * (b - 1) if b > 0 else 2 * (-b - 1) + 1\n        adj[la ^ 1].append(lb)\n        adj[lb ^ 1].append(la)\n    val = [-1] * N\n    def assign(l):\n        if val[l] == 1:\n            return True\n        if val[l] == 0:\n            return False\n        ch = [l]; val[l] = 1; val[l ^ 1] = 0\n        st = [l]\n        while st:\n            x = st.pop()\n            for y in adj[x]:\n                vy = val[y]\n                if vy == 1:\n                    continue\n                if vy == 0:\n                    for z in ch:\n                        val[z] = -1; val[z ^ 1] = -1\n                    return False\n                val[y] = 1; val[y ^ 1] = 0; ch.append(y); st.append(y)\n        return True\n    for i in range(n):\n        if val[2 * i] == -1:\n            if not assign(2 * i + 1):\n                if not assign(2 * i):\n                    print(\"IMPOSSIBLE\")\n                    return\n    print(\"\".join('1' if val[2 * i] == 1 else '0' for i in range(n)))\nmain()\n",
+  "tests": [
+   {
+    "input": "4 4\n1 2\n-1 3\n-2 -3\n4 -3\n",
+    "output": "0100\n",
+    "hidden": false
+   },
+   {
+    "input": "2 4\n1 2\n-1 2\n1 -2\n-1 -2\n",
+    "output": "IMPOSSIBLE\n",
+    "hidden": false
+   },
+   {
+    "input": "1 0\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "3 3\n2 2\n-1 1\n-2 3\n",
+    "output": "011\n",
+    "hidden": true
+   },
+   {
+    "input": "3 2\n-1 -1\n1 1\n",
+    "output": "IMPOSSIBLE\n",
+    "hidden": true
+   },
+   {
+    "input": "5 6\n1 1\n-1 -2\n2 3\n-3 4\n-4 -5\n5 3\n",
+    "output": "10110\n",
+    "hidden": true
+   },
+   {
+    "input": "14 30\n6 10\n-14 -5\n-3 -12\n-11 -1\n-8 -9\n3 6\n-5 -5\n-3 10\n-2 13\n6 7\n10 11\n-10 -8\n-9 1\n-4 3\n-7 -12\n-13 11\n-14 -8\n-2 -1\n11 3\n13 10\n-11 5\n-5 -1\n-4 -4\n12 -1\n-7 -8\n-5 4\n1 4\n-8 -9\n-2 -8\n-1 -4\n",
+    "output": "IMPOSSIBLE\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(701)\nn, m = 3000, 7000\nplanted = [random.randint(0, 1) for _ in range(n)]\nC = []\nwhile len(C) < m:\n    i = random.randint(1, n)\n    j = random.randint(max(1, i - 3000), min(n, i + 3000))\n    a = i * random.choice((1, -1)); b = j * random.choice((1, -1))\n    if True and not ((planted[i - 1] == (a > 0)) or (planted[j - 1] == (b > 0))):\n        continue\n    C.append((a, b))\n\nprint(n, len(C))\nprint(\"\\n\".join(\"%d %d\" % c for c in C))\n",
+    "output": "010000100000001011110000100100000000010010100111101010010110000000000010011000100000010000101000100011000100000110101011000001000010010000101111001000110011000100110000010110101011000000111010011000000110000000010111001000101001011000010000000000100111010010000000100011000100101100001110000001000011010101000000110010000100001000100000010101100000001000110101101000100010010010001010010011010110111101010010011001110010000001000010110001010000110110101000010010101000001001011100000000010000001101001111010011000101000000111100010011001000001000001100110100111100000100110010000001011000000001011000010001100011001000000011010101000000100010001000000000000010101010001001001000000110001001001100000110000000001000111100110000011100000000100101011111000100001100100000000000101010101100000001001001010011100100110000010111100100101101000100110000000000001110000000010001101101101000001010011000011110011010110000110000000101001000000000010100100110100100100000010011010000000000001111110000110010010100011101110011101000100000101100101101101101001101100100111101111110011001100000000000100010000110000000100011100000001001001100000000010010001101100100000101001010101101000001000000000101101101000010000101000010101000011100110100101111001111011000001100100001011011100011001111010001001010100100100000101000101000100000000111010101011000010010011101010010000010001011100011001110000000010111011100100110101010010000010101001101100100000100010100100100101110110010001110100001000110001001100011001011000000000000001010010000001010100010001001100000100000100011100000110000000100100111000000111101100001000100100100110001000110001000100100101001010011001000100010010000000101101100001110001001011100011011001000011011111001010010100010001001010000001000100001111000111001011111011110100000100001101010111101100111110000110001010100010010111100110010100010000111000001010001000101010110001111011011010100011010101110000001000110100010010110000100000110000000000010010100000011011011010001001001010000010110100011101010001011001111101100101000010010100001000000010001101001010101100111110000111001001111010101110010000100101100100000000101011010001110001011110110011010001001010000001000110100011000000110111100110010100101010000100010110000101011101011001110011101010000011001011010011100101000110011100110011101000000000110101001011011011001010001000111101101010110010000101000110010001111000011010110010101101011111000011001000111001111111101001101101011001110101000111100000100000001100000111110000000011111010111011010001110100101010000001010010000000010100001101100100100011000100010000101110000000000110100110010001110111111000000011100100110100001001000100101100000100110000010011000001010111101011101010000011011101110001011101001010010000001100100010110000011110100000000010100000000000101100110000100001100010000000001101010011000100000110000111100011010011011111000010111010011110001001000000010111001110100000011011101000001001010010010100100011111000010010010110011001010001101001011011001\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(702)\nn, m = 3000, 6000\nplanted = [random.randint(0, 1) for _ in range(n)]\nC = []\nwhile len(C) < m:\n    i = random.randint(1, n)\n    j = random.randint(max(1, i - 40), min(n, i + 40))\n    a = i * random.choice((1, -1)); b = j * random.choice((1, -1))\n    if True and not ((planted[i - 1] == (a > 0)) or (planted[j - 1] == (b > 0))):\n        continue\n    C.append((a, b))\n\nprint(n, len(C))\nprint(\"\\n\".join(\"%d %d\" % c for c in C))\n",
+    "output": "000101110000100111000000001000010010111000111111110000010001001001011000010000000000000000010000010001011010100001011000100001010000001000100000010001011100000001100110011000000001000000000100100010110000000101000100100000111000111101000001001011000010100010100000101011000101010010000001100100000101000000101000000111011101010101100000010000101001001100110110100110100010101010110011100000000010010100011000000001111000000011110011001010000000011111101000001001000101010001101111010000100001001101110100100001001110101100000100110011110011000100000010110110100110001110100100000000110100011101100011110100000000010000010001011001001001010001001110000111000100011011001010000011001011000000000001110000000001100001000000001000101000100010001110010000110000100001001101000001101000101010100010100001001000101010011010100010001010010001111110010010110001110101010110000001000100000101100001010001101000000100000000001110011001101101010011101010111010010101010001011100001100000111000000000100011010110001010110011010101000001000001000100110011001000001000110011010101011000000110000100101010001110010010101000000110001000010000110001110111001000010010000001011100110011100100110110000000000010110110000100100110100110101001000010010001000110010100000000001000101100111000010000100001011010000100001100001111001001000100000100010001010011010000001000000000001011010101001100110000100110111101111111110000110011010100011100010101011010100110000000000100011111100000100100000000000110001001100111000001000001001011110001110011000101101100001101011100111000001001000001000100111010010100010010001011101100000010000100100001000000001001010000100010001010001111001001010100100100101010000010001010010010010000011010100110000111011010100110000100010000011010010001111000011000001011101011100001001110000010000111100100110010010010000011101011110101110101100010100101010111010101010100001001010000100100010101010010010010000011011101001001000100110100001010001011101110001110011110010001011000001000101010010100000100000111011101110000110100011001101001001101100000000001100100010001000001111000001000001000100001110011110000000000000010110100100001000110011010111000001010000111011011000100011100000110100000000000011100000000010011010010100100000010000010111100000011011111000111010101010100100110100100111010011100110101000001001000011000000000000001001001000010011000100111000111100010000010100000000000000010110000000000100000010111010001001000100010000010011010100000000001000000001010100110100000100010111101010000011111110000100010100100011011100000001110100010000101100000000000011110001001001100000011100001010001001100000110110101000101110011100100000010110011110001100001100000000000000000000000010000100000000010000100000011101100000000001000101000000010001100000010001100011000000010011001000000010111101010110101000001011100101010000010000001101000000001010000000000010000001000011111001000011100011100000000100100111000110000000000111110000111011001010001001100010100000000011100000010011101000\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(703)\nn, m = 3000, 6000\nplanted = [random.randint(0, 1) for _ in range(n)]\nC = []\nwhile len(C) < m:\n    i = random.randint(1, n)\n    j = random.randint(max(1, i - 40), min(n, i + 40))\n    a = i * random.choice((1, -1)); b = j * random.choice((1, -1))\n    if True and not ((planted[i - 1] == (a > 0)) or (planted[j - 1] == (b > 0))):\n        continue\n    C.append((a, b))\nk = random.randint(1000, 2000)\nC += [(-k, k + 1), (-k - 1, k + 2), (-k - 2, -k), (k, k + 3), (-k - 3, k + 4), (-k - 4, k)]\nrandom.shuffle(C)\nprint(n, len(C))\nprint(\"\\n\".join(\"%d %d\" % c for c in C))\n",
+    "output": "IMPOSSIBLE\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "s08",
+  "title": "Pipeline Throughput (Maximum Flow)",
+  "category": "Graphs",
+  "difficulty": "Impossible",
+  "timeLimit": 5,
+  "description": "<p>An oil network has <code>n</code> stations and <code>m</code> one-way pipes. Pipe <code>u v c</code> can carry at most <code>c</code> barrels per hour from <code>u</code> to <code>v</code>. Oil is pumped in at station <code>s</code> and collected at station <code>t</code>; at every other station inflow must equal outflow. What is the maximum number of barrels per hour that can reach <code>t</code>?</p><p>Capacities are large, so augmenting one unit (or one arbitrary path) at a time is far too slow; use a polynomial algorithm such as Dinic or Edmonds&ndash;Karp.</p><h4>Constraints</h4><ul><li>2 &le; n &le; 300, 0 &le; m &le; 6000, <code>s &ne; t</code></li><li>0 &le; c &le; 10<sup>9</sup></li><li>Pipes in both directions between the same stations, repeated pipes and self-loops may appear.</li></ul><h4>Input</h4><p>The first line contains <code>n m s t</code>. Each of the next <code>m</code> lines contains <code>u v c</code>.</p><h4>Output</h4><p>Print the maximum flow value.</p><h4>Example</h4><p>Input:</p><pre>4 5 1 4\n1 2 3\n1 3 2\n2 3 5\n2 4 2\n3 4 3</pre><p>Output:</p><pre>5</pre>",
+  "solution": "import sys\nfrom collections import deque\ndef main():\n    d = sys.stdin.read().split()\n    n = int(d[0]); m = int(d[1]); s = int(d[2]); t = int(d[3])\n    g = [[] for _ in range(n + 1)]\n    to = []; cap = []\n    p = 4\n    for _ in range(m):\n        u = int(d[p]); v = int(d[p + 1]); c = int(d[p + 2]); p += 3\n        g[u].append(len(to)); to.append(v); cap.append(c)\n        g[v].append(len(to)); to.append(u); cap.append(0)\n    flow = 0\n    while True:\n        level = [-1] * (n + 1); level[s] = 0\n        q = deque([s])\n        while q:\n            x = q.popleft()\n            for e in g[x]:\n                if cap[e] > 0 and level[to[e]] < 0:\n                    level[to[e]] = level[x] + 1; q.append(to[e])\n        if level[t] < 0:\n            break\n        it = [0] * (n + 1)\n        while True:\n            path = []; x = s; found = False\n            while True:\n                if x == t:\n                    found = True; break\n                a = g[x]; i = it[x]; L = len(a); lx = level[x] + 1\n                while i < L:\n                    e = a[i]\n                    if cap[e] > 0 and level[to[e]] == lx:\n                        break\n                    i += 1\n                it[x] = i\n                if i == L:\n                    if not path:\n                        break\n                    e = path.pop(); x = to[e ^ 1]; it[x] += 1\n                else:\n                    path.append(a[i]); x = to[a[i]]\n            if not found:\n                break\n            f = min(cap[e] for e in path)\n            for e in path:\n                cap[e] -= f; cap[e ^ 1] += f\n            flow += f\n    print(flow)\nmain()\n",
+  "tests": [
+   {
+    "input": "4 5 1 4\n1 2 3\n1 3 2\n2 3 5\n2 4 2\n3 4 3\n",
+    "output": "5\n",
+    "hidden": false
+   },
+   {
+    "input": "3 1 1 3\n1 2 10\n",
+    "output": "0\n",
+    "hidden": false
+   },
+   {
+    "input": "2 3 2 1\n1 2 100\n2 1 7\n2 1 8\n",
+    "output": "15\n",
+    "hidden": true
+   },
+   {
+    "input": "4 6 1 4\n1 2 1000000000\n1 3 1000000000\n2 3 1\n2 4 1000000000\n3 4 1000000000\n4 4 5\n",
+    "output": "2000000000\n",
+    "hidden": true
+   },
+   {
+    "input": "5 5 1 5\n1 2 0\n2 5 9\n1 3 4\n3 4 4\n4 3 4\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "6 9 1 6\n1 2 16\n1 3 13\n3 2 4\n2 4 12\n4 3 9\n3 5 14\n5 4 7\n4 6 20\n5 6 4\n",
+    "output": "23\n",
+    "hidden": true
+   },
+   {
+    "input": "8 20 1 8\n7 8 450607008\n1 3 678298330\n7 6 686203536\n2 6 35452704\n7 8 903301959\n6 5 333084133\n2 8 936004328\n1 8 506040061\n3 6 188802313\n4 8 124020660\n1 3 901676021\n8 3 679466260\n2 5 716802661\n8 6 196334035\n2 5 326197138\n2 5 520319298\n4 2 403239353\n7 1 190900015\n1 8 321342419\n8 7 721872941\n",
+    "output": "827382480\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(801)\n# layered network: 6 layers x 49 vertices, dense random edges between consecutive layers\nL, K = 6, 49\nn = L * K + 2\ns, t = n - 1, n\nE = []\nfor j in range(K):\n    E.append((s, j + 1, random.randint(10**8, 10**9)))\n    E.append(((L - 1) * K + j + 1, t, random.randint(10**8, 10**9)))\nfor l in range(L - 1):\n    for _ in range(1100):\n        a = l * K + random.randrange(K) + 1\n        b = (l + 1) * K + random.randrange(K) + 1\n        E.append((a, b, random.randint(1, 10**9)))\nfor _ in range(300):\n    E.append((random.randint(1, n - 2), random.randint(1, n - 2), random.randint(1, 10**9)))\nrandom.shuffle(E)\nprint(n, len(E), s, t)\nprint(\"\\n\".join(\"%d %d %d\" % e for e in E))\n",
+    "output": "25493004442\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(802)\nn, m = 300, 6000\nE = []\nfor _ in range(m):\n    u = random.randint(1, n); v = random.randint(1, n)\n    if u != v:\n        E.append((u, v, random.randint(1, 10**9)))\nprint(n, len(E), 1, n)\nprint(\"\\n\".join(\"%d %d %d\" % e for e in E))\n",
+    "output": "9204025248\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(803)\n# grid-like unit-capacity mesh: many augmenting paths of length ~ 2*side\nside = 17\nn = side * side\nE = []\nfor i in range(side):\n    for j in range(side):\n        v = i * side + j + 1\n        if j + 1 < side:\n            E.append((v, v + 1, random.randint(1, 3))); E.append((v + 1, v, random.randint(1, 3)))\n        if i + 1 < side:\n            E.append((v, v + side, random.randint(1, 3))); E.append((v + side, v, random.randint(1, 3)))\nrandom.shuffle(E)\nprint(n, len(E), 1, n)\nprint(\"\\n\".join(\"%d %d %d\" % e for e in E))\n",
+    "output": "3\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "s09",
+  "title": "Interns and Projects (Maximum Matching)",
+  "category": "Graphs",
+  "difficulty": "Impossible",
+  "timeLimit": 5,
+  "description": "<p>A company has <code>L</code> interns and <code>R</code> projects. Each of the <code>m</code> lines of the preference list says that intern <code>a</code> is willing to work on project <code>b</code>. Each intern can take at most one project and each project at most one intern. What is the maximum number of interns that can be assigned?</p><p>With up to 5&middot;10<sup>4</sup> vertices per side, simple augmenting-path matching (Kuhn's algorithm) is too slow in the worst case; use Hopcroft&ndash;Karp (or an equivalent max-flow approach). Avoid recursion.</p><h4>Constraints</h4><ul><li>1 &le; L, R &le; 5&middot;10<sup>4</sup>, 0 &le; m &le; 1.2&middot;10<sup>5</sup></li><li>Pairs may repeat.</li></ul><h4>Input</h4><p>The first line contains <code>L R m</code>. Each of the next <code>m</code> lines contains <code>a b</code> (1 &le; a &le; L, 1 &le; b &le; R).</p><h4>Output</h4><p>Print the size of a maximum matching.</p><h4>Example</h4><p>Input:</p><pre>3 3 5\n1 1\n1 2\n2 1\n3 2\n3 3</pre><p>Output:</p><pre>3</pre>",
+  "solution": "import sys\nfrom collections import deque\ndef main():\n    d = sys.stdin.read().split()\n    L = int(d[0]); R = int(d[1]); m = int(d[2])\n    adj = [[] for _ in range(L + 1)]\n    p = 3\n    for _ in range(m):\n        a = int(d[p]); b = int(d[p + 1]); p += 2\n        adj[a].append(b)\n    mL = [0] * (L + 1); mR = [0] * (R + 1)\n    for u in range(1, L + 1):\n        for v in adj[u]:\n            if not mR[v]:\n                mL[u] = v; mR[v] = u\n                break\n    INF = 1 << 30\n    while True:\n        dist = [INF] * (L + 1)\n        q = deque()\n        for u in range(1, L + 1):\n            if not mL[u]:\n                dist[u] = 0; q.append(u)\n        found = False\n        while q:\n            u = q.popleft(); du = dist[u] + 1\n            for v in adj[u]:\n                w = mR[v]\n                if not w:\n                    found = True\n                elif dist[w] == INF:\n                    dist[w] = du; q.append(w)\n        if not found:\n            break\n        it = [0] * (L + 1)\n        for s in range(1, L + 1):\n            if mL[s]:\n                continue\n            stack = [s]; pv = []\n            while stack:\n                u = stack[-1]; a = adj[u]\n                if it[u] < len(a):\n                    v = a[it[u]]; it[u] += 1\n                    w = mR[v]\n                    if not w:\n                        pv.append(v)\n                        for i in range(len(stack)):\n                            uu = stack[i]; vv = pv[i]\n                            mL[uu] = vv; mR[vv] = uu\n                        break\n                    if dist[w] == dist[u] + 1:\n                        pv.append(v); stack.append(w)\n                else:\n                    dist[u] = INF\n                    stack.pop()\n                    if pv:\n                        pv.pop()\n    print(sum(1 for u in range(1, L + 1) if mL[u]))\nmain()\n",
+  "tests": [
+   {
+    "input": "3 3 5\n1 1\n1 2\n2 1\n3 2\n3 3\n",
+    "output": "3\n",
+    "hidden": false
+   },
+   {
+    "input": "3 2 3\n1 1\n2 1\n3 1\n",
+    "output": "1\n",
+    "hidden": false
+   },
+   {
+    "input": "1 1 0\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "4 4 7\n1 1\n2 1\n2 2\n3 2\n3 3\n4 3\n4 4\n",
+    "output": "4\n",
+    "hidden": true
+   },
+   {
+    "input": "5 5 6\n1 2\n2 2\n3 2\n4 2\n5 1\n5 2\n",
+    "output": "2\n",
+    "hidden": true
+   },
+   {
+    "input": "6 6 10\n1 1\n1 2\n2 1\n3 3\n3 4\n4 3\n5 5\n6 5\n6 6\n6 6\n",
+    "output": "6\n",
+    "hidden": true
+   },
+   {
+    "input": "12 10 30\n1 7\n10 8\n3 10\n3 3\n12 3\n1 10\n1 7\n8 9\n11 2\n10 3\n11 3\n7 8\n11 2\n6 1\n9 9\n6 5\n12 2\n11 10\n9 3\n6 2\n7 3\n2 3\n4 6\n12 5\n4 9\n9 2\n2 1\n9 1\n7 10\n6 7\n",
+    "output": "9\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(901)\nL = R = 40000\nE = []\nfor u in range(1, L + 1):\n    for _ in range(random.randint(1, 4)):\n        E.append((u, random.randint(max(1, u - 60), min(R, u + 60))))\nrandom.shuffle(E)\nprint(L, R, len(E))\nprint(\"\\n\".join(\"%d %d\" % e for e in E))\n",
+    "output": "35395\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(902)\n# adversarial for greedy + simple augmenting: left u connects to right u and u+1 (chain), listed so greedy picks badly\nL = R = 50000\nE = []\nfor u in range(1, L + 1):\n    if u < R:\n        E.append((u, u + 1))\n    E.append((u, u))\nfor _ in range(20000):\n    E.append((random.randint(1, L), random.randint(1, R)))\nprint(L, R, len(E))\nprint(\"\\n\".join(\"%d %d\" % e for e in E))\n",
+    "output": "50000\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(903)\nL, R = 30000, 20000\nE = []\nfor _ in range(100000):\n    E.append((random.randint(1, L), max(1, random.randint(1, R) // random.randint(1, 3))))\nprint(L, R, len(E))\nprint(\"\\n\".join(\"%d %d\" % e for e in E))\n",
+    "output": "17881\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "s10",
+  "title": "Make the Network Fault-Tolerant",
+  "category": "Graphs",
+  "difficulty": "Impossible",
+  "timeLimit": 5,
+  "description": "<p>A <b>connected</b> computer network has <code>n</code> nodes and <code>m</code> two-way cables. A cable is a <i>weak link</i> if cutting it disconnects the network. The engineers want to lay the minimum number of <b>new</b> cables (each new cable joins any two distinct nodes, possibly ones that are already joined) so that the resulting network has no weak link at all. Print that minimum.</p><p>Hint-free warning: a greedy that only counts weak links is wrong; think about what the network looks like after contracting every part without weak links.</p><h4>Constraints</h4><ul><li>1 &le; n &le; 10<sup>5</sup>, n - 1 &le; m &le; 1.5&middot;10<sup>5</sup>; the network is connected.</li><li>No cable joins a node to itself, but several cables may join the same pair of nodes (two parallel cables are never weak links).</li><li>The network may be a very long chain: use an iterative DFS.</li></ul><h4>Input</h4><p>The first line contains <code>n m</code>. Each of the next <code>m</code> lines contains <code>u v</code>.</p><h4>Output</h4><p>Print the minimum number of cables to add.</p><h4>Example</h4><p>Input:</p><pre>7 7\n1 2\n2 3\n3 1\n3 4\n4 5\n4 6\n6 7</pre><p>Output:</p><pre>2</pre>",
+  "solution": "import sys\nfrom collections import deque\ndef main():\n    d = sys.stdin.read().split()\n    n = int(d[0]); m = int(d[1])\n    adj = [[] for _ in range(n + 1)]\n    eu = [0] * m; ev = [0] * m\n    p = 2\n    for i in range(m):\n        u = int(d[p]); v = int(d[p + 1]); p += 2\n        eu[i] = u; ev[i] = v\n        adj[u].append((v, i)); adj[v].append((u, i))\n    tin = [0] * (n + 1); low = [0] * (n + 1); it = [0] * (n + 1)\n    isb = [False] * m\n    pe = [-1] * (n + 1)\n    t = 1\n    tin[1] = low[1] = t; t += 1\n    st = [1]\n    while st:\n        x = st[-1]; a = adj[x]\n        if it[x] < len(a):\n            y, e = a[it[x]]; it[x] += 1\n            if e == pe[x]:\n                continue\n            if tin[y]:\n                if tin[y] < low[x]:\n                    low[x] = tin[y]\n            else:\n                tin[y] = low[y] = t; t += 1; pe[y] = e; st.append(y)\n        else:\n            st.pop()\n            if st:\n                q = st[-1]\n                if low[x] < low[q]:\n                    low[q] = low[x]\n                if low[x] > tin[q]:\n                    isb[pe[x]] = True\n    comp = [-1] * (n + 1); c = 0\n    for s in range(1, n + 1):\n        if comp[s] != -1:\n            continue\n        comp[s] = c; dq = [s]\n        while dq:\n            x = dq.pop()\n            for y, e in adj[x]:\n                if not isb[e] and comp[y] == -1:\n                    comp[y] = c; dq.append(y)\n        c += 1\n    if c == 1:\n        print(0); return\n    deg = [0] * c\n    for i in range(m):\n        if isb[i]:\n            deg[comp[eu[i]]] += 1; deg[comp[ev[i]]] += 1\n    leaves = sum(1 for x in deg if x == 1)\n    print((leaves + 1) // 2)\nmain()\n",
+  "tests": [
+   {
+    "input": "7 7\n1 2\n2 3\n3 1\n3 4\n4 5\n4 6\n6 7\n",
+    "output": "2\n",
+    "hidden": false
+   },
+   {
+    "input": "4 4\n1 2\n2 3\n3 4\n4 1\n",
+    "output": "0\n",
+    "hidden": false
+   },
+   {
+    "input": "1 0\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "2 1\n1 2\n",
+    "output": "1\n",
+    "hidden": true
+   },
+   {
+    "input": "2 2\n2 1\n1 2\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "5 4\n1 2\n1 3\n1 4\n1 5\n",
+    "output": "2\n",
+    "hidden": true
+   },
+   {
+    "input": "6 6\n1 2\n2 3\n3 1\n1 4\n2 5\n3 6\n",
+    "output": "2\n",
+    "hidden": true
+   },
+   {
+    "input": "30 34\n19 25\n25 30\n14 5\n13 3\n19 16\n19 14\n8 6\n22 7\n25 20\n20 10\n12 24\n24 18\n28 25\n6 24\n2 15\n21 18\n13 18\n27 22\n18 19\n17 4\n18 22\n6 11\n14 29\n9 21\n23 6\n1 12\n16 26\n16 2\n24 4\n2 30\n11 28\n14 3\n4 24\n25 13\n",
+    "output": "6\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1001)\nn = 100000\nperm = list(range(1, n + 1)); random.shuffle(perm)\nE = []\nfor i in range(1, n):\n    E.append((perm[i], perm[random.randrange(max(0, i - 4), i)]))\nfor _ in range(25000):\n    i = random.randrange(n - 4)\n    E.append((perm[i], perm[i + random.randint(1, 3)]))\nrandom.shuffle(E)\nprint(n, len(E))\nprint(\"\\n\".join(\"%d %d\" % e for e in E))\n",
+    "output": "9736\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1002)\n# long chain of cycles with parallel edges and pendant paths\nn = 100000\nE = []\nv = 1; nxt = 2\nwhile nxt + 8 <= n:\n    r = random.randrange(4)\n    if r == 0:\n        k = random.randint(2, 6)\n        cyc = [v] + list(range(nxt, nxt + k)); nxt += k\n        for i in range(len(cyc)):\n            E.append((cyc[i], cyc[(i + 1) % len(cyc)]))\n        v = random.choice(cyc)\n    elif r == 1:\n        E.append((v, nxt)); E.append((nxt, v)); v = nxt; nxt += 1\n    else:\n        E.append((v, nxt)); v = nxt if random.randrange(3) else v; nxt += 1\nwhile nxt <= n:\n    E.append((nxt, random.randint(1, nxt - 1))); nxt += 1\nperm = list(range(1, n + 1)); random.shuffle(perm)\nE = [(perm[a - 1], perm[b - 1]) for a, b in E]\nrandom.shuffle(E)\nprint(n, len(E))\nprint(\"\\n\".join(\"%d %d\" % e for e in E))\n",
+    "output": "4714\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "s11",
+  "title": "Toll Vouchers",
+  "category": "Graphs",
+  "difficulty": "Impossible",
+  "timeLimit": 5,
+  "description": "<p>A country has <code>n</code> cities and <code>m</code> two-way toll roads; road <code>u v w</code> costs <code>w</code>. You travel from city <code>1</code> to city <code>n</code> and own <code>K</code> vouchers. Using a voucher on a road makes that road free; each voucher can be used once, at most one voucher per road traversal. Find the minimum total toll.</p><p>Note that the best route with vouchers is generally <b>not</b> the cheapest route without them.</p><h4>Constraints</h4><ul><li>1 &le; n &le; 6000, 0 &le; m &le; 2&middot;10<sup>4</sup>, 0 &le; K &le; 10</li><li>1 &le; w &le; 10<sup>9</sup></li><li>Self-loops and repeated roads may appear. If <code>n = 1</code> the answer is <code>0</code>.</li></ul><h4>Input</h4><p>The first line contains <code>n m K</code>. Each of the next <code>m</code> lines contains <code>u v w</code>.</p><h4>Output</h4><p>Print the minimum total toll, or <code>-1</code> if city <code>n</code> cannot be reached.</p><h4>Example</h4><p>Input:</p><pre>5 6 1\n1 2 4\n2 5 100\n1 3 1\n3 4 1\n4 5 50\n2 3 1</pre><p>Output:</p><pre>2</pre>",
+  "solution": "import sys, heapq\ndef main():\n    d = sys.stdin.read().split()\n    n = int(d[0]); m = int(d[1]); K = int(d[2])\n    adj = [[] for _ in range(n)]\n    p = 3\n    for _ in range(m):\n        u = int(d[p]) - 1; v = int(d[p + 1]) - 1; w = int(d[p + 2]); p += 3\n        adj[u].append((v, w)); adj[v].append((u, w))\n    K1 = K + 1\n    INF = float('inf')\n    dist = [INF] * (n * K1)\n    dist[0] = 0\n    h = [(0, 0)]\n    pop = heapq.heappop; push = heapq.heappush\n    while h:\n        du, s = pop(h)\n        if du > dist[s]:\n            continue\n        v, j = divmod(s, K1)\n        if v == n - 1:\n            print(du); return\n        for y, w in adj[v]:\n            b = y * K1 + j\n            nd = du + w\n            if nd < dist[b]:\n                dist[b] = nd; push(h, (nd, b))\n            if j < K:\n                b += 1\n                if du < dist[b]:\n                    dist[b] = du; push(h, (du, b))\n    print(-1)\nmain()\n",
+  "tests": [
+   {
+    "input": "5 6 1\n1 2 4\n2 5 100\n1 3 1\n3 4 1\n4 5 50\n2 3 1\n",
+    "output": "2\n",
+    "hidden": false
+   },
+   {
+    "input": "4 4 0\n1 2 5\n2 4 5\n1 3 2\n3 4 9\n",
+    "output": "10\n",
+    "hidden": false
+   },
+   {
+    "input": "1 0 3\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "3 1 5\n1 2 7\n",
+    "output": "-1\n",
+    "hidden": true
+   },
+   {
+    "input": "4 3 5\n1 2 10\n2 3 20\n3 4 30\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "4 5 2\n1 4 1000\n1 2 1\n2 3 1\n3 4 1\n2 2 999\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "15 35 2\n11 9 271910302\n3 5 989035402\n10 1 202528539\n4 14 174958996\n3 6 632526806\n2 9 42481445\n7 15 251456204\n10 15 358347183\n15 6 712750555\n12 6 288510205\n3 1 181935834\n2 5 944745993\n9 8 561050069\n3 14 650475018\n1 12 969897513\n3 8 462794484\n13 3 49425948\n8 3 380707096\n14 4 93653396\n6 9 730785147\n13 11 540326676\n1 14 864460227\n12 7 107624437\n3 13 874020386\n8 6 134128406\n7 2 275370045\n2 7 298056671\n8 11 232184587\n15 4 987130461\n8 15 465872796\n13 1 948876633\n15 13 646248634\n3 11 674435394\n4 1 59375541\n9 12 322909103\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1101)\nn, m, K = 6000, 18000, 4\nE = []\nfor i in range(2, n + 1):\n    E.append((random.randint(max(1, i - 10), i - 1), i, random.randint(1, 10**6)))\nwhile len(E) < m:\n    u = random.randint(1, n); v = random.randint(max(1, u - 15), min(n, u + 15))\n    E.append((u, v, random.randint(1, 10**6) if random.randrange(200) else random.randint(10**8, 10**9)))\nrandom.shuffle(E)\nprint(n, len(E), K)\nprint(\"\\n\".join(\"%d %d %d\" % e for e in E))\n",
+    "output": "126182620\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1102)\n# grid with a few very expensive shortcut roads: vouchers should be spent on them\nH, W = 60, 60\nn = H * W\nK = 8\nE = []\nfor i in range(H):\n    for j in range(W):\n        v = i * W + j + 1\n        if j + 1 < W: E.append((v, v + 1, random.randint(1, 1000)))\n        if i + 1 < H: E.append((v, v + W, random.randint(1, 1000)))\nfor _ in range(300):\n    u = random.randint(1, n); v = random.randint(1, n)\n    E.append((u, v, random.randint(10**8, 10**9)))\nrandom.shuffle(E)\nprint(n, len(E), K)\nprint(\"\\n\".join(\"%d %d %d\" % e for e in E))\n",
+    "output": "2865\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "s12",
+  "title": "The Postman's Smallest Route",
+  "category": "Graphs",
+  "difficulty": "Impossible",
+  "timeLimit": 5,
+  "description": "<p>A town has <code>n</code> squares and <code>m</code> one-way streets (street <code>i</code> goes from <code>u<sub>i</sub></code> to <code>v<sub>i</sub></code>; repeated streets and streets from a square to itself are allowed). The postman wants a route that walks along <b>every street exactly once</b>; he may start and end at any squares. Write the route as the sequence of the <code>m + 1</code> squares visited. Among all valid routes choose the <b>lexicographically smallest</b> sequence.</p><p>Because the route is long, print a hash of it: start with <code>h = 0</code> and for each square <code>v</code> of the sequence in order do <code>h = (h &middot; 1000003 + v) mod (10<sup>9</sup> + 7)</code>.</p><h4>Constraints</h4><ul><li>1 &le; n &le; 5&middot;10<sup>4</sup>, 1 &le; m &le; 1.2&middot;10<sup>5</sup></li><li>Use an iterative algorithm (Hierholzer); recursion depth would reach <code>m</code>.</li></ul><h4>Input</h4><p>The first line contains <code>n m</code>. Each of the next <code>m</code> lines contains <code>u v</code>.</p><h4>Output</h4><p>Print the hash of the lexicographically smallest route, or <code>NO</code> if no route uses every street exactly once.</p><h4>Example</h4><p>Input:</p><pre>3 5\n1 2\n2 3\n3 1\n1 3\n3 2</pre><p>Output:</p><pre>540821232</pre><p>In the example the lexicographically smallest route is <code>1 2 3 1 3 2</code>, whose hash is printed.</p>",
+  "solution": "import sys\ndef main():\n    d = sys.stdin.read().split()\n    n = int(d[0]); m = int(d[1])\n    adj = [[] for _ in range(n + 1)]\n    ind = [0] * (n + 1); outd = [0] * (n + 1)\n    p = 2\n    for _ in range(m):\n        u = int(d[p]); v = int(d[p + 1]); p += 2\n        adj[u].append(v); outd[u] += 1; ind[v] += 1\n    plus = []; minus = []; bad = False\n    for v in range(1, n + 1):\n        x = outd[v] - ind[v]\n        if x == 1: plus.append(v)\n        elif x == -1: minus.append(v)\n        elif x != 0: bad = True\n    if bad or len(plus) > 1 or len(plus) != len(minus):\n        print(\"NO\"); return\n    if plus:\n        start = plus[0]\n    else:\n        start = next(v for v in range(1, n + 1) if outd[v] > 0)\n    for v in range(1, n + 1):\n        adj[v].sort(reverse=True)\n    st = [start]; path = []\n    while st:\n        v = st[-1]\n        if adj[v]:\n            st.append(adj[v].pop())\n        else:\n            path.append(st.pop())\n    if len(path) != m + 1:\n        print(\"NO\"); return\n    MOD = 10**9 + 7\n    h = 0\n    for v in reversed(path):\n        h = (h * 1000003 + v) % MOD\n    print(h)\nmain()\n",
+  "tests": [
+   {
+    "input": "3 5\n1 2\n2 3\n3 1\n1 3\n3 2\n",
+    "output": "540821232\n",
+    "hidden": false
+   },
+   {
+    "input": "2 1\n1 2\n",
+    "output": "1000005\n",
+    "hidden": false
+   },
+   {
+    "input": "3 2\n1 2\n3 2\n",
+    "output": "NO\n",
+    "hidden": true
+   },
+   {
+    "input": "1 3\n1 1\n1 1\n1 1\n",
+    "output": "33930089\n",
+    "hidden": true
+   },
+   {
+    "input": "4 4\n1 2\n2 1\n3 4\n4 3\n",
+    "output": "NO\n",
+    "hidden": true
+   },
+   {
+    "input": "4 5\n2 3\n3 2\n2 4\n4 2\n3 3\n",
+    "output": "842208559\n",
+    "hidden": true
+   },
+   {
+    "input": "5 6\n4 1\n1 5\n5 4\n4 2\n2 3\n3 4\n",
+    "output": "449552625\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1201)\nn, m = 50000, 120000\nx = random.randint(1, n)\nfirst = x\nE = []\nfor i in range(m):\n    if False and i == m - 1:\n        y = first\n    elif random.randrange(3) == 0:\n        y = random.randint(max(1, x - 3), min(n, x + 3))\n    else:\n        y = random.randint(1, n)\n    E.append((x, y)); x = y\n\nrandom.shuffle(E)\nprint(n, len(E))\nprint(\"\\n\".join(\"%d %d\" % e for e in E))\n",
+    "output": "935307689\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1202)\nn, m = 30000, 120000\nx = random.randint(1, n)\nfirst = x\nE = []\nfor i in range(m):\n    if True and i == m - 1:\n        y = first\n    elif random.randrange(3) == 0:\n        y = random.randint(max(1, x - 3), min(n, x + 3))\n    else:\n        y = random.randint(1, n)\n    E.append((x, y)); x = y\n\nrandom.shuffle(E)\nprint(n, len(E))\nprint(\"\\n\".join(\"%d %d\" % e for e in E))\n",
+    "output": "679196686\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1203)\nn, m = 40000, 100000\nx = random.randint(1, n)\nfirst = x\nE = []\nfor i in range(m):\n    if True and i == m - 1:\n        y = first\n    elif random.randrange(3) == 0:\n        y = random.randint(max(1, x - 3), min(n, x + 3))\n    else:\n        y = random.randint(1, n)\n    E.append((x, y)); x = y\nk = len(E) // 2\nE[k] = (E[k][0], E[k + 7][1])\nrandom.shuffle(E)\nprint(n, len(E))\nprint(\"\\n\".join(\"%d %d\" % e for e in E))\n",
+    "output": "435469027\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "s13",
+  "title": "Backup Spanning Tree",
+  "category": "Graphs",
+  "difficulty": "Impossible",
+  "timeLimit": 5,
+  "description": "<p>A province has <code>n</code> villages and <code>m</code> possible two-way roads; road <code>u v w</code> costs <code>w</code> to build. A <i>spanning tree</i> is a set of <code>n - 1</code> roads connecting all villages. The cheapest spanning tree has total cost <code>C</code>. For the backup plan, find the minimum total cost of a spanning tree whose cost is <b>strictly greater</b> than <code>C</code>.</p><h4>Constraints</h4><ul><li>1 &le; n &le; 2&middot;10<sup>4</sup>, 0 &le; m &le; 6&middot;10<sup>4</sup></li><li>1 &le; w &le; 10<sup>9</sup>; no road joins a village to itself, but parallel roads may exist (they are different roads).</li><li>Many roads can share the same cost, which is exactly where careless solutions fail.</li></ul><h4>Input</h4><p>The first line contains <code>n m</code>. Each of the next <code>m</code> lines contains <code>u v w</code>.</p><h4>Output</h4><p>Print the minimum cost of a spanning tree with cost strictly greater than <code>C</code>, or <code>-1</code> if no such spanning tree exists (including when the villages cannot be connected at all).</p><h4>Example</h4><p>Input:</p><pre>4 5\n1 2 1\n2 3 2\n3 4 3\n1 4 4\n1 3 2</pre><p>Output:</p><pre>7</pre>",
+  "solution": "import sys\nfrom collections import deque\ndef main():\n    d = sys.stdin.read().split()\n    n = int(d[0]); m = int(d[1])\n    E = []\n    p = 2\n    for _ in range(m):\n        E.append((int(d[p + 2]), int(d[p]), int(d[p + 1]))); p += 3\n    E.sort()\n    f = list(range(n + 1))\n    def find(x):\n        r = x\n        while f[r] != r:\n            r = f[r]\n        while f[x] != r:\n            f[x], x = r, f[x]\n        return r\n    tree = [[] for _ in range(n + 1)]\n    rest = []\n    total = 0; used = 0\n    for w, u, v in E:\n        a = find(u); b = find(v)\n        if a != b:\n            f[a] = b; total += w; used += 1\n            tree[u].append((v, w)); tree[v].append((u, w))\n        else:\n            rest.append((w, u, v))\n    if used != n - 1:\n        print(-1); return\n    par = [1] * (n + 1); pw = [-1] * (n + 1); dep = [0] * (n + 1)\n    seen = [False] * (n + 1); seen[1] = True\n    q = deque([1])\n    while q:\n        x = q.popleft()\n        for y, w in tree[x]:\n            if not seen[y]:\n                seen[y] = True; par[y] = x; pw[y] = w; dep[y] = dep[x] + 1; q.append(y)\n    LOG = max(1, n.bit_length())\n    up = [par]; M1 = [pw]; M2 = [[-1] * (n + 1)]\n    for k in range(1, LOG):\n        pu = up[-1]; a1 = M1[-1]; a2 = M2[-1]\n        nu = [0] * (n + 1); n1 = [0] * (n + 1); n2 = [0] * (n + 1)\n        for v in range(1, n + 1):\n            mid = pu[v]\n            nu[v] = pu[mid]\n            x1 = a1[v]; x2 = a2[v]; y1 = a1[mid]; y2 = a2[mid]\n            if x1 > y1:\n                n1[v] = x1; n2[v] = x2 if x2 > y1 else y1\n            elif x1 < y1:\n                n1[v] = y1; n2[v] = y2 if y2 > x1 else x1\n            else:\n                n1[v] = x1; n2[v] = x2 if x2 > y2 else y2\n        up.append(nu); M1.append(n1); M2.append(n2)\n    INF = float('inf')\n    ans = INF\n    for w, u, v in rest:\n        if u == v:\n            continue\n        b1 = -1; b2 = -1\n        if dep[u] < dep[v]:\n            u, v = v, u\n        diff = dep[u] - dep[v]; k = 0\n        cand = []\n        while diff:\n            if diff & 1:\n                cand.append((M1[k][u], M2[k][u])); u = up[k][u]\n            diff >>= 1; k += 1\n        if u != v:\n            for k in range(LOG - 1, -1, -1):\n                if up[k][u] != up[k][v]:\n                    cand.append((M1[k][u], M2[k][u])); cand.append((M1[k][v], M2[k][v]))\n                    u = up[k][u]; v = up[k][v]\n            cand.append((M1[0][u], M2[0][u])); cand.append((M1[0][v], M2[0][v]))\n        for x1, x2 in cand:\n            if x1 > b1:\n                b2 = b1 if b1 > x2 else x2; b1 = x1\n            elif x1 < b1:\n                if x1 > b2: b2 = x1\n            else:\n                if x2 > b2: b2 = x2\n        c = b1 if b1 < w else b2\n        if c >= 0 and total - c + w < ans:\n            ans = total - c + w\n    print(-1 if ans == INF else ans)\nmain()\n",
+  "tests": [
+   {
+    "input": "4 5\n1 2 1\n2 3 2\n3 4 3\n1 4 4\n1 3 2\n",
+    "output": "7\n",
+    "hidden": false
+   },
+   {
+    "input": "3 3\n1 2 5\n2 3 5\n1 3 5\n",
+    "output": "-1\n",
+    "hidden": false
+   },
+   {
+    "input": "1 0\n",
+    "output": "-1\n",
+    "hidden": true
+   },
+   {
+    "input": "2 1\n1 2 10\n",
+    "output": "-1\n",
+    "hidden": true
+   },
+   {
+    "input": "2 3\n1 2 4\n2 1 4\n1 2 6\n",
+    "output": "6\n",
+    "hidden": true
+   },
+   {
+    "input": "4 2\n1 2 1\n3 4 1\n",
+    "output": "-1\n",
+    "hidden": true
+   },
+   {
+    "input": "5 7\n1 2 3\n2 3 3\n3 4 3\n4 5 3\n1 5 3\n2 4 9\n1 3 4\n",
+    "output": "13\n",
+    "hidden": true
+   },
+   {
+    "input": "7 12\n2 7 1\n6 2 2\n4 7 1\n4 5 3\n7 3 1\n2 1 1\n3 4 3\n3 2 3\n6 7 3\n3 1 2\n6 5 1\n7 1 1\n",
+    "output": "8\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1301)\nn, m = 20000, 60000\nperm = list(range(1, n + 1)); random.shuffle(perm)\nE = []\nfor i in range(1, n):\n    E.append((perm[i], perm[random.randrange(max(0, i - 8), i)], random.randint(1, 20)))\nwhile len(E) < m:\n    u = random.randint(1, n); v = random.randint(1, n)\n    if u != v:\n        E.append((u, v, random.randint(1, 20)))\nrandom.shuffle(E)\nprint(n, len(E))\nprint(\"\\n\".join(\"%d %d %d\" % e for e in E))\n",
+    "output": "87944\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1302)\n# all weights equal except a few: second best must use strictly larger edges\nn, m = 20000, 50000\nperm = list(range(1, n + 1)); random.shuffle(perm)\nE = []\nfor i in range(1, n):\n    E.append((perm[i], perm[i - 1] if random.randrange(5) else perm[random.randrange(i)], 7))\nwhile len(E) < m:\n    u = random.randint(1, n); v = random.randint(1, n)\n    if u != v:\n        E.append((u, v, 7 if random.randrange(1000) else random.randint(8, 10**9)))\nrandom.shuffle(E)\nprint(n, len(E))\nprint(\"\\n\".join(\"%d %d %d\" % e for e in E))\n",
+    "output": "3992078\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "s14",
+  "title": "Teleporter Network",
+  "category": "Graphs",
+  "difficulty": "Impossible",
+  "timeLimit": 5,
+  "description": "<p>A space station has <code>n</code> rooms; room <code>i</code> contains exactly one teleporter that sends you to room <code>f<sub>i</sub></code> (possibly <code>i</code> itself). Answer <code>q</code> questions: if you start in room <code>v</code> and use the teleporter <code>k</code> times, in which room do you end up?</p><p><code>k</code> can be as large as 10<sup>18</sup>, and following teleports one by one is far too slow. The paths into cycles can be very long.</p><h4>Constraints</h4><ul><li>1 &le; n &le; 2&middot;10<sup>5</sup>, 1 &le; q &le; 700</li><li>1 &le; f<sub>i</sub> &le; n, 0 &le; k &le; 10<sup>18</sup></li></ul><h4>Input</h4><p>The first line contains <code>n</code>. The second line contains <code>f<sub>1</sub> ... f<sub>n</sub></code>. The third line contains <code>q</code>, followed by <code>q</code> lines <code>v k</code>.</p><h4>Output</h4><p>For each question print the final room on its own line.</p><h4>Example</h4><p>Input:</p><pre>6\n2 3 4 2 4 6\n4\n1 0\n1 4\n5 3\n6 1000000000000000000</pre><p>Output:</p><pre>1\n2\n3\n6</pre>",
+  "solution": "import sys\ndef main():\n    d = sys.stdin.read().split()\n    n = int(d[0])\n    f = [0] + [int(x) for x in d[1:n + 1]]\n    q = int(d[n + 1])\n    qs = [[] for _ in range(n + 1)]\n    p = n + 2\n    for i in range(q):\n        v = int(d[p]); k = int(d[p + 1]); p += 2\n        qs[v].append((k, i))\n    state = [0] * (n + 1)\n    cid = [-1] * (n + 1); pos = [0] * (n + 1)\n    cycles = []\n    for s in range(1, n + 1):\n        if state[s]:\n            continue\n        path = []; x = s\n        while state[x] == 0:\n            state[x] = 1; path.append(x); x = f[x]\n        if state[x] == 1:\n            i = len(path) - 1\n            while path[i] != x:\n                i -= 1\n            cyc = path[i:]\n            c = len(cycles); cycles.append(cyc)\n            for j, y in enumerate(cyc):\n                cid[y] = c; pos[y] = j\n        for y in path:\n            state[y] = 2\n    ch = [[] for _ in range(n + 1)]\n    for v in range(1, n + 1):\n        if cid[v] < 0:\n            ch[f[v]].append(v)\n    ans = [0] * q\n    for r in range(1, n + 1):\n        if cid[r] < 0:\n            continue\n        cyc = cycles[cid[r]]; L = len(cyc); pr = pos[r]\n        pth = []\n        st = [r]\n        while st:\n            x = st.pop()\n            if x < 0:\n                pth.pop(); continue\n            pth.append(x)\n            dpt = len(pth) - 1\n            for k, i in qs[x]:\n                if k <= dpt:\n                    ans[i] = pth[dpt - k]\n                else:\n                    ans[i] = cyc[(pr + k - dpt) % L]\n            st.append(-x)\n            st.extend(ch[x])\n    print(\"\\n\".join(map(str, ans)))\nmain()\n",
+  "tests": [
+   {
+    "input": "6\n2 3 4 2 4 6\n4\n1 0\n1 4\n5 3\n6 1000000000000000000\n",
+    "output": "1\n2\n3\n6\n",
+    "hidden": false
+   },
+   {
+    "input": "3\n1 1 2\n3\n3 1\n3 2\n2 7\n",
+    "output": "2\n1\n1\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n1\n2\n1 0\n1 1000000000000000000\n",
+    "output": "1\n1\n",
+    "hidden": true
+   },
+   {
+    "input": "5\n2 3 4 5 1\n3\n1 5\n3 999999999999999999\n5 1000000000000000000\n",
+    "output": "1\n2\n5\n",
+    "hidden": true
+   },
+   {
+    "input": "7\n2 3 4 5 6 7 7\n4\n1 5\n1 6\n1 7\n1 123456789012345678\n",
+    "output": "6\n7\n7\n7\n",
+    "hidden": true
+   },
+   {
+    "input": "10\n7 5 5 10 2 9 7 1 10 10\n10\n10 24\n10 35\n8 27\n2 37\n10 40\n10 41\n2 44\n2 20\n2 59\n4 29\n",
+    "output": "10\n10\n7\n5\n10\n10\n2\n2\n5\n10\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1401)\nn = 200000\nf = [0] * (n + 1)\nperm = list(range(1, n + 1)); random.shuffle(perm)\n# a few cycles, the rest are long tails\ncyc_nodes = perm[:3000]\ni = 0\nwhile i < len(cyc_nodes):\n    k = random.randint(1, 600)\n    part = cyc_nodes[i:i + k]\n    for j in range(len(part)):\n        f[part[j]] = part[(j + 1) % len(part)]\n    i += k\nrest = perm[3000:]\nfor j, v in enumerate(rest):\n    if j > 0 and random.randrange(100):\n        f[v] = rest[j - 1]\n    else:\n        f[v] = random.choice(cyc_nodes)\nprint(n)\nprint(\" \".join(str(f[v]) for v in range(1, n + 1)))\nq = 700\nprint(q)\nfor _ in range(q):\n    t = random.randrange(3)\n    k = random.randint(0, 10**18) if t == 0 else (random.randint(0, 3000) if t == 1 else random.randint(0, 300))\n    print(random.choice(rest) if random.randrange(4) else random.randint(1, n), k)\n",
+    "output": "123719\n17144\n161893\n160725\n183521\n132547\n61496\n176930\n79850\n46252\n169013\n151652\n109838\n31071\n140292\n158273\n70358\n36194\n116618\n160269\n140428\n72386\n194943\n41640\n17453\n49290\n188034\n43241\n154954\n24747\n160256\n181009\n56741\n161401\n47255\n28015\n115393\n899\n66313\n60040\n118708\n5\n194680\n161744\n90180\n88864\n146505\n180982\n166679\n17299\n153081\n120934\n158248\n51119\n21429\n179145\n150293\n163264\n120197\n82876\n115603\n70396\n136633\n7552\n74918\n41311\n17812\n157755\n130030\n134335\n149586\n81566\n123282\n194943\n85989\n28247\n148356\n132664\n7835\n123365\n132025\n32948\n109001\n143303\n50284\n22288\n1777\n95607\n90882\n100583\n18937\n5609\n116455\n187138\n33834\n131221\n41798\n123905\n41752\n124624\n195276\n148481\n131221\n74946\n114972\n140341\n29064\n7152\n7261\n196786\n30432\n74790\n131333\n151560\n4199\n97200\n20247\n160271\n66624\n24784\n177736\n121008\n161058\n73967\n106388\n9915\n139682\n145089\n159078\n73785\n85116\n50563\n35448\n106278\n1830\n141499\n189717\n23575\n150358\n84930\n167161\n31238\n122698\n100886\n8974\n152937\n138904\n30303\n25595\n170219\n80352\n157787\n168044\n40410\n150410\n110253\n179269\n49079\n153053\n116949\n12021\n156170\n166368\n163816\n112336\n48124\n91152\n36554\n156917\n47423\n98345\n133404\n103910\n136484\n138621\n9236\n51016\n140956\n91287\n75527\n91043\n47422\n22608\n196710\n174888\n174428\n177714\n118891\n84896\n126096\n30303\n2317\n134623\n79694\n31199\n101056\n115393\n22435\n93939\n153428\n106278\n176142\n64922\n166947\n198814\n189717\n35129\n157777\n57218\n117290\n155105\n163841\n44212\n182272\n94229\n157216\n81566\n65740\n27156\n160617\n3277\n156323\n198429\n151515\n156059\n166221\n111257\n190928\n899\n64781\n78006\n139981\n27775\n16855\n38229\n42234\n182665\n62230\n38787\n194150\n159617\n124038\n94833\n63854\n83873\n35874\n197679\n16140\n93640\n1111\n51953\n74074\n66143\n191405\n148675\n16648\n73007\n52373\n73989\n47908\n64224\n156059\n10913\n157216\n72070\n8890\n63847\n77077\n74074\n164914\n82852\n141284\n169474\n28062\n76566\n48853\n1047\n119988\n20854\n149764\n177546\n192551\n29228\n99111\n100133\n81622\n91287\n122013\n55670\n85116\n3115\n142903\n104750\n63663\n147242\n189614\n182584\n156585\n188188\n78026\n124624\n174185\n21136\n116897\n157127\n50476\n26896\n59013\n32954\n56217\n102830\n102155\n21468\n37573\n30707\n44071\n118608\n110663\n29356\n124963\n24450\n157037\n101119\n81622\n20344\n126470\n30207\n9341\n105152\n160654\n169196\n142157\n94203\n165023\n148092\n112782\n75928\n134651\n117511\n68956\n161995\n181221\n4087\n4622\n27396\n53877\n149573\n136264\n145291\n188077\n175458\n86311\n103865\n43719\n143540\n164861\n5188\n181352\n28617\n103173\n188785\n116398\n131484\n89204\n176930\n169697\n6149\n122735\n148802\n77577\n58654\n53582\n163070\n115931\n104841\n43875\n95803\n103113\n2307\n177144\n51871\n127639\n28320\n166368\n138293\n135656\n48568\n74233\n174215\n86899\n92184\n27380\n152146\n82698\n90944\n27540\n6149\n188188\n192272\n116292\n181106\n103065\n19078\n31567\n61419\n198331\n58717\n14450\n194051\n120076\n157092\n154988\n37593\n33761\n181625\n4490\n50267\n147962\n168409\n135260\n72190\n93577\n18483\n57912\n1135\n98368\n85478\n137144\n1534\n23773\n190551\n42715\n93309\n150358\n32912\n17192\n10941\n193887\n112679\n10607\n136124\n181780\n25729\n149016\n111542\n197204\n45049\n38354\n37901\n22925\n175109\n195493\n192551\n9279\n192513\n139776\n197688\n148767\n111542\n163647\n178141\n9429\n32948\n138679\n158810\n54493\n59899\n174770\n123905\n13075\n176842\n56176\n100886\n143740\n80865\n122717\n128334\n20854\n182282\n120446\n121988\n9882\n147467\n10001\n178445\n104064\n153803\n190819\n92380\n75372\n87174\n47376\n34700\n24450\n189713\n55234\n71183\n9380\n3079\n119349\n124298\n103250\n153854\n102748\n71928\n9021\n66789\n110687\n54233\n80357\n65275\n157653\n149573\n194545\n104944\n9655\n46322\n177773\n28247\n5083\n10847\n6850\n17453\n81996\n31071\n62518\n41131\n168044\n163368\n169013\n185723\n74946\n15062\n98259\n139710\n167409\n49219\n406\n183769\n181278\n147428\n161008\n130863\n183413\n117704\n81847\n42599\n74416\n52138\n181303\n168376\n2307\n55692\n119817\n69264\n25062\n116530\n155063\n152627\n98368\n186089\n37573\n28770\n63102\n187680\n32954\n43489\n86001\n21593\n132312\n99847\n144624\n116349\n49219\n78008\n57127\n196422\n146129\n5968\n130508\n190325\n132692\n74130\n45107\n47639\n39090\n177003\n61555\n158514\n119122\n17305\n93656\n154514\n115560\n183948\n88522\n77759\n78874\n146457\n23557\n27396\n41929\n36444\n98406\n124478\n66398\n160813\n39368\n154115\n55408\n112023\n52224\n152477\n108547\n103600\n184083\n81202\n143303\n157321\n44456\n63804\n5051\n185381\n38598\n117308\n128973\n64922\n167746\n195309\n191936\n122592\n135641\n140905\n18669\n155480\n115734\n130942\n74786\n134880\n104891\n70396\n140603\n100085\n76091\n157363\n162761\n138212\n108578\n147175\n62854\n36511\n169546\n17691\n145046\n194051\n30807\n141718\n140776\n109933\n184306\n19854\n55662\n155933\n141718\n71013\n193678\n71653\n152152\n120595\n123291\n158493\n64781\n197625\n197024\n96198\n100564\n69691\n48265\n113168\n41674\n118115\n86132\n72922\n105584\n142055\n146505\n179897\n53915\n196213\n27772\n123804\n48742\n120826\n91863\n32912\n83152\n157940\n163084\n35119\n168126\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1402)\nn = 200000\nperm = list(range(1, n + 1)); random.shuffle(perm)\nf = [0] * (n + 1)\n# one giant tail of length ~150000 into a big cycle of length 49999; plus random trees\nfor j in range(50000):\n    f[perm[j]] = perm[(j + 1) % 50000]\nfor j in range(50000, n):\n    f[perm[j]] = perm[j - 1] if j < 200000 - 20000 else perm[random.randrange(j)]\nprint(n)\nprint(\" \".join(str(f[v]) for v in range(1, n + 1)))\nq = 700\nprint(q)\nfor _ in range(q):\n    k = random.choice([0, 1, 10**18, random.randint(0, 200000), random.randint(10**17, 10**18)])\n    print(perm[random.randrange(n - 30000, n)] if random.randrange(2) else random.randint(1, n), k)\n",
+    "output": "115343\n97539\n90151\n79022\n149506\n187221\n8665\n155638\n165081\n89926\n54483\n2521\n78530\n148934\n106143\n162656\n117010\n129723\n52816\n27238\n187628\n3621\n67948\n68268\n146992\n121545\n54280\n67704\n23636\n106507\n43021\n112297\n114739\n153306\n42294\n62742\n29444\n153835\n35165\n169220\n143863\n122606\n87259\n89937\n116669\n107855\n125973\n176501\n14921\n25411\n190687\n45325\n6898\n130462\n36807\n194332\n82095\n13132\n112818\n67499\n150640\n38069\n25324\n184408\n176408\n197213\n26557\n8387\n124327\n33127\n140812\n154380\n108187\n156970\n180735\n189435\n154994\n178435\n119922\n38084\n166953\n183570\n76111\n157824\n52938\n193877\n154949\n52267\n157516\n85845\n197757\n70155\n111676\n118874\n17902\n162778\n173538\n27005\n3193\n119817\n116201\n172798\n156161\n172442\n97144\n172201\n51453\n159916\n191960\n190378\n121572\n166244\n154738\n103170\n111428\n18850\n30823\n8619\n49477\n173898\n84747\n154521\n81107\n37710\n39260\n143042\n139686\n123488\n3567\n13916\n127218\n44167\n181048\n67145\n164477\n55925\n159146\n123107\n173830\n188292\n104424\n172546\n98584\n151302\n157819\n122274\n107799\n88894\n152519\n108671\n79023\n33428\n175133\n123182\n101133\n133013\n107727\n34826\n898\n58923\n181971\n5534\n64740\n26640\n70804\n71678\n30771\n117676\n144676\n159499\n27345\n11416\n52316\n15117\n24312\n14687\n181561\n73228\n2762\n39876\n76969\n191584\n129085\n192938\n43094\n43614\n104425\n92492\n85080\n84227\n50706\n7196\n193766\n93725\n167068\n23435\n34293\n44652\n36842\n46863\n182899\n143925\n4681\n45862\n10315\n51039\n55978\n5654\n137648\n121036\n144721\n1312\n12138\n47365\n124989\n155033\n134432\n99193\n54958\n146906\n189098\n85042\n185144\n113962\n122536\n111106\n179807\n21689\n147661\n61151\n115159\n28298\n176441\n17237\n67431\n171630\n63500\n105848\n105917\n23435\n72875\n116565\n167023\n95253\n74353\n31655\n171966\n34148\n51541\n138573\n86870\n179619\n83887\n198657\n179340\n177092\n37503\n114930\n130525\n12200\n64827\n110364\n142922\n113813\n30818\n63744\n97663\n37380\n196779\n152380\n99072\n151613\n146790\n93892\n60210\n25012\n171170\n163598\n21361\n116501\n46917\n178902\n8730\n37858\n87696\n54624\n139596\n146480\n163556\n121151\n43513\n185207\n88828\n6833\n68233\n125894\n64560\n80471\n41868\n175070\n183666\n38643\n155465\n96774\n102180\n122879\n109794\n168501\n79709\n166885\n196274\n112615\n49725\n61748\n121349\n49920\n66126\n10318\n29868\n85593\n132342\n114894\n116116\n124052\n37154\n10816\n135917\n141287\n167509\n178372\n163744\n36231\n177916\n5503\n117216\n164053\n100211\n42989\n35296\n117128\n189791\n125436\n15892\n35745\n178834\n133326\n6402\n179354\n162723\n136354\n73155\n150527\n152418\n165663\n105492\n9312\n113935\n58939\n160968\n101199\n120587\n28862\n183954\n130181\n120960\n99520\n115679\n197714\n43531\n82145\n74802\n197582\n129111\n183062\n56158\n119950\n6803\n38469\n135377\n150592\n101143\n58823\n53565\n186341\n69502\n62199\n157922\n21658\n127255\n129890\n93064\n29854\n87513\n37065\n17514\n13138\n62013\n128497\n59928\n21591\n168522\n174853\n55178\n64714\n145552\n8287\n134665\n172176\n61672\n61949\n4871\n83321\n28271\n95907\n13304\n173873\n138553\n185347\n70017\n119394\n106267\n130647\n68873\n82754\n38566\n155406\n175327\n158956\n194490\n80357\n9216\n32456\n178711\n182060\n89496\n75883\n83644\n179875\n157127\n126399\n97672\n30032\n54871\n132294\n89156\n31529\n44445\n48144\n45834\n95082\n116621\n173165\n52575\n78340\n111911\n110998\n130228\n86869\n54907\n140322\n2327\n40321\n88833\n39021\n24905\n122814\n148602\n161049\n111852\n169690\n58353\n101060\n5538\n181070\n128182\n31864\n160182\n178093\n88665\n159877\n133894\n24426\n141391\n112842\n162269\n103141\n119747\n82015\n125462\n21995\n46384\n196348\n49936\n142261\n119663\n81083\n154805\n127436\n185780\n53299\n171162\n1705\n158215\n195419\n82705\n17392\n79081\n114497\n160403\n104206\n186405\n139055\n184905\n184963\n154718\n77549\n144892\n49785\n171480\n16248\n122072\n91142\n142085\n55888\n175194\n96673\n15386\n173279\n38643\n24721\n50525\n163546\n106845\n67096\n154274\n109113\n67968\n99577\n142159\n102339\n127040\n56841\n184567\n42851\n48081\n50742\n155368\n182511\n7148\n161330\n73323\n64940\n184738\n153217\n148941\n183115\n65242\n18034\n145814\n108813\n109860\n181818\n52164\n130083\n39921\n77762\n33973\n101139\n117601\n37698\n165710\n155260\n165825\n29556\n119609\n198619\n186487\n159626\n128987\n135895\n26847\n41950\n157701\n186288\n74212\n59270\n188955\n161558\n167202\n181822\n105060\n9625\n43308\n164743\n113392\n133168\n160853\n144031\n126348\n168181\n76231\n24426\n135044\n55526\n130032\n130715\n177263\n172720\n117640\n177502\n43893\n88144\n106819\n184107\n96245\n117573\n118241\n142952\n69977\n181185\n26234\n32413\n120668\n113081\n94200\n68382\n24497\n101620\n82559\n170460\n144012\n95737\n185539\n103849\n64143\n199037\n17299\n142584\n141858\n181228\n114907\n182899\n31989\n176462\n76351\n170341\n74833\n55466\n43355\n145123\n130596\n153388\n121451\n31875\n188976\n186998\n80566\n27174\n6714\n107930\n31703\n199838\n198715\n33277\n100805\n58966\n111647\n155051\n108940\n49844\n85485\n172813\n98610\n96161\n145561\n179410\n131232\n154652\n62127\n158938\n36864\n80963\n195986\n111504\n132316\n85928\n117957\n147451\n163127\n14556\n103020\n50800\n172032\n163108\n86346\n159528\n152849\n122226\n53877\n172999\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "s15",
+  "title": "Counting Routes, Possibly Forever",
+  "category": "Graphs",
+  "difficulty": "Impossible",
+  "timeLimit": 5,
+  "description": "<p>A theme park has <code>n</code> attractions and <code>m</code> one-way paths (repeated paths and paths from an attraction to itself are allowed; parallel paths are different). A <i>route</i> is a sequence of paths that starts at attraction <code>1</code>, follows the paths in order, and ends at attraction <code>n</code>; attractions and paths may be repeated, and the route may pass through <code>n</code> earlier. Count the routes.</p><p>If there are infinitely many routes print <code>INFINITE</code>; otherwise print the number modulo <code>10<sup>9</sup> + 7</code>. Careful: a cycle only matters if it can actually be used on a route from 1 to n.</p><h4>Constraints</h4><ul><li>2 &le; n &le; 7&middot;10<sup>4</sup>, 0 &le; m &le; 1.6&middot;10<sup>5</sup></li><li>Use iterative algorithms.</li></ul><h4>Input</h4><p>The first line contains <code>n m</code>. Each of the next <code>m</code> lines contains <code>u v</code>: a path from <code>u</code> to <code>v</code>.</p><h4>Output</h4><p>Print <code>INFINITE</code>, or the number of routes modulo 10<sup>9</sup>+7 (print <code>0</code> if <code>n</code> is unreachable).</p><h4>Example</h4><p>Input:</p><pre>4 5\n1 2\n1 3\n2 4\n3 4\n2 3</pre><p>Output:</p><pre>3</pre>",
+  "solution": "import sys\nfrom collections import deque\ndef main():\n    d = sys.stdin.read().split()\n    n = int(d[0]); m = int(d[1])\n    adj = [[] for _ in range(n + 1)]; radj = [[] for _ in range(n + 1)]\n    p = 2\n    for _ in range(m):\n        u = int(d[p]); v = int(d[p + 1]); p += 2\n        adj[u].append(v); radj[v].append(u)\n    fw = [False] * (n + 1); fw[1] = True; st = [1]\n    while st:\n        x = st.pop()\n        for y in adj[x]:\n            if not fw[y]:\n                fw[y] = True; st.append(y)\n    if not fw[n]:\n        print(0); return\n    bw = [False] * (n + 1); bw[n] = True; st = [n]\n    while st:\n        x = st.pop()\n        for y in radj[x]:\n            if not bw[y]:\n                bw[y] = True; st.append(y)\n    use = [fw[v] and bw[v] for v in range(n + 1)]\n    indeg = [0] * (n + 1)\n    cntu = 0\n    for u in range(1, n + 1):\n        if use[u]:\n            cntu += 1\n            for v in adj[u]:\n                if use[v]:\n                    indeg[v] += 1\n    q = deque(v for v in range(1, n + 1) if use[v] and indeg[v] == 0)\n    order = []\n    while q:\n        x = q.popleft(); order.append(x)\n        for y in adj[x]:\n            if use[y]:\n                indeg[y] -= 1\n                if indeg[y] == 0:\n                    q.append(y)\n    if len(order) < cntu:\n        print(\"INFINITE\"); return\n    MOD = 10**9 + 7\n    dp = [0] * (n + 1); dp[1] = 1\n    for x in order:\n        dx = dp[x]\n        if dx:\n            for y in adj[x]:\n                if use[y]:\n                    dp[y] = (dp[y] + dx) % MOD\n    print(dp[n])\nmain()\n",
+  "tests": [
+   {
+    "input": "4 5\n1 2\n1 3\n2 4\n3 4\n2 3\n",
+    "output": "3\n",
+    "hidden": false
+   },
+   {
+    "input": "4 5\n1 2\n2 3\n3 2\n3 4\n1 4\n",
+    "output": "INFINITE\n",
+    "hidden": false
+   },
+   {
+    "input": "2 0\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "3 3\n1 3\n2 2\n1 2\n",
+    "output": "1\n",
+    "hidden": true
+   },
+   {
+    "input": "3 3\n1 2\n2 3\n3 3\n",
+    "output": "INFINITE\n",
+    "hidden": true
+   },
+   {
+    "input": "3 4\n1 2\n1 2\n2 3\n2 3\n",
+    "output": "4\n",
+    "hidden": true
+   },
+   {
+    "input": "5 6\n1 2\n2 5\n2 3\n3 4\n4 3\n5 1\n",
+    "output": "INFINITE\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1501)\nn, m = 60000, 150000\norder = list(range(2, n)); random.shuffle(order); order = [1] + order + [n]\npos = [0] * (n + 1)\nfor i, v in enumerate(order): pos[v] = i\nE = []\nfor i in range(n - 1):\n    E.append((order[i], order[i + 1]))\nwhile len(E) < m:\n    i = random.randrange(n); j = random.randrange(i, min(n, i + 40))\n    if i != j:\n        E.append((order[i], order[j]))\n\nrandom.shuffle(E)\nprint(n, len(E))\nprint(\"\\n\".join(\"%d %d\" % e for e in E))\n",
+    "output": "404284429\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1502)\nn, m = 60000, 140000\norder = list(range(2, n)); random.shuffle(order); order = [1] + order + [n]\npos = [0] * (n + 1)\nfor i, v in enumerate(order): pos[v] = i\nE = []\nfor i in range(n - 1):\n    E.append((order[i], order[i + 1]))\nwhile len(E) < m:\n    i = random.randrange(n); j = random.randrange(i, min(n, i + 40))\n    if i != j:\n        E.append((order[i], order[j]))\nextra = list(range(n + 1, n + 3001))\nfor x in extra:\n    E.append((random.choice(order[:-1]), x))\n    E.append((x, random.choice(extra)))\nn += 3000\nrandom.shuffle(E)\nprint(n, len(E))\nprint(\"\\n\".join(\"%d %d\" % e for e in E))\n",
+    "output": "383143109\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1503)\nn, m = 60000, 140000\norder = list(range(2, n)); random.shuffle(order); order = [1] + order + [n]\npos = [0] * (n + 1)\nfor i, v in enumerate(order): pos[v] = i\nE = []\nfor i in range(n - 1):\n    E.append((order[i], order[i + 1]))\nwhile len(E) < m:\n    i = random.randrange(n); j = random.randrange(i, min(n, i + 40))\n    if i != j:\n        E.append((order[i], order[j]))\nE.append((order[40000], order[39990]))\nrandom.shuffle(E)\nprint(n, len(E))\nprint(\"\\n\".join(\"%d %d\" % e for e in E))\n",
+    "output": "INFINITE\n",
+    "hidden": true
+   }
+  ]
+ }
+]

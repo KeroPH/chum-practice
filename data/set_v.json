@@ -1,0 +1,812 @@
+[
+ {
+  "id": "v01",
+  "title": "Last Stone Loses (Misère Nim)",
+  "category": "Game Theory",
+  "difficulty": "Hard",
+  "timeLimit": 5,
+  "description": "<p>Alice and Bob play Nim with a twist. There are several piles of stones. On a turn, a player picks one non-empty pile and removes any positive number of stones from it. <b>The player who takes the last stone overall loses.</b> Alice moves first and both play optimally. Answer this for <code>T</code> independent games.</p><h4>Constraints</h4><ul><li><code>1 &le; T &le; 1000</code></li><li><code>1 &le; n &le; 2&middot;10<sup>5</sup></code> piles per game; the total number of piles over all games is at most <code>2&middot;10<sup>5</sup></code></li><li><code>1 &le; a<sub>i</sub> &le; 10<sup>9</sup></code></li></ul><h4>Input</h4><p>The first line contains <code>T</code>. Each game is described by a line with <code>n</code> followed by a line with <code>n</code> integers <code>a<sub>1</sub> ... a<sub>n</sub></code>.</p><h4>Output</h4><p>For each game print <code>Alice</code> if the first player wins, otherwise <code>Bob</code>, one per line.</p><h4>Example</h4><p>Input:</p><pre>4\n2\n1 1\n3\n1 1 1\n2\n2 2\n3\n1 2 3</pre><p>Output:</p><pre>Alice\nBob\nBob\nBob</pre>",
+  "solution": "import sys\ndef main():\n    d = sys.stdin.buffer.read().split()\n    t = int(d[0]); p = 1; out = []\n    for _ in range(t):\n        n = int(d[p]); p += 1\n        x = 0; big = False\n        for v in d[p:p + n]:\n            v = int(v); x ^= v\n            if v > 1: big = True\n        p += n\n        if big:\n            out.append(\"Alice\" if x else \"Bob\")\n        else:\n            out.append(\"Alice\" if n % 2 == 0 else \"Bob\")\n    print(\"\\n\".join(out))\nmain()\n",
+  "tests": [
+   {
+    "input": "4\n2\n1 1\n3\n1 1 1\n2\n2 2\n3\n1 2 3\n",
+    "output": "Alice\nBob\nBob\nBob\n",
+    "hidden": false
+   },
+   {
+    "input": "3\n1\n1\n1\n5\n2\n3 5\n",
+    "output": "Bob\nAlice\nAlice\n",
+    "hidden": false
+   },
+   {
+    "input": "5\n4\n1 1 1 1\n5\n1 1 1 1 1\n2\n1 2\n3\n1 1 2\n1\n1000000000\n",
+    "output": "Alice\nBob\nAlice\nAlice\nAlice\n",
+    "hidden": true
+   },
+   {
+    "input": "3\n6\n7 7 1 1 1 1\n4\n2 3 1 1\n3\n2 3 1\n",
+    "output": "Bob\nAlice\nBob\n",
+    "hidden": true
+   },
+   {
+    "input": "2\n1\n2\n2\n1 3\n",
+    "output": "Alice\nAlice\n",
+    "hidden": true
+   },
+   {
+    "input": "4\n1\n2\n2\n2 1\n3\n2 2 1\n4\n6 5 3 1\n",
+    "output": "Alice\nAlice\nAlice\nAlice\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(101)\nT = 400\nprint(T)\nfor _ in range(T):\n    n = random.randint(1, 500)\n    k = random.choice([0, 1, 1, 2])\n    if k == 0:\n        a = [1] * n\n    elif k == 1:\n        a = [random.randint(1, 10**9) for _ in range(n)]\n    else:\n        a = [random.choice([1, 2, 3]) for _ in range(n)]\n    print(n)\n    print(*a)\n",
+    "output": "Alice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nBob\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nBob\nAlice\nAlice\nAlice\nBob\nBob\nAlice\nAlice\nAlice\nAlice\nBob\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nBob\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nBob\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nBob\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nBob\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nBob\nAlice\nAlice\nBob\nBob\nAlice\nAlice\nBob\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nBob\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nBob\nBob\nBob\nAlice\nAlice\nAlice\nAlice\nBob\nAlice\nAlice\nAlice\nBob\nBob\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nBob\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nBob\nAlice\nAlice\nBob\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nBob\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nBob\nAlice\nBob\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nBob\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nBob\nAlice\nAlice\nAlice\nAlice\nBob\nAlice\nAlice\nAlice\nBob\nAlice\nBob\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nBob\nBob\nAlice\nBob\nBob\nBob\nBob\nBob\nAlice\nAlice\nAlice\nBob\nAlice\nBob\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nBob\nAlice\nBob\nAlice\nAlice\nAlice\nBob\nAlice\nAlice\nAlice\nAlice\nAlice\nBob\nAlice\nAlice\nBob\nAlice\nBob\nAlice\nAlice\nAlice\nAlice\nBob\nAlice\nBob\nBob\nAlice\nAlice\nAlice\nBob\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nBob\nAlice\nAlice\nBob\nBob\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nBob\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nBob\nAlice\nAlice\nBob\nAlice\nAlice\nBob\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nBob\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nBob\nAlice\nAlice\nAlice\nBob\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nBob\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nAlice\nBob\nAlice\nBob\nAlice\nAlice\nAlice\nBob\nAlice\nAlice\nAlice\nBob\nBob\nBob\nBob\nAlice\nAlice\nBob\nBob\nBob\nBob\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(202)\nT = 2\nprint(T)\nn = 100000\na = [random.randint(1, 10**9) for _ in range(n - 1)]\nx = 0\nfor v in a:\n    x ^= v\na.append(x if x > 1 else 3)\nprint(n)\nprint(*a)\nm = 99999\nprint(m)\nprint(*([1] * m))\n",
+    "output": "Bob\nBob\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "v02",
+  "title": "Staircase Nim: Count Winning Moves",
+  "category": "Game Theory",
+  "difficulty": "Hard",
+  "timeLimit": 5,
+  "description": "<p>A staircase has steps numbered <code>1..n</code> (step <code>0</code> is the floor). Step <code>i</code> holds <code>c<sub>i</sub></code> coins. On a turn, a player chooses a step <code>i &ge; 1</code> with at least one coin and moves <b>any positive number</b> of its coins down to step <code>i - 1</code>. Coins on the floor can never move again. The player who cannot move loses. Alice moves first; both play optimally.</p><p>If Alice wins, also count her <b>winning first moves</b>: the number of distinct pairs <code>(i, k)</code> (move <code>k</code> coins from step <code>i</code>) after which Bob is in a losing position.</p><h4>Constraints</h4><ul><li><code>1 &le; n &le; 2&middot;10<sup>5</sup></code></li><li><code>0 &le; c<sub>i</sub> &le; 10<sup>9</sup></code></li></ul><h4>Input</h4><p>The first line contains <code>n</code>; the second line contains <code>c<sub>1</sub> ... c<sub>n</sub></code>.</p><h4>Output</h4><p>Print <code>Bob</code> if Bob wins. Otherwise print <code>Alice W</code> where <code>W</code> is the number of winning first moves.</p><h4>Example</h4><p>Input:</p><pre>3\n1 2 3</pre><p>Output:</p><pre>Alice 2</pre>",
+  "solution": "import sys\nd = sys.stdin.buffer.read().split()\nn = int(d[0]); c = [0] + [int(v) for v in d[1:n + 1]]\nX = 0\nfor i in range(1, n + 1, 2):\n    X ^= c[i]\nif X == 0:\n    print(\"Bob\")\nelse:\n    w = 0\n    for i in range(1, n + 1):\n        if i % 2 == 1:\n            if c[i] ^ X < c[i]: w += 1\n        else:\n            need = (c[i - 1] ^ X) - c[i - 1]\n            if 0 < need <= c[i]: w += 1\n    print(\"Alice\", w)\n",
+  "tests": [
+   {
+    "input": "3\n1 2 3\n",
+    "output": "Alice 2\n",
+    "hidden": false
+   },
+   {
+    "input": "2\n1 1\n",
+    "output": "Alice 1\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n0\n",
+    "output": "Bob\n",
+    "hidden": true
+   },
+   {
+    "input": "1\n7\n",
+    "output": "Alice 1\n",
+    "hidden": true
+   },
+   {
+    "input": "4\n0 5 0 5\n",
+    "output": "Bob\n",
+    "hidden": true
+   },
+   {
+    "input": "5\n3 0 4 9 1\n",
+    "output": "Alice 1\n",
+    "hidden": true
+   },
+   {
+    "input": "6\n1 1 1 1 1 1\n",
+    "output": "Alice 3\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(303)\nn = 200000\nprint(n)\nprint(*[random.randint(0, 10**9) for _ in range(n)])\n",
+    "output": "Alice 71298\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(304)\nn = 199999\nc = [random.randint(0, 15) for _ in range(n)]\nprint(n)\nprint(*c)\n",
+    "output": "Alice 75077\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "v03",
+  "title": "Fence Posts and Fields (Pick's Theorem)",
+  "category": "Geometry",
+  "difficulty": "Hard",
+  "timeLimit": 5,
+  "description": "<p>A farmer's field is a <b>simple polygon</b> (edges do not cross or touch except at shared endpoints of consecutive edges) whose vertices are lattice points. Compute three things:</p><ul><li>the area of the polygon, printed exactly (it is always a multiple of 0.5), with one decimal: e.g. <code>12.0</code> or <code>7.5</code>;</li><li><code>B</code>: the number of lattice points on the boundary;</li><li><code>I</code>: the number of lattice points strictly inside.</li></ul><p>Vertices may be given clockwise or counterclockwise, and some vertices may lie on the straight line through their neighbours.</p><h4>Constraints</h4><ul><li><code>3 &le; n &le; 10<sup>5</sup></code></li><li><code>|x|, |y| &le; 10<sup>6</sup></code></li><li>Floating point answers will be wrong &mdash; use integer arithmetic.</li></ul><h4>Input</h4><p>The first line contains <code>n</code>. The next <code>n</code> lines contain the vertices <code>x y</code> in order along the boundary.</p><h4>Output</h4><p>Print <code>A B I</code> on one line, separated by spaces.</p><h4>Example</h4><p>Input:</p><pre>4\n0 0\n4 0\n4 3\n0 3</pre><p>Output:</p><pre>12.0 14 6</pre>",
+  "solution": "import sys\nfrom math import gcd\nd = sys.stdin.buffer.read().split(); n = int(d[0])\nxs = list(map(int, d[1:2 * n + 1:2])); ys = list(map(int, d[2:2 * n + 2:2]))\ns = 0; b = 0\nfor i in range(n):\n    x1, y1 = xs[i - 1], ys[i - 1]; x2, y2 = xs[i], ys[i]\n    s += x1 * y2 - x2 * y1\n    b += gcd(x2 - x1, y2 - y1)\ns = abs(s)\ninner = (s - b + 2) // 2\nprint(f\"{s // 2}.{5 if s % 2 else 0} {b} {inner}\")\n",
+  "tests": [
+   {
+    "input": "4\n0 0\n4 0\n4 3\n0 3\n",
+    "output": "12.0 14 6\n",
+    "hidden": false
+   },
+   {
+    "input": "3\n0 0\n3 0\n0 1\n",
+    "output": "1.5 5 0\n",
+    "hidden": false
+   },
+   {
+    "input": "6\n0 0\n2 0\n2 1\n1 1\n1 2\n0 2\n",
+    "output": "3.0 8 0\n",
+    "hidden": true
+   },
+   {
+    "input": "5\n0 0\n2 0\n4 0\n4 4\n0 4\n",
+    "output": "16.0 16 9\n",
+    "hidden": true
+   },
+   {
+    "input": "3\n-1000000 -1000000\n1000000 -999999\n-999999 1000000\n",
+    "output": "1999999999999.5 2000001 1999999000000\n",
+    "hidden": true
+   },
+   {
+    "input": "8\n0 0\n6 0\n6 6\n3 6\n3 2\n2 2\n2 6\n0 6\n",
+    "output": "32.0 32 17\n",
+    "hidden": true
+   },
+   {
+    "input": "4\n0 0\n0 5\n1 5\n1 0\n",
+    "output": "5.0 12 0\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random, math\nrandom.seed(331)\nn = 100000\nseen = set(); pts = []\nwhile len(pts) < n:\n    x = random.randint(-10**6, 10**6); y = random.randint(-10**6, 10**6)\n    g = math.gcd(x, y)\n    if g == 0 or (x // g, y // g) in seen:\n        continue\n    seen.add((x // g, y // g)); pts.append((math.atan2(y, x), x, y))\npts.sort()\nprint(n)\nprint(\"\\n\".join(f\"{x} {y}\" for a, x, y in pts))\n",
+    "output": "1772069723532.0 857402 1772069294832\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(332)\nk = 25000\nprint(4 * k)\ntop = [(2 * i, random.randint(1, 10**6)) for i in range(2 * k)]\nbot = [(2 * i + 1, -random.randint(1, 10**6)) for i in range(2 * k)]\nfor x, y in top:\n    print(x, y)\nfor x, y in reversed(bot):\n    print(x, y)\n",
+    "output": "99814073532.0 150200 99813998433\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "v04",
+  "title": "Two Piles, Diagonal Moves (Wythoff's Game)",
+  "category": "Game Theory",
+  "difficulty": "Impossible",
+  "timeLimit": 5,
+  "description": "<p>Two piles hold <code>a</code> and <code>b</code> stones. A move is one of: remove any positive number of stones from <b>one</b> pile, or remove the <b>same</b> positive number of stones from <b>both</b> piles. The player who cannot move loses (so the player who empties both piles wins). Alice moves first and both play optimally.</p><p>For each query, print the number of <b>winning first moves</b> for Alice: moves after which Bob is in a losing position. A move is identified by the resulting pair <code>(a', b')</code> (pile order matters). Print <code>0</code> if Alice loses.</p><h4>Constraints</h4><ul><li><code>1 &le; Q &le; 2000</code></li><li><code>0 &le; a, b &le; 10<sup>18</sup></code></li><li>Double-precision golden-ratio formulas lose accuracy near <code>10<sup>18</sup></code>; use exact integer arithmetic (e.g. <code>math.isqrt</code>).</li></ul><h4>Input</h4><p>The first line contains <code>Q</code>; each of the next <code>Q</code> lines contains <code>a b</code>.</p><h4>Output</h4><p>Print the <code>Q</code> answers on one line, separated by spaces.</p><h4>Example</h4><p>Input:</p><pre>5\n0 0\n1 2\n1 1\n3 5\n4 4</pre><p>Output:</p><pre>0 0 1 0 1</pre>",
+  "solution": "import sys\nfrom math import isqrt\ndef A(k): return (k + isqrt(5 * k * k)) // 2\ndef partner(v):\n    if v == 0: return 0\n    k0 = (isqrt(5 * v * v) - v) // 2\n    for k in range(max(1, k0 - 2), k0 + 3):\n        if A(k) == v: return v + k\n    k0 = (3 * v - isqrt(5 * v * v)) // 2\n    for k in range(max(1, k0 - 2), k0 + 3):\n        if A(k) + k == v: return A(k)\n    raise ValueError\nd = sys.stdin.buffer.read().split(); q = int(d[0]); out = []\nfor i in range(q):\n    a = int(d[1 + 2 * i]); b = int(d[2 + 2 * i])\n    lo, hi = min(a, b), max(a, b)\n    if A(hi - lo) == lo:\n        out.append(0); continue\n    w = 0\n    if partner(a) < b: w += 1\n    if partner(b) < a: w += 1\n    if A(hi - lo) < lo: w += 1\n    out.append(w)\nprint(*out)\n",
+  "tests": [
+   {
+    "input": "5\n0 0\n1 2\n1 1\n3 5\n4 4\n",
+    "output": "0 0 1 0 1\n",
+    "hidden": false
+   },
+   {
+    "input": "3\n0 5\n2 1\n7 2\n",
+    "output": "1 0 1\n",
+    "hidden": false
+   },
+   {
+    "input": "4\n0 1\n10 10\n13 8\n6 6\n",
+    "output": "1 3 0 1\n",
+    "hidden": true
+   },
+   {
+    "input": "4\n1000000000000000000 1000000000000000000\n0 1000000000000000000\n1000000000000000000 0\n999999999999999999 1\n",
+    "output": "3 1 1 1\n",
+    "hidden": true
+   },
+   {
+    "input": "6\n618033988749894848 1000000000000000000\n618033988749894849 1000000000000000001\n381966011250105151 618033988749894848\n1 0\n2 0\n3 3\n",
+    "output": "0 2 1 1 1 1\n",
+    "hidden": true
+   },
+   {
+    "input": "5\n5 3\n3 5\n8 5\n0 2\n2 2\n",
+    "output": "0 0 2 1 3\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nfrom math import isqrt\nrandom.seed(404)\nq = 2000\nprint(q)\nfor _ in range(q):\n    k = random.randint(1, 6 * 10**17)\n    a = (k + isqrt(5 * k * k)) // 2\n    b = a + k\n    t = random.randint(0, 5)\n    if t == 1: a += random.choice([-1, 1])\n    elif t == 2: b += random.choice([-1, 1])\n    elif t == 3: a += random.randint(-3, 3); b += random.randint(-3, 3)\n    elif t == 4: a, b = random.randint(0, 10**18), random.randint(0, 10**18)\n    if random.randint(0, 1): a, b = b, a\n    print(max(a, 0), max(b, 0))\n",
+    "output": "0 1 0 1 1 1 1 3 0 1 1 1 2 1 1 1 2 0 0 0 0 0 1 1 1 1 1 1 0 2 1 3 1 0 1 1 1 1 1 2 3 0 1 0 0 1 3 2 0 0 3 1 1 0 0 1 1 0 1 1 1 2 1 1 1 0 0 1 0 1 1 0 0 1 2 0 0 1 1 0 1 1 1 1 1 1 0 0 2 0 0 2 3 1 0 0 1 1 0 0 1 1 3 1 0 1 1 1 1 0 0 0 0 0 0 2 2 0 0 1 1 2 1 2 1 0 0 0 1 1 1 0 1 1 1 0 0 0 0 0 1 0 2 1 2 0 1 1 1 1 1 3 0 1 1 0 1 0 2 0 0 0 0 1 0 3 1 3 1 2 0 1 1 1 0 0 1 3 3 0 1 3 1 2 0 1 1 0 0 3 0 0 0 0 1 2 1 1 2 0 0 0 1 0 1 0 1 3 1 3 1 1 1 1 0 0 0 2 0 2 1 3 1 1 0 0 1 1 0 1 1 1 1 1 0 1 0 2 3 1 2 1 1 1 1 1 1 2 1 1 3 2 1 3 0 0 0 2 1 1 0 1 1 0 1 1 0 0 1 0 1 0 1 0 1 0 2 1 0 1 1 2 1 1 1 1 0 1 1 1 1 1 1 1 0 0 1 1 0 0 0 0 0 1 0 1 0 2 0 2 1 1 0 0 0 0 0 3 1 2 0 0 0 1 1 0 1 1 0 1 1 1 0 1 1 0 1 0 0 0 1 1 1 1 0 0 1 1 0 1 0 0 0 1 0 1 2 1 1 1 3 1 1 1 1 0 1 0 3 3 1 1 1 0 1 1 3 1 1 0 0 1 1 0 0 0 1 2 1 2 1 1 0 1 1 1 0 1 2 1 1 0 0 0 2 1 2 2 0 1 1 0 1 1 1 2 1 3 2 2 3 3 1 0 0 1 1 1 0 1 0 2 3 1 0 0 1 2 2 0 1 1 0 1 1 1 0 1 1 1 0 1 1 2 0 3 0 3 0 0 0 0 1 0 1 0 1 1 1 3 0 0 3 3 3 1 1 1 1 1 0 3 2 0 1 2 1 0 1 0 0 2 1 0 0 1 0 1 0 1 0 3 1 0 0 0 1 0 0 3 1 1 0 2 2 0 1 0 1 1 0 2 0 1 0 1 0 1 0 1 0 1 0 1 1 1 1 1 1 1 0 1 0 1 1 0 2 1 0 0 1 0 1 1 1 2 0 0 1 2 0 3 1 1 0 3 1 1 0 0 0 1 1 1 1 3 1 1 0 1 1 1 1 2 2 0 1 1 1 2 0 0 0 0 0 1 0 0 1 1 1 2 1 0 1 1 0 0 2 3 1 1 0 0 0 1 0 1 1 0 0 0 1 0 1 1 3 1 0 0 0 1 0 2 0 1 0 1 1 1 0 1 1 1 3 2 1 1 0 0 1 1 1 1 1 3 1 1 0 3 1 1 1 0 1 1 3 1 1 0 1 0 3 1 1 0 0 1 0 1 1 1 1 0 0 0 1 1 3 0 1 0 0 2 1 1 0 0 1 0 2 0 1 0 1 1 1 2 1 1 1 1 0 1 0 2 0 1 1 0 0 1 1 3 1 2 1 1 1 1 1 3 2 1 1 3 0 1 1 2 1 1 1 1 1 3 0 1 1 1 1 1 1 0 2 0 0 1 2 2 1 1 1 1 1 1 3 1 1 0 0 1 1 0 0 1 0 1 1 0 0 0 1 1 1 1 1 0 1 0 0 2 1 0 0 0 0 0 1 0 1 0 2 2 1 1 0 3 1 0 1 0 3 0 0 1 0 2 1 1 1 1 1 3 0 0 0 1 0 1 0 1 1 1 1 1 2 2 0 0 1 1 1 1 0 1 0 0 3 1 0 3 0 3 1 0 2 1 1 1 3 1 2 1 0 1 1 1 1 1 1 0 1 1 1 0 0 2 1 0 1 3 1 1 2 1 1 1 0 1 1 1 0 1 1 3 3 1 1 2 1 1 1 2 0 0 2 1 3 1 0 1 1 1 2 0 0 0 2 0 0 2 0 0 0 1 2 3 2 0 1 0 1 1 0 1 3 2 1 1 1 0 0 1 1 0 0 1 1 0 0 1 1 1 0 1 1 1 1 2 0 0 1 1 1 0 2 3 1 0 0 3 1 1 0 2 3 0 3 1 1 1 0 0 1 1 1 1 1 0 0 1 0 0 3 0 1 1 1 0 1 0 0 0 1 1 1 0 0 0 1 3 1 0 2 1 0 1 1 1 0 2 0 0 0 1 0 3 0 2 1 1 1 0 0 1 1 1 1 1 1 2 0 2 0 1 1 0 1 3 1 0 0 0 0 1 1 1 0 1 0 0 2 0 0 1 2 1 1 3 0 3 1 1 1 1 1 0 1 0 1 1 1 0 0 1 0 1 1 0 0 1 0 2 1 0 0 0 0 1 0 1 1 3 3 0 1 0 3 0 1 2 1 3 3 0 0 0 0 1 1 1 1 1 2 0 1 0 0 0 1 3 0 1 2 0 3 1 0 1 1 0 0 0 1 0 1 1 1 1 0 3 2 1 1 1 0 1 1 1 3 0 1 1 1 2 1 1 2 0 1 1 1 0 1 1 1 1 0 1 0 2 1 3 0 1 1 1 0 3 3 1 1 0 0 1 2 0 2 1 2 0 0 0 1 2 1 0 1 0 1 1 2 1 0 0 1 0 0 0 0 1 1 1 1 1 1 1 1 0 1 3 1 0 0 0 0 1 3 0 1 0 1 1 0 1 1 0 1 1 1 1 0 1 2 0 0 1 3 1 1 1 1 1 1 1 1 0 0 2 0 0 0 0 2 0 2 1 1 0 1 1 0 1 0 1 2 1 0 1 1 1 1 0 0 2 0 0 1 0 0 0 1 1 2 1 1 0 1 0 0 1 2 0 0 1 0 3 1 0 1 1 1 1 1 1 1 0 1 1 1 1 2 0 0 1 0 1 1 0 1 3 2 2 1 0 0 0 1 0 0 2 1 0 0 1 0 1 2 1 2 1 0 0 1 0 0 2 1 2 1 0 1 0 1 0 0 2 0 0 1 0 1 1 0 3 0 0 3 0 1 1 1 1 1 1 1 0 1 1 1 1 2 0 1 0 1 2 2 1 0 0 0 0 0 1 1 0 1 0 0 1 1 1 1 1 0 1 2 0 0 1 1 1 1 1 0 1 1 2 1 1 1 1 1 1 1 0 3 1 1 0 0 1 1 3 0 2 1 3 1 1 3 1 1 2 3 2 1 0 0 0 0 1 1 1 1 0 1 1 0 1 1 1 1 1 1 1 0 2 1 1 2 3 0 1 0 0 1 0 2 1 0 0 1 2 1 1 1 1 1 0 1 0 2 0 1 0 0 3 3 0 1 3 1 3 0 1 1 0 0 3 1 0 1 2 1 1 0 0 1 1 0 0 0 0 0 1 0 0 0 0 2 1 2 0 0 1 1 3 1 0 0 1 0 0 3 1 2 1 2 1 3 1 3 1 1 1 3 2 1 3 0 1 1 1 0 1 2 0 0 0 0 2 0 1 0 2 1 1 1 0 1 3 0 0 0 1 0 3 1 1 1 0 1 1 1 0 0 0 0 2 1 1 3 1 1 3 1 1 1 1 0 0 1 0 1 1 0 0 0 1 1 0 0 1 1 1 1 1 0 1 1 0 1 0 0 0 1 1 0 0 1 2 0 2 3 0 1 1 1 1 1 1 1 3 1 0 1 1 0 0 1 3 1 1 0 1 1 1 1 0 1 1 2 0 1 3 0 1 0 1 0 1 0 0 0 0 0 0 1 0 1 1 1 1 1 2 3 1 0 1 0 2 0 1 3 1 3 1 1 0 2 0 0 0 1 1 1 0 1 1 0 3 0 1 1 1 0 1 3 3 1 1 0 1 3 1 2 0 0 3 1 3 1 0 0 1 0 2 2 0 0 1 1 1 0 2 1 1 0 1 2 0 1 1 2 3 2 1 0 1 2 1 1 2 1 0 2 1 1 0 1 3 0 0 1 2 3 0 2 0 2 1 0 1 1 1 1 1 1 1 0 0 0 1 2 0 1 0 1 0 0 0 0 1 1 1 1 0 1 1 2 2 1 1 1 1 1 1 1 0 0 1 2 3 1 1 0 0 0 3 1 2 0 1 0 1 1 3 2 1 1 1 2 1 1 3 1 2 0 1 1 0 1 0 3 0 0 0 1 0 1 0 0 1 0 0 0 1 1 2 0 1 1 1 2 0 1 3 0 1 3 0 0 1 1 0 0 1 0 0 1 1 1 1 1 2 0 0 1 0 1 0 0 3 0 1 0 0 0 1 0 0 1 1 2 1 1 0 1 0 0 0 0 2 0 0 1 1 0 1 1 1 1 2 1 3 0 0 2 1 1 0 1 1 0 0 1 0 1 3 1 0 0 0 3 1 0 3 2 3 1 1 0 1 1 0 1 0\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nfrom math import isqrt\nrandom.seed(405)\nq = 2000\nprint(q)\nfor _ in range(q):\n    k = random.randint(1, 10**6)\n    a = (k + isqrt(5 * k * k)) // 2\n    b = a + k + random.randint(-2, 2)\n    if random.randint(0, 1): a, b = b, a\n    print(max(a, 0), max(b, 0))\n",
+    "output": "1 1 1 1 0 1 0 1 1 1 1 1 1 1 1 1 1 1 0 1 1 2 1 1 2 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1 0 1 1 0 2 1 1 1 1 0 1 1 1 1 0 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1 2 0 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 0 1 1 1 1 1 0 1 1 2 1 1 1 1 1 1 0 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1 2 0 1 0 1 1 1 1 0 1 2 1 1 1 1 1 1 1 1 0 1 2 1 1 1 0 1 1 1 0 1 1 0 1 2 0 1 1 0 0 1 1 1 0 1 1 0 1 1 1 1 1 2 1 0 2 1 1 0 0 1 0 1 1 1 1 0 1 1 1 1 1 1 1 1 2 1 1 0 1 1 0 1 1 0 0 1 1 0 1 1 1 1 0 0 1 1 1 1 1 1 2 1 1 1 1 0 1 1 1 1 1 1 1 2 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 0 0 1 2 0 0 1 1 1 1 1 1 1 1 2 1 1 0 1 0 1 1 1 0 1 0 1 2 1 0 1 0 2 0 2 0 2 1 1 0 1 2 0 0 0 1 1 2 0 1 0 1 0 1 1 2 1 1 1 1 1 1 1 1 1 2 0 1 0 1 1 1 0 1 0 1 0 1 1 1 2 0 1 1 1 1 0 1 1 1 1 1 1 1 1 0 1 1 1 0 1 1 1 1 1 1 2 1 1 1 0 1 1 0 1 1 1 1 1 0 1 1 0 2 1 0 1 1 1 0 0 0 1 1 1 1 1 0 1 1 1 1 1 0 1 1 1 1 0 1 1 1 1 0 0 1 1 1 0 1 2 1 1 0 1 1 1 1 0 1 1 1 1 1 0 2 1 1 1 0 0 0 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 0 2 1 1 1 0 1 1 1 2 2 2 1 1 0 1 1 1 1 1 1 0 1 2 1 1 1 0 1 0 1 0 0 1 1 1 0 1 1 1 1 1 0 0 0 0 1 0 0 1 0 1 2 1 1 1 0 1 1 0 1 1 1 1 2 0 0 1 1 2 1 2 1 0 1 0 1 1 0 1 0 0 1 1 1 1 0 0 1 1 0 1 1 1 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1 0 1 1 0 1 1 1 0 1 2 1 1 1 1 1 1 1 1 1 0 1 1 1 2 1 2 0 1 1 1 2 0 1 1 1 1 1 1 1 0 1 1 1 1 1 2 1 1 2 0 1 1 1 1 1 1 1 1 1 0 2 1 1 1 0 0 1 1 0 0 1 1 1 1 2 2 1 1 1 1 1 0 1 1 2 1 1 2 1 1 1 2 1 1 1 1 1 1 1 1 1 1 1 1 0 0 1 1 0 0 0 1 1 1 1 1 1 0 0 0 1 0 1 0 1 1 0 1 0 0 1 1 0 1 1 1 0 0 1 2 1 0 1 2 1 1 1 1 1 2 0 1 1 1 0 1 1 1 1 1 1 1 0 1 1 1 0 1 1 1 1 1 1 1 0 0 1 0 1 1 1 1 0 1 1 1 1 1 1 1 0 1 1 1 1 1 1 1 2 1 1 0 1 1 0 0 0 1 1 1 0 1 1 1 0 1 1 1 1 1 1 1 0 1 1 1 1 2 1 1 0 0 1 0 1 2 2 1 1 1 2 0 1 0 1 1 0 1 0 0 2 1 1 1 1 1 0 1 1 0 1 1 1 0 0 1 0 0 1 1 1 1 0 1 2 0 1 1 1 2 1 1 0 1 2 1 1 1 1 1 1 1 1 1 1 0 2 1 1 2 1 0 1 1 1 1 0 1 0 1 1 1 1 1 1 1 0 0 1 1 0 1 1 1 1 1 2 1 1 1 0 0 1 1 1 1 1 2 1 1 2 0 0 1 1 0 0 1 1 2 1 0 1 1 1 0 1 0 2 1 1 2 0 2 1 1 1 1 1 0 0 1 1 1 2 1 1 2 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 0 0 1 0 0 1 1 1 1 2 1 1 1 0 1 1 1 1 1 0 1 1 1 0 2 1 1 1 1 1 2 2 1 1 1 0 1 1 0 1 1 1 2 0 1 1 1 1 1 1 1 1 1 1 1 1 0 0 1 2 1 1 1 1 1 2 0 1 0 1 1 1 1 1 0 0 2 1 1 0 0 1 1 1 1 1 1 1 0 1 1 1 0 1 0 0 0 1 0 1 1 0 1 1 2 2 0 1 1 1 2 0 1 1 1 1 0 0 1 0 1 1 1 1 1 1 1 0 1 1 0 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 0 1 0 1 1 1 1 0 0 1 1 1 1 1 1 0 1 2 1 1 0 1 1 2 1 1 0 2 1 1 1 1 2 1 1 1 1 2 1 1 2 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 2 2 1 1 0 1 0 0 1 1 1 2 0 1 1 0 1 1 1 2 1 2 0 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 2 0 1 1 2 1 1 1 1 1 1 2 1 0 1 1 1 1 1 0 1 0 1 0 1 0 1 1 1 2 1 1 1 1 1 1 1 1 0 0 1 1 0 1 1 1 1 0 1 0 1 1 1 0 0 1 1 1 0 0 1 1 1 1 0 1 0 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 0 0 1 1 2 0 1 0 1 0 2 1 1 1 1 0 2 1 1 1 1 0 0 1 1 2 2 0 0 1 1 0 2 1 0 1 1 1 1 1 1 2 1 1 1 1 2 1 1 0 1 0 1 1 1 1 1 1 1 1 2 1 1 1 0 1 1 0 1 1 0 1 2 1 1 1 1 1 1 1 1 0 1 1 1 0 1 1 1 1 1 1 0 1 1 1 0 1 1 0 1 1 1 0 1 1 0 1 2 1 0 1 1 1 0 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 0 0 1 2 1 0 1 1 0 1 1 1 2 1 1 1 2 1 0 1 1 1 2 1 2 2 1 1 2 1 1 1 1 1 1 1 1 1 0 0 1 0 1 1 1 1 1 1 2 0 1 0 0 1 1 1 1 1 1 1 0 1 1 1 0 1 1 1 1 1 1 0 1 0 1 0 1 1 1 2 1 1 1 0 0 1 0 1 1 2 1 1 0 1 2 1 1 0 1 0 1 1 1 1 1 2 1 1 1 2 1 1 1 1 0 1 1 1 1 1 0 1 0 1 1 1 2 1 0 1 1 1 1 1 1 2 1 1 1 1 1 1 1 0 1 1 1 1 1 0 1 2 0 1 1 1 1 1 1 1 0 1 0 2 1 2 1 1 1 2 1 1 1 1 1 0 1 0 1 0 1 1 2 1 1 0 0 1 1 0 0 0 1 1 1 2 1 1 1 1 1 1 1 1 2 0 0 1 1 1 1 1 0 1 0 1 1 1 1 1 1 0 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 2 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 1 0 1 1 1 1 2 1 0 1 2 1 1 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1 1 1 0 1 1 1 0 1 1 1 1 0 1 1 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 0 1 0 1 1 1 1 1 0 0 2 1 1 1 0 1 1 0 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1 2 1 1 1 2 1 1 0 1 0 1 0 1 0 1 1 1 0 1 1 1 0 0 1 1 0 0 1 1 1 2 1 1 1 1 2 1 2 1 1 1 1 1 1 1 1 2 1 1 1 1 0 1 1 1 0 1 1 1 1 0 1 1 1 1 2 0 1 1 1 0 1 1 0 1 0 0 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 1 0 1 1 0 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 1 1 1 1 0 1 1 1 1 1 2 1 1 1 1 0 1 0 1 1 1 0 1 1 1 1 0 0 1 1 2 1 1 0 1 1 0 2 0 1 0 0 1 2 1 1 2 2 1 1 1 1 1 1 2 0 0 0 2 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "v05",
+  "title": "Token Game on a Directed Graph",
+  "category": "Game Theory",
+  "difficulty": "Impossible",
+  "timeLimit": 5,
+  "description": "<p>A token sits on a node of a directed graph (cycles, self-loops and repeated edges are allowed). Players alternate moving the token along one outgoing edge. A player who cannot move <b>loses</b>. If play can go on forever under optimal play (a player who would lose prefers an infinite game, and a player who can force a win does so), the result is a <b>draw</b>.</p><p>Classify every node as <code>W</code> (the player to move wins), <code>L</code> (the player to move loses) or <code>D</code> (draw), then answer queries.</p><h4>Constraints</h4><ul><li><code>1 &le; n &le; 10<sup>5</sup></code>, <code>0 &le; m &le; 2&middot;10<sup>5</sup></code></li><li><code>1 &le; Q &le; 3000</code></li><li>Repeatedly re-scanning all nodes until nothing changes is too slow; use retrograde analysis (BFS backwards from terminal nodes).</li></ul><h4>Input</h4><p>The first line contains <code>n m</code>. The next <code>m</code> lines contain edges <code>u v</code> (from <code>u</code> to <code>v</code>, 1-based). Then a line with <code>Q</code> and a line with <code>Q</code> node numbers.</p><h4>Output</h4><p>Line 1: the number of <code>W</code>, <code>L</code> and <code>D</code> nodes, separated by spaces. Line 2: a string of <code>Q</code> characters, the classification of each queried node in order.</p><h4>Example</h4><p>Input:</p><pre>4 3\n1 2\n2 3\n3 4\n4\n1 2 3 4</pre><p>Output:</p><pre>2 2 0\nWLWL</pre>",
+  "solution": "import sys\nfrom collections import deque\ndef main():\n    d = sys.stdin.buffer.read().split()\n    n, m = int(d[0]), int(d[1])\n    rev = [[] for _ in range(n + 1)]\n    deg = [0] * (n + 1)\n    p = 2\n    for _ in range(m):\n        u = int(d[p]); v = int(d[p + 1]); p += 2\n        rev[v].append(u); deg[u] += 1\n    res = [0] * (n + 1)  # 0 undecided, 1 W, 2 L\n    dq = deque()\n    for v in range(1, n + 1):\n        if deg[v] == 0:\n            res[v] = 2; dq.append(v)\n    while dq:\n        v = dq.popleft()\n        rv = res[v]\n        for u in rev[v]:\n            if res[u]: continue\n            if rv == 2:\n                res[u] = 1; dq.append(u)\n            else:\n                deg[u] -= 1\n                if deg[u] == 0:\n                    res[u] = 2; dq.append(u)\n    ch = \"DWL\"\n    w = res.count(1); l = res.count(2)\n    q = int(d[p]); qs = d[p + 1:p + 1 + q]\n    print(w, l, n - w - l)\n    print(\"\".join(ch[res[int(x)]] for x in qs))\nmain()\n",
+  "tests": [
+   {
+    "input": "4 3\n1 2\n2 3\n3 4\n4\n1 2 3 4\n",
+    "output": "2 2 0\nWLWL\n",
+    "hidden": false
+   },
+   {
+    "input": "3 3\n1 2\n2 1\n2 3\n3\n1 2 3\n",
+    "output": "1 2 0\nLWL\n",
+    "hidden": false
+   },
+   {
+    "input": "1 0\n1\n1\n",
+    "output": "0 1 0\nL\n",
+    "hidden": true
+   },
+   {
+    "input": "1 1\n1 1\n1\n1\n",
+    "output": "0 0 1\nD\n",
+    "hidden": true
+   },
+   {
+    "input": "5 6\n1 2\n2 3\n3 1\n1 4\n4 5\n5 4\n5\n1 2 3 4 5\n",
+    "output": "0 0 5\nDDDDD\n",
+    "hidden": true
+   },
+   {
+    "input": "6 7\n1 2\n1 3\n2 4\n3 4\n4 5\n5 6\n6 5\n6\n6 5 4 3 2 1\n",
+    "output": "0 0 6\nDDDDDD\n",
+    "hidden": true
+   },
+   {
+    "input": "4 4\n1 2\n1 2\n2 3\n3 4\n3\n1 1 4\n",
+    "output": "2 2 0\nWWL\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(505)\nn, m = 100000, 200000\nprint(n, m)\nfor _ in range(m):\n    print(random.randint(1, n), random.randint(1, n))\nprint(3000)\nprint(*[random.randint(1, n) for _ in range(3000)])\n",
+    "output": "57385 42615 0\nLLWLLWWLLWWWWLWLLWLLWWWLWLWLWLWLWLLLWWLLWWLWWLLWLLLWWWLWWWLLWWLLWWWWLWLWWWWWLLWWLWWWLWLLWLLLLWLLWLLWLWLLLLLWWWWWWLLLWLWWWWLWLWWLLWWWLWLLWWLWWWLLWLLLWWLLLLWWLLWWWLLWWLWWWLWLWLLWLWLWWLLLLWLWWLWWWLWWLLWLWWLWWLWWWWLWLWWLWWLWWLWWWLWLLWWLWWWWWWLLWWWLLWWLWLWWWWLLWWLWWWWWWLLLLWLWWWLWLWLLLLWWWLWWLWWLWWLWWLLLWWWLLLWLLLLWWWWWWWWWLWWWWLLLLWLWWWLWLLWWLLLWWWLWLWLWLWWWWWLWLWWWWWLLWLLWLWWLWLWLWLLWLWWWWWWWWWWWWLWLWLLWLWWWLWWWLLWWWLWWWLLWLLWLLLWWWWLWLLWLWWWWLWWLWWWLWWWWWLWWWLWWLWWWWWLLLWLWLWWWWWWWLWWWWWWLWWWWLWWLWWLWWWLLLWWWWWWWWWLWLWLLLWLWWWLLWLWWWLLLWLLWWWWWLWWLLLLWLWWWWWWWLWWLWLLWLWWWLLWWLWLWLWLWLLLLWWWWLWLWLWWLLLWLLLWLWWLLWWLLWWWWLWWLWWWWLLLLLWLWLWWWLWLWLLWWWWLLWLWLLLWLLWWWWLWLLWLWWLLLWLLWLWWLLWWWWWWWLLWWLLLLLWLWLLLWLWWWWLLLWWWLLWWWWWWLLWWWWWLWLWWLWWWLWWWLWLLWLWWLWWWLWWWWLWWWWLLLWWLWLLLLLLWLWWLWWWLWLWWLWLLWWWWLWLLLWLLLLWLLWLLWWLWWWWWLLWWLLWWLWWLWWWWWLLWWLWWWLWLWWWWLLWWLLWWWWWWWWWWWLWLLLWLLWLLWWWLLWLLLLWLWLLLWLLWWWWWLWLLWLLLWLWWLWWLWWWLLWLWWWWLWLLWWWWWLWLLLWWWLWLWWWLLWWLWWLLLLLWWWWLWWWWLLLLWWLWLWLWWWWLWLLWWLWWLWWWLWWWWLWLLLWWWLLWLWLWWLLLWWLLWWWWWLLLLWLWWLWWLLLWWWWWWWLLLWWWLWLLWWWLWWLLLLWWWWLWWLLWWLWLLWLLLWWWWLLLLWLWWWWWWWWLLWLLLWWLWWLWLLWWWWWWWWWLWWWLWLLLWWLWWLWLLWWWWWWWWWLWWLWLWWWLWLWWLWLLWWWLWLLWWWWWLLLLLWWWLWWWLLWWLLLWWWWWLWLLWLWWWWWLLWWLWWWLWWWWWWWLWWWWWWLWLLLLWWWWWWLLWWWLLWLWWWWWLLLLLWWWWWWWWWWWLWLLWWLLLWWLWLLWLWLWLWLLWLWWWWWWLWLWWWWWWWLLLLWWLWWLWWWWLLWWLLWWWLWLWWWWWWWLLLLWLLLWWWLWLWWLLLLLLLWLWLLWLWLWWLLWWLWLLLWWWLWLLLLWWWWWWWLWWWWWWLLLWLWWWWWLWLWWWWLWWWWLLWWLLWLWWLLWWLWLWWWLWLLLWWLWWLWWLLWLWWLWLWWLLLLLLLWWLWLWLWLLWLLWLWLWLLLLLWWLWLWLWWWLLLLWWWLWWLWWWWWWWWLWWLLLWLWWWWWWLLWLLWLWWLLWWLWLWWWLLWWLLWWWWWLLWWWLLLLLLWWWWWLLLLLWWWWWWWLWLWWWWWWLLLWWWLWWWWWWLLWLWWWLWWLLWLLWLWLWWWWWLWWLWWLLWWLWWWLWWWWLLLLLWWWWWLWLWLWWWLLWLLWWWWLWLLLWWLLLLLLWLLWWWWWWLLLWWWLWLWLLWWWWWWLLLLLLWWWLLWWLWLLLLWLLWLLLWWLWWLLWLWLLWWWLWWWLLLLLWWWWLWLWLWLWLWWLWWWWWLWWWWLLWLLWWLWWWLWLWWLWLLLLWWWLLLLWLWLLWLWLWLWWWWLLLLLLLLWWLWLLWWWLLWWWWWLWLWWLWLLWWWWWWLLLWWWLWWWLWWWWLWWWLLLWWWWWWLWLWWLWLWWLWLWWWWWWLWWLWLLLWWLWLLLWLLWLWWLWWLLWLLWWWLWLLLLWLWLLWWWLLLLWLWWWWLWWWWWLLWWLLWLLLWLWLWWWWLWWWLWWWWWWWWLLLWWLWLLLWLLLLLLWLWWLWLLLWLLLWWWLWWWWLLWWWLLWWWWWWWWWWLWWWWWWLLWLLWWWLLWWWLWLLLWLWWLLLWLWWWWWWWLLLWWLLWLLWLWWWWWWWWLWLLWLWLWWWWWWWLWWWWLWWWLWLWLLLWWWLWWLLWWLLLWLLWWLWWWLWWWWWLWWWLLLWLWWLLLWLLLWWWWLLWLWLLWLWWWLWWLWLLWWWLLWWWWLWWLWLLWLWWLWLLWWLLWLWLWWWLLLLWWWWWLLLLLLWWWLWWLLWWWLWWWWWWWLLLWLLLLLWWWLWWLWWLWLLWWWLWWWLLLLWLWWWWWWWWLWWLWWWLWWWWLWWWWWLLLWLLWWWWLWWLLWLLLWLLWWWWLWWLLWWWWWWWWLLLLWWLLWWWWLWWWLWLWLWLLLWWLWWWLWLLWWLLWLWWLLWLWWWLWLWWWWWLLWWWLWWLWWWWLLLWWLLLWLLWWWWWWWLWWWLLLWLWLLWWWWLWLWWLLWWLWWLLLWWWWWLWWWWWLWWWWWWWWLLLLWWLWLLWLWWLWWWLLWWLLLWWLWWLWWWWLLLWWWLWWWWLLLWWLWWWWWWWWLLWLWWLWWLWWWWLWWLLLWWLLLWWWWWWWWWWWLWWWLWLLLLLLWWLLWWLWLLWWWWWWWLWWLWWLLLWLWWLLWLWLLLWWWLWWLLWWWWLWWLLWWLLWLLWWWWLWLLWWLLLWLWWLWLWWWWLWLWWLLLWWLWLLWLLWWLLWLWLLLWWWLWWWWWWWWLWLLLWLLLWWWWWLLWWLLWWLWWLLWLWWWLWWWWLWWLWWLLWWWLWLLWWWWWWLWWLWLWWLWLWLWWWWLLLWWLLWWWWWWWLWWWLWWWWWWWLWLWWWWLWWLWWLWWLWWWWWWWWLWLWWLLLWWWWWLWWWLLWWWWWWWWLWWWLWWLWLLWW\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(506)\nn = 100000\nedges = []\nfor v in range(1, n):\n    edges.append((v, v + 1))\nfor _ in range(60000):\n    u = random.randint(1, n - 1)\n    edges.append((u, random.randint(u + 1, min(n, u + 5))))\nfor _ in range(300):\n    u = random.randint(2, n)\n    edges.append((u, random.randint(max(1, u - 3), u)))\nrandom.shuffle(edges)\nprint(n, len(edges))\nfor u, v in edges:\n    print(u, v)\nprint(3000)\nprint(*[random.randint(1, n) for _ in range(3000)])\n",
+    "output": "858 669 98473\nDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDWDDDDDDDDDDLDDDDDDDDDDDDDDDDDDDDDLDDDDDDDDDDDDDDDDDDDDDDDDWDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDWDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDWDDDDDDLDDDDDDDDDDWDDDDDDDDWDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDWDDLDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDWDDDDDDDDDDDDDDDDDDDDDDDDDDDDLDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDLDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDWDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDLDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDWDDDDDDDDDDDDDDDDDDDDDDDDDDDWDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDWDDDDDDDDLDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDWDDDDDDDDDDDDDDDDDDDDDDDDDDDLDDDDDDDDDDDDDDDDDDDDDDDDDDWDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDLDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDLDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDLDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDWDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDLDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDLDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDWDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDLDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDWDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDLDDDDDDDDDDDDDLDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDWDDDDDDDDDDDDDDDDDDDDDDDDDDDDDWDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDLDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDWDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDWDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDWDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDWDDDDDDDDDDDDDDDDDWDDDDDDDDDDDDDDDDDDDDDDDDDDDLDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "v06",
+  "title": "Fence Around the Orchard (Convex Hull)",
+  "category": "Geometry",
+  "difficulty": "Hard",
+  "timeLimit": 5,
+  "description": "<p>Given <code>n</code> trees as lattice points (duplicates possible), output the vertices of their <b>convex hull</b>. Points lying on a hull edge but not at a corner are <b>not</b> vertices. Print the vertices in <b>counterclockwise</b> order starting from the vertex with the smallest <code>y</code> (ties: smallest <code>x</code>).</p><p>Degenerate cases: if all points coincide, the hull is that single point; if all points are collinear, the hull is the two extreme points (start with the one with smaller <code>y</code>, ties by smaller <code>x</code>).</p><h4>Constraints</h4><ul><li><code>1 &le; n &le; 10<sup>5</sup></code></li><li><code>|x|, |y| &le; 10<sup>9</sup></code></li></ul><h4>Input</h4><p>The first line contains <code>n</code>; each of the next <code>n</code> lines contains <code>x y</code>.</p><h4>Output</h4><p>First print <code>h</code>, the number of hull vertices, then <code>h</code> lines <code>x y</code>.</p><h4>Example</h4><p>Input:</p><pre>6\n0 0\n2 0\n1 1\n2 2\n0 2\n1 0</pre><p>Output:</p><pre>4\n0 0\n2 0\n2 2\n0 2</pre>",
+  "solution": "import sys\ndef main():\n    d = sys.stdin.buffer.read().split(); n = int(d[0])\n    pts = sorted(set(zip(map(int, d[1:2 * n + 1:2]), map(int, d[2:2 * n + 2:2]))))\n    if len(pts) == 1:\n        print(1); print(*pts[0]); return\n    def build(seq):\n        h = []\n        for p in seq:\n            while len(h) >= 2:\n                o, a = h[-2], h[-1]\n                if (a[0] - o[0]) * (p[1] - o[1]) - (a[1] - o[1]) * (p[0] - o[0]) <= 0:\n                    h.pop()\n                else:\n                    break\n            h.append(p)\n        return h\n    lo = build(pts); up = build(pts[::-1])\n    hull = lo[:-1] + up[:-1]\n    s = min(range(len(hull)), key=lambda i: (hull[i][1], hull[i][0]))\n    hull = hull[s:] + hull[:s]\n    print(len(hull))\n    print(\"\\n\".join(f\"{x} {y}\" for x, y in hull))\nmain()\n",
+  "tests": [
+   {
+    "input": "6\n0 0\n2 0\n1 1\n2 2\n0 2\n1 0\n",
+    "output": "4\n0 0\n2 0\n2 2\n0 2\n",
+    "hidden": false
+   },
+   {
+    "input": "4\n3 3\n1 1\n2 2\n0 0\n",
+    "output": "2\n0 0\n3 3\n",
+    "hidden": false
+   },
+   {
+    "input": "3\n5 -5\n5 -5\n5 -5\n",
+    "output": "1\n5 -5\n",
+    "hidden": true
+   },
+   {
+    "input": "2\n4 1\n-2 1\n",
+    "output": "2\n-2 1\n4 1\n",
+    "hidden": true
+   },
+   {
+    "input": "7\n0 0\n4 0\n4 4\n0 4\n2 2\n2 0\n0 0\n",
+    "output": "4\n0 0\n4 0\n4 4\n0 4\n",
+    "hidden": true
+   },
+   {
+    "input": "5\n-1000000000 -1000000000\n1000000000 1000000000\n-1000000000 1000000000\n1000000000 -1000000000\n0 1000000000\n",
+    "output": "4\n-1000000000 -1000000000\n1000000000 -1000000000\n1000000000 1000000000\n-1000000000 1000000000\n",
+    "hidden": true
+   },
+   {
+    "input": "8\n1 0\n2 0\n3 1\n3 2\n2 3\n1 3\n0 2\n0 1\n",
+    "output": "8\n1 0\n2 0\n3 1\n3 2\n2 3\n1 3\n0 2\n0 1\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random, math\nrandom.seed(606)\nB = 6\nvs = [(dx, dy) for dx in range(-B, B + 1) for dy in range(-B, B + 1) if math.gcd(dx, dy) == 1]\nvs.sort(key=lambda v: math.atan2(v[1], v[0]))\nx = y = 0; P = []\nfor dx, dy in vs:\n    P.append((x, y)); x += 2 * dx; y += 2 * dy\npts = list(P)\nwhile len(pts) < 100000:\n    a = random.choice(P); b = random.choice(P)\n    pts.append(((a[0] + b[0]) // 2, (a[1] + b[1]) // 2))\nrandom.shuffle(pts)\nprint(len(pts))\nprint(\"\\n\".join(f\"{x} {y}\" for x, y in pts))\n",
+    "output": "96\n0 -294\n2 -294\n14 -292\n24 -290\n32 -288\n38 -286\n48 -282\n52 -280\n62 -274\n68 -270\n76 -264\n86 -256\n98 -246\n100 -244\n110 -232\n118 -222\n124 -214\n128 -208\n134 -198\n136 -194\n140 -184\n142 -178\n144 -170\n146 -160\n148 -148\n148 -146\n146 -134\n144 -124\n142 -116\n140 -110\n136 -100\n134 -96\n128 -86\n124 -80\n118 -72\n110 -62\n100 -50\n98 -48\n86 -38\n76 -30\n68 -24\n62 -20\n52 -14\n48 -12\n38 -8\n32 -6\n24 -4\n14 -2\n2 0\n0 0\n-12 -2\n-22 -4\n-30 -6\n-36 -8\n-46 -12\n-50 -14\n-60 -20\n-66 -24\n-74 -30\n-84 -38\n-96 -48\n-98 -50\n-108 -62\n-116 -72\n-122 -80\n-126 -86\n-132 -96\n-134 -100\n-138 -110\n-140 -116\n-142 -124\n-144 -134\n-146 -146\n-146 -148\n-144 -160\n-142 -170\n-140 -178\n-138 -184\n-134 -194\n-132 -198\n-126 -208\n-122 -214\n-116 -222\n-108 -232\n-98 -244\n-96 -246\n-84 -256\n-74 -264\n-66 -270\n-60 -274\n-50 -280\n-46 -282\n-36 -286\n-30 -288\n-22 -290\n-12 -292\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(607)\nn = 100000\nprint(n)\nfor _ in range(n):\n    print(random.randint(-10**9, 10**9), random.randint(-10**9, 10**9))\n",
+    "output": "32\n197048153 -999990660\n694603670 -999884815\n795675571 -999818800\n965283013 -999514364\n986869577 -997074742\n999516915 -992127151\n999800587 -932711990\n999923321 -765810289\n999934471 -601973888\n999998321 718731694\n999700785 930428205\n999208629 971128037\n998910362 974721965\n993391258 998589260\n918048569 999194733\n774201003 999964475\n17514505 999991282\n-391260759 999958022\n-942477321 999005411\n-996724453 998777263\n-999057029 983516518\n-999491072 977752810\n-999900602 670097477\n-999977885 533240276\n-999995754 -835903511\n-998268727 -960104546\n-996105763 -990790953\n-980447087 -999012604\n-813003342 -999695135\n-783012171 -999740910\n-583495058 -999850273\n-198115709 -999985696\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "v07",
+  "title": "Inside the Convex Fortress",
+  "category": "Geometry",
+  "difficulty": "Impossible",
+  "timeLimit": 8,
+  "description": "<p>A fortress wall is a <b>strictly convex</b> polygon with <code>n</code> lattice vertices given in counterclockwise order (no three vertices collinear). For each of <code>Q</code> scouts, decide whether the scout is strictly inside, on the wall (boundary, including vertices), or outside.</p><h4>Constraints</h4><ul><li><code>3 &le; n &le; 10<sup>5</sup></code>, <code>1 &le; Q &le; 6&middot;10<sup>4</sup></code></li><li><code>|x|, |y| &le; 10<sup>9</sup></code></li><li><code>O(n)</code> per query is too slow; answer each query in <code>O(log n)</code>.</li></ul><h4>Input</h4><p>The first line contains <code>n</code>, followed by <code>n</code> lines with vertices <code>x y</code>. Then a line with <code>Q</code>, followed by <code>Q</code> lines with query points <code>x y</code>.</p><h4>Output</h4><p>Print three integers: the number of scouts strictly inside, on the boundary, and outside.</p><h4>Example</h4><p>Input:</p><pre>4\n0 0\n4 0\n4 4\n0 4\n6\n2 2\n4 2\n0 0\n5 5\n4 5\n1 3</pre><p>Output:</p><pre>2 2 2</pre>",
+  "solution": "import sys\ndef main():\n    d = sys.stdin.buffer.read().split(); n = int(d[0])\n    X = list(map(int, d[1:2 * n + 1:2])); Y = list(map(int, d[2:2 * n + 2:2]))\n    p = 2 * n + 1; q = int(d[p]); p += 1\n    x0, y0 = X[0], Y[0]\n    ax = [x - x0 for x in X]; ay = [y - y0 for y in Y]\n    ins = bnd = out = 0\n    for t in range(q):\n        qx = int(d[p]) - x0; qy = int(d[p + 1]) - y0; p += 2\n        c1 = ax[1] * qy - ay[1] * qx\n        cn = ax[n - 1] * qy - ay[n - 1] * qx\n        if c1 < 0 or cn > 0:\n            out += 1; continue\n        lo, hi = 1, n - 2\n        while lo < hi:\n            mid = (lo + hi + 1) // 2\n            if ax[mid] * qy - ay[mid] * qx >= 0: lo = mid\n            else: hi = mid - 1\n        l = lo\n        c = (ax[l + 1] - ax[l]) * (qy - ay[l]) - (ay[l + 1] - ay[l]) * (qx - ax[l])\n        if c < 0: out += 1\n        elif c == 0: bnd += 1\n        elif (c1 == 0 and l == 1) or (cn == 0 and l == n - 2): bnd += 1\n        else: ins += 1\n    print(ins, bnd, out)\nmain()\n",
+  "tests": [
+   {
+    "input": "4\n0 0\n4 0\n4 4\n0 4\n6\n2 2\n4 2\n0 0\n5 5\n4 5\n1 3\n",
+    "output": "2 2 2\n",
+    "hidden": false
+   },
+   {
+    "input": "3\n0 0\n6 0\n0 6\n5\n3 3\n2 2\n7 -1\n-1 0\n12 -6\n",
+    "output": "1 1 3\n",
+    "hidden": false
+   },
+   {
+    "input": "3\n0 0\n2 0\n0 2\n6\n4 0\n-2 0\n0 4\n0 -2\n1 1\n0 1\n",
+    "output": "0 2 4\n",
+    "hidden": true
+   },
+   {
+    "input": "5\n0 0\n10 0\n12 5\n5 10\n-2 5\n8\n5 5\n0 0\n10 0\n20 0\n-4 10\n6 -1\n5 10\n11 2\n",
+    "output": "1 3 4\n",
+    "hidden": true
+   },
+   {
+    "input": "4\n-1000000000 -1000000000\n1000000000 -1000000000\n1000000000 1000000000\n-1000000000 1000000000\n4\n0 0\n1000000000 0\n1000000001 0\n-1000000000 1000000000\n",
+    "output": "1 2 1\n",
+    "hidden": true
+   },
+   {
+    "input": "6\n0 0\n2 -1\n4 0\n4 3\n2 4\n0 3\n7\n2 4\n1 -1\n3 2\n0 2\n4 4\n2 -1\n3 -1\n",
+    "output": "1 3 3\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random, math\nrandom.seed(707)\nB = 35\nvs = [(dx, dy) for dx in range(-B, B + 1) for dy in range(-B, B + 1) if math.gcd(dx, dy) == 1]\nvs.sort(key=lambda v: math.atan2(v[1], v[0]))\nx = y = 0; P = []\nfor dx, dy in vs:\n    P.append((x, y)); x += 2 * dx; y += 2 * dy\nn = len(P)\nxs = [p[0] for p in P]; ys = [p[1] for p in P]\nprint(n)\nprint(\"\\n\".join(f\"{a} {b}\" for a, b in P))\nQ = 60000\nprint(Q)\nout = []\nfor _ in range(Q):\n    t = random.randint(0, 5)\n    i = random.randrange(n)\n    if t == 0:\n        a, b = P[i]\n    elif t == 1:\n        a = P[i][0] + vs[i][0]; b = P[i][1] + vs[i][1]\n    elif t == 2:\n        a = P[i][0] + vs[i][0] + random.choice([-1, 0, 1]); b = P[i][1] + vs[i][1] + random.choice([-1, 0, 1])\n    else:\n        a = random.randint(min(xs) - 10, max(xs) + 10); b = random.randint(min(ys) - 10, max(ys) + 10)\n    out.append(f\"{a} {b}\")\nprint(\"\\n\".join(out))\n",
+    "output": "26789 20963 12248\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(708)\nprint(3)\nprint(-1000000000, -1000000000)\nprint(1000000000, -999999999)\nprint(-999999999, 1000000000)\nQ = 60000\nprint(Q)\nfor _ in range(Q):\n    if random.randint(0, 3) == 0:\n        t = random.randint(-1000000000, 999999999)\n        print(t, -1000000000 + (t + 1000000000) // 2000000000)\n    else:\n        print(random.randint(-10**9, 10**9), random.randint(-10**9, 10**9))\n",
+    "output": "22555 0 37445\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "v08",
+  "title": "Crossing Fences",
+  "category": "Geometry",
+  "difficulty": "Hard",
+  "timeLimit": 5,
+  "description": "<p>There are <code>n</code> straight fence segments with integer endpoints. Count the number of unordered pairs of segments that <b>share at least one point</b>: proper crossings, an endpoint touching the other segment, shared endpoints, and overlapping collinear segments all count. A segment may be degenerate (both endpoints equal, i.e. a single point).</p><h4>Constraints</h4><ul><li><code>1 &le; n &le; 500</code></li><li><code>|coordinates| &le; 10<sup>9</sup></code></li><li>Use exact integer arithmetic (floating point fails on large coordinates).</li></ul><h4>Input</h4><p>The first line contains <code>n</code>. Each of the next <code>n</code> lines contains <code>x1 y1 x2 y2</code>.</p><h4>Output</h4><p>Print the number of intersecting pairs.</p><h4>Example</h4><p>Input:</p><pre>3\n0 0 4 4\n0 4 4 0\n5 5 6 6</pre><p>Output:</p><pre>1</pre>",
+  "solution": "import sys\ndef main():\n    d = list(map(int, sys.stdin.buffer.read().split())); n = d[0]\n    S = [tuple(d[1 + 4 * i:5 + 4 * i]) for i in range(n)]\n    def orient(ax, ay, bx, by, cx, cy):\n        v = (bx - ax) * (cy - ay) - (by - ay) * (cx - ax)\n        return (v > 0) - (v < 0)\n    def onseg(ax, ay, bx, by, cx, cy):\n        return min(ax, bx) <= cx <= max(ax, bx) and min(ay, by) <= cy <= max(ay, by)\n    cnt = 0\n    for i in range(n):\n        ax, ay, bx, by = S[i]\n        for j in range(i + 1, n):\n            cx, cy, dx, dy = S[j]\n            if max(ax, bx) < min(cx, dx) or max(cx, dx) < min(ax, bx) or max(ay, by) < min(cy, dy) or max(cy, dy) < min(ay, by):\n                continue\n            o1 = orient(ax, ay, bx, by, cx, cy); o2 = orient(ax, ay, bx, by, dx, dy)\n            o3 = orient(cx, cy, dx, dy, ax, ay); o4 = orient(cx, cy, dx, dy, bx, by)\n            if o1 * o2 < 0 and o3 * o4 < 0:\n                cnt += 1\n            elif (o1 == 0 and onseg(ax, ay, bx, by, cx, cy)) or (o2 == 0 and onseg(ax, ay, bx, by, dx, dy)) or \\\n                 (o3 == 0 and onseg(cx, cy, dx, dy, ax, ay)) or (o4 == 0 and onseg(cx, cy, dx, dy, bx, by)):\n                cnt += 1\n    print(cnt)\nmain()\n",
+  "tests": [
+   {
+    "input": "3\n0 0 4 4\n0 4 4 0\n5 5 6 6\n",
+    "output": "1\n",
+    "hidden": false
+   },
+   {
+    "input": "4\n0 0 2 0\n2 0 4 0\n1 0 3 0\n5 0 6 0\n",
+    "output": "3\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n1 1 1 1\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "3\n1 1 1 1\n0 0 2 2\n1 1 1 1\n",
+    "output": "3\n",
+    "hidden": true
+   },
+   {
+    "input": "3\n0 0 10 0\n5 1 5 10\n0 -1 10 -1\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "2\n-1000000000 -1000000000 1000000000 999999999\n-1000000000 -999999999 1000000000 1000000000\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "2\n-1000000000 -1000000000 1000000000 1000000000\n-999999999 -999999999 999999999 999999999\n",
+    "output": "1\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(808)\nn = 500\nprint(n)\nfor _ in range(n):\n    print(*[random.randint(-20, 20) for _ in range(4)])\n",
+    "output": "29842\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(809)\nn = 500\nprint(n)\nfor _ in range(n):\n    t = random.randint(0, 2)\n    if t == 0:\n        x = random.randint(-10**9, 10**9); y = random.randint(-10**9, 10**9)\n        print(x, y, x, y)\n    elif t == 1:\n        a = random.randint(-10**9, 10**9); b = random.randint(-10**9, 10**9)\n        print(a, a, b, b)\n    else:\n        print(*[random.randint(-10**9, 10**9) for _ in range(4)])\n",
+    "output": "19906\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "v09",
+  "title": "Closest Pair of Beacons",
+  "category": "Geometry",
+  "difficulty": "Impossible",
+  "timeLimit": 8,
+  "description": "<p>Given <code>n</code> beacons at lattice points (two beacons may share a location), find the minimum <b>squared</b> Euclidean distance between two different beacons.</p><h4>Constraints</h4><ul><li><code>2 &le; n &le; 5&middot;10<sup>4</sup></code></li><li><code>|x|, |y| &le; 10<sup>9</sup></code></li><li><code>O(n<sup>2</sup>)</code> is too slow, and so is a sweep that only prunes by <code>x</code> when many points share an <code>x</code>; use divide and conquer (or an equivalent <code>O(n log n)</code> method).</li></ul><h4>Input</h4><p>The first line contains <code>n</code>; each of the next <code>n</code> lines contains <code>x y</code>.</p><h4>Output</h4><p>Print the minimum squared distance as an integer.</p><h4>Example</h4><p>Input:</p><pre>4\n0 0\n3 4\n10 10\n1 1</pre><p>Output:</p><pre>2</pre>",
+  "solution": "import sys\ndef main():\n    sys.setrecursionlimit(10000)\n    d = sys.stdin.buffer.read().split(); n = int(d[0])\n    pts = sorted(zip(map(int, d[1:2 * n + 1:2]), map(int, d[2:2 * n + 2:2])))\n    for i in range(n - 1):\n        if pts[i] == pts[i + 1]:\n            print(0); return\n    best = [(pts[0][0] - pts[1][0]) ** 2 + (pts[0][1] - pts[1][1]) ** 2]\n    def rec(lo, hi):\n        if hi - lo <= 3:\n            sub = pts[lo:hi]\n            b = best[0]\n            for i in range(len(sub)):\n                for j in range(i + 1, len(sub)):\n                    v = (sub[i][0] - sub[j][0]) ** 2 + (sub[i][1] - sub[j][1]) ** 2\n                    if v < b: b = v\n            best[0] = b\n            return sorted(sub, key=lambda p: p[1])\n        mid = (lo + hi) // 2\n        mx = pts[mid][0]\n        left = rec(lo, mid); right = rec(mid, hi)\n        merged = sorted(left + right, key=lambda p: p[1])\n        b = best[0]\n        strip = [p for p in merged if (p[0] - mx) ** 2 < b]\n        ln = len(strip)\n        for i in range(ln):\n            x1, y1 = strip[i]\n            j = i + 1\n            while j < ln:\n                x2, y2 = strip[j]\n                dy = y2 - y1\n                if dy * dy >= b: break\n                v = (x2 - x1) ** 2 + dy * dy\n                if v < b: b = v\n                j += 1\n        best[0] = b\n        return merged\n    rec(0, n)\n    print(best[0])\nmain()\n",
+  "tests": [
+   {
+    "input": "4\n0 0\n3 4\n10 10\n1 1\n",
+    "output": "2\n",
+    "hidden": false
+   },
+   {
+    "input": "3\n-5 2\n7 7\n-5 2\n",
+    "output": "0\n",
+    "hidden": false
+   },
+   {
+    "input": "2\n-1000000000 -1000000000\n1000000000 1000000000\n",
+    "output": "8000000000000000000\n",
+    "hidden": true
+   },
+   {
+    "input": "5\n0 0\n0 10\n0 20\n0 30\n0 41\n",
+    "output": "100\n",
+    "hidden": true
+   },
+   {
+    "input": "6\n1 1\n4 5\n9 9\n4 1\n1 5\n9 1\n",
+    "output": "9\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(909)\nn = 50000\nprint(n)\nfor _ in range(n):\n    print(random.randint(-10**9, 10**9), random.randint(-10**9, 10**9))\n",
+    "output": "513952949\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(910)\nn = 50000\nys = random.sample(range(-10**9, 10**9, 7), n)\nprint(n)\nfor y in ys:\n    print(random.choice([0, 1]), y)\n",
+    "output": "49\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(911)\nn = 50000\npts = []\nfor i in range(n):\n    pts.append((random.randint(0, 223) * 1000, random.randint(0, 223) * 1000))\npts = sorted(set(pts))[:n]\nrandom.shuffle(pts)\npts.append((pts[0][0] + 999, pts[0][1] + 1))\nprint(len(pts))\nfor x, y in pts:\n    print(x, y)\n",
+    "output": "2\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "v10",
+  "title": "Farthest Pair of Towers (Rotating Calipers)",
+  "category": "Geometry",
+  "difficulty": "Impossible",
+  "timeLimit": 8,
+  "description": "<p>Given <code>n</code> towers at lattice points (duplicates allowed), find the maximum <b>squared</b> Euclidean distance between any two towers.</p><h4>Constraints</h4><ul><li><code>1 &le; n &le; 10<sup>5</sup></code></li><li><code>|x|, |y| &le; 10<sup>9</sup></code></li><li>The convex hull can have thousands of vertices, so checking all pairs of hull vertices is too slow &mdash; use rotating calipers.</li></ul><h4>Input</h4><p>The first line contains <code>n</code>; each of the next <code>n</code> lines contains <code>x y</code>.</p><h4>Output</h4><p>Print the maximum squared distance (print <code>0</code> if all towers coincide).</p><h4>Example</h4><p>Input:</p><pre>4\n0 0\n1 1\n3 0\n0 2</pre><p>Output:</p><pre>13</pre>",
+  "solution": "import sys\ndef main():\n    d = sys.stdin.buffer.read().split(); n = int(d[0])\n    pts = sorted(set(zip(map(int, d[1:2 * n + 1:2]), map(int, d[2:2 * n + 2:2]))))\n    if len(pts) == 1:\n        print(0); return\n    def build(seq):\n        h = []\n        for p in seq:\n            while len(h) >= 2:\n                o, a = h[-2], h[-1]\n                if (a[0] - o[0]) * (p[1] - o[1]) - (a[1] - o[1]) * (p[0] - o[0]) <= 0: h.pop()\n                else: break\n            h.append(p)\n        return h\n    h = build(pts)[:-1] + build(pts[::-1])[:-1]\n    m = len(h)\n    def d2(a, b): return (a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2\n    if m == 2:\n        print(d2(h[0], h[1])); return\n    def area(a, b, c): return abs((b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]))\n    best = 0; j = 1\n    for i in range(m):\n        ni = (i + 1) % m\n        while area(h[i], h[ni], h[(j + 1) % m]) > area(h[i], h[ni], h[j]):\n            j = (j + 1) % m\n        v = max(d2(h[i], h[j]), d2(h[ni], h[j]))\n        if v > best: best = v\n    print(best)\nmain()\n",
+  "tests": [
+   {
+    "input": "4\n0 0\n1 1\n3 0\n0 2\n",
+    "output": "13\n",
+    "hidden": false
+   },
+   {
+    "input": "3\n2 2\n2 2\n2 2\n",
+    "output": "0\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n5 5\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "5\n0 0\n1 0\n2 0\n3 0\n-4 0\n",
+    "output": "49\n",
+    "hidden": true
+   },
+   {
+    "input": "6\n0 0\n10 0\n10 10\n0 10\n5 12\n5 -2\n",
+    "output": "200\n",
+    "hidden": true
+   },
+   {
+    "input": "2\n-1000000000 -1000000000\n1000000000 1000000000\n",
+    "output": "8000000000000000000\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random, math\nrandom.seed(1010)\nB = 40\nvs = [(dx, dy) for dx in range(-B, B + 1) for dy in range(-B, B + 1) if math.gcd(dx, dy) == 1]\nvs.sort(key=lambda v: math.atan2(v[1], v[0]))\nx = y = 0; P = []\nfor dx, dy in vs:\n    P.append((x, y)); x += 2 * dx; y += 2 * dy\npts = list(P)\nwhile len(pts) < 100000:\n    a = random.choice(P); b = random.choice(P)\n    pts.append(((a[0] + b[0]) // 2, (a[1] + b[1]) // 2))\nrandom.shuffle(pts)\nprint(len(pts))\nprint(\"\\n\".join(f\"{x} {y}\" for x, y in pts))\n",
+    "output": "6188339560\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1011)\nn = 100000\nprint(n)\nfor _ in range(n):\n    print(random.randint(-10**9, 10**9), random.randint(-10**9, 10**9))\n",
+    "output": "7933699802443795988\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random, math\nrandom.seed(1012)\nB = 33\nvs = [(dx, dy) for dx in range(-B, B + 1) for dy in range(-B, B + 1) if math.gcd(dx, dy) == 1]\nvs.sort(key=lambda v: math.atan2(v[1], v[0]))\nx = y = 0; P = []\nfor dx, dy in vs:\n    P.append((x * 7919, y * 7)); x += dx; y += dy\nrandom.shuffle(P)\nprint(len(P))\nprint(\"\\n\".join(f\"{a} {b}\" for a, b in P))\n",
+    "output": "33489062586029290\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "v11",
+  "title": "Area Covered by Tarps",
+  "category": "Geometry",
+  "difficulty": "Impossible",
+  "timeLimit": 8,
+  "description": "<p>Workers lay <code>n</code> axis-aligned rectangular tarps on the ground; they may overlap. Compute the total area covered by at least one tarp.</p><h4>Constraints</h4><ul><li><code>1 &le; n &le; 5000</code></li><li><code>0 &le; x1 &lt; x2 &le; 10<sup>9</sup></code>, <code>0 &le; y1 &lt; y2 &le; 10<sup>9</sup></code></li><li>The answer can exceed 64-bit floating-point precision; compute it exactly. Re-merging intervals for every vertical strip is too slow; use a sweep line with a segment tree over compressed coordinates.</li></ul><h4>Input</h4><p>The first line contains <code>n</code>. Each of the next <code>n</code> lines contains <code>x1 y1 x2 y2</code> (opposite corners).</p><h4>Output</h4><p>Print the covered area as an integer.</p><h4>Example</h4><p>Input:</p><pre>2\n0 0 2 2\n1 1 3 3</pre><p>Output:</p><pre>7</pre>",
+  "solution": "import sys\ndef main():\n    sys.setrecursionlimit(10000)\n    d = list(map(int, sys.stdin.buffer.read().split())); n = d[0]\n    ev = []; ys = set()\n    for i in range(n):\n        x1, y1, x2, y2 = d[1 + 4 * i:5 + 4 * i]\n        ev.append((x1, 1, y1, y2)); ev.append((x2, -1, y1, y2))\n        ys.add(y1); ys.add(y2)\n    ys = sorted(ys); idx = {v: i for i, v in enumerate(ys)}\n    m = len(ys) - 1\n    cnt = [0] * (4 * m + 4); ln = [0] * (4 * m + 4)\n    def upd(node, l, r, ql, qr, v):\n        if qr <= l or r <= ql: return\n        if ql <= l and r <= qr:\n            cnt[node] += v\n        else:\n            mid = (l + r) // 2\n            upd(2 * node, l, mid, ql, qr, v); upd(2 * node + 1, mid, r, ql, qr, v)\n        if cnt[node]: ln[node] = ys[r] - ys[l]\n        elif r - l == 1: ln[node] = 0\n        else: ln[node] = ln[2 * node] + ln[2 * node + 1]\n    ev.sort()\n    area = 0; px = ev[0][0]\n    for x, t, y1, y2 in ev:\n        area += ln[1] * (x - px); px = x\n        upd(1, 0, m, idx[y1], idx[y2], t)\n    print(area)\nmain()\n",
+  "tests": [
+   {
+    "input": "2\n0 0 2 2\n1 1 3 3\n",
+    "output": "7\n",
+    "hidden": false
+   },
+   {
+    "input": "3\n0 0 10 10\n2 2 5 5\n20 20 21 21\n",
+    "output": "101\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n0 0 1000000000 1000000000\n",
+    "output": "1000000000000000000\n",
+    "hidden": true
+   },
+   {
+    "input": "2\n0 0 2 1\n2 0 4 1\n",
+    "output": "4\n",
+    "hidden": true
+   },
+   {
+    "input": "3\n0 0 4 1\n0 0 1 4\n3 0 4 4\n",
+    "output": "10\n",
+    "hidden": true
+   },
+   {
+    "input": "4\n0 0 3 3\n0 0 3 3\n1 1 2 2\n0 1 3 2\n",
+    "output": "9\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1111)\nn = 5000\nprint(n)\nfor _ in range(n):\n    x1 = random.randint(0, 10**9 - 1); y1 = random.randint(0, 10**9 - 1)\n    print(x1, y1, random.randint(x1 + 1, min(10**9, x1 + 3 * 10**7)), random.randint(y1 + 1, min(10**9, y1 + 3 * 10**7)))\n",
+    "output": "649204167543467739\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1112)\nn = 5000\nprint(n)\nfor i in range(n):\n    if i % 2 == 0:\n        a = random.randint(0, 10**9 - 1); b = random.randint(a + 1, 10**9)\n        print(a, 0, b, random.randint(1, 10**9))\n    else:\n        a = random.randint(0, 10**9 - 1); b = random.randint(a + 1, 10**9)\n        print(0, a, random.randint(1, 10**9), b)\n",
+    "output": "999656863963479721\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "v12",
+  "title": "Most Stars in a Straight Line",
+  "category": "Geometry",
+  "difficulty": "Impossible",
+  "timeLimit": 5,
+  "description": "<p>Given <code>n</code> stars at lattice points, find the largest number of stars lying on one straight line. Stars may share the same position (each counts separately), and any single star or pair of stars always lies on some line.</p><h4>Constraints</h4><ul><li><code>1 &le; n &le; 800</code></li><li><code>|x|, |y| &le; 10<sup>9</sup></code></li><li>Comparing slopes as floats gives wrong answers; normalize direction vectors with <code>gcd</code>. <code>O(n<sup>3</sup>)</code> is too slow.</li></ul><h4>Input</h4><p>The first line contains <code>n</code>; each of the next <code>n</code> lines contains <code>x y</code>.</p><h4>Output</h4><p>Print the maximum number of stars on one line.</p><h4>Example</h4><p>Input:</p><pre>5\n1 1\n2 2\n3 3\n1 2\n0 5</pre><p>Output:</p><pre>3</pre>",
+  "solution": "import sys\nfrom math import gcd\ndef main():\n    d = sys.stdin.buffer.read().split(); n = int(d[0])\n    X = list(map(int, d[1:2 * n + 1:2])); Y = list(map(int, d[2:2 * n + 2:2]))\n    best = 1\n    for i in range(n):\n        xi, yi = X[i], Y[i]\n        cnt = {}; dup = 0; mx = 0\n        for j in range(i + 1, n):\n            dx = X[j] - xi; dy = Y[j] - yi\n            if dx == 0 and dy == 0:\n                dup += 1; continue\n            g = gcd(dx, dy); dx //= g; dy //= g\n            if dx < 0 or (dx == 0 and dy < 0): dx = -dx; dy = -dy\n            k = (dx, dy)\n            c = cnt.get(k, 0) + 1; cnt[k] = c\n            if c > mx: mx = c\n        if mx + dup + 1 > best: best = mx + dup + 1\n    print(best)\nmain()\n",
+  "tests": [
+   {
+    "input": "5\n1 1\n2 2\n3 3\n1 2\n0 5\n",
+    "output": "3\n",
+    "hidden": false
+   },
+   {
+    "input": "4\n0 0\n0 0\n1 1\n5 7\n",
+    "output": "3\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n7 7\n",
+    "output": "1\n",
+    "hidden": true
+   },
+   {
+    "input": "3\n2 2\n2 2\n2 2\n",
+    "output": "3\n",
+    "hidden": true
+   },
+   {
+    "input": "6\n0 0\n0 3\n0 -7\n1 1\n2 2\n3 3\n",
+    "output": "4\n",
+    "hidden": true
+   },
+   {
+    "input": "4\n0 0\n94911150 94911151\n94911151 94911152\n1000000000 1000000000\n",
+    "output": "2\n",
+    "hidden": true
+   },
+   {
+    "input": "5\n-1000000000 -1000000000\n1000000000 1000000000\n0 0\n1 0\n333333333 333333333\n",
+    "output": "4\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1212)\nn = 800\nprint(n)\nfor _ in range(n):\n    print(random.randint(0, 25), random.randint(0, 25))\n",
+    "output": "42\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1213)\nn = 800\npts = []\nfor _ in range(37):\n    k = random.randint(-27000000, 27000000)\n    pts.append((3 * k + 5, -7 * k + 11))\npts += [pts[0]] * 3\nwhile len(pts) < n:\n    pts.append((random.randint(-10**9, 10**9), random.randint(-10**9, 10**9)))\nrandom.shuffle(pts)\nprint(n)\nfor x, y in pts:\n    print(x, y)\n",
+    "output": "40\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "v13",
+  "title": "Counting Right Triangles",
+  "category": "Geometry",
+  "difficulty": "Impossible",
+  "timeLimit": 5,
+  "description": "<p>Given <code>n</code> <b>distinct</b> lattice points, count the number of unordered triples of points that form a non-degenerate <b>right triangle</b> (one angle exactly 90&deg;).</p><h4>Constraints</h4><ul><li><code>3 &le; n &le; 600</code></li><li><code>|x|, |y| &le; 10<sup>9</sup></code></li><li><code>O(n<sup>3</sup>)</code> is too slow. For each point as the right-angle vertex, group the other points by normalized direction and match perpendicular directions.</li></ul><h4>Input</h4><p>The first line contains <code>n</code>; each of the next <code>n</code> lines contains <code>x y</code>.</p><h4>Output</h4><p>Print the number of right triangles.</p><h4>Example</h4><p>Input:</p><pre>4\n0 0\n1 0\n0 1\n1 1</pre><p>Output:</p><pre>4</pre>",
+  "solution": "import sys\nfrom math import gcd\ndef main():\n    d = sys.stdin.buffer.read().split(); n = int(d[0])\n    X = list(map(int, d[1:2 * n + 1:2])); Y = list(map(int, d[2:2 * n + 2:2]))\n    total = 0\n    for i in range(n):\n        xi, yi = X[i], Y[i]\n        cnt = {}\n        for j in range(n):\n            if j == i: continue\n            dx = X[j] - xi; dy = Y[j] - yi\n            g = gcd(dx, dy)\n            k = (dx // g, dy // g)\n            cnt[k] = cnt.get(k, 0) + 1\n        for (dx, dy), c in cnt.items():\n            o = cnt.get((-dy, dx))\n            if o: total += c * o\n    print(total)\nmain()\n",
+  "tests": [
+   {
+    "input": "4\n0 0\n1 0\n0 1\n1 1\n",
+    "output": "4\n",
+    "hidden": false
+   },
+   {
+    "input": "3\n0 0\n2 0\n1 1\n",
+    "output": "1\n",
+    "hidden": false
+   },
+   {
+    "input": "3\n0 0\n1 1\n2 2\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "5\n0 0\n3 0\n0 4\n-4 3\n5 5\n",
+    "output": "1\n",
+    "hidden": true
+   },
+   {
+    "input": "4\n0 0\n1000000000 0\n0 1000000000\n-1000000000 -1000000000\n",
+    "output": "1\n",
+    "hidden": true
+   },
+   {
+    "input": "9\n0 0\n1 0\n2 0\n0 1\n1 1\n2 1\n0 2\n1 2\n2 2\n",
+    "output": "44\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1313)\npts = set()\nwhile len(pts) < 600:\n    pts.add((random.randint(0, 30), random.randint(0, 30)))\npts = sorted(pts)\nrandom.shuffle(pts)\nprint(len(pts))\nfor x, y in pts:\n    print(x, y)\n",
+    "output": "550743\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1314)\npts = {(0, 0)}\nwhile len(pts) < 600:\n    t = random.randint(0, 2)\n    if t == 0:\n        pts.add((random.randint(-10**9, 10**9), random.randint(-10**9, 10**9)))\n    else:\n        k = random.randint(-10**8, 10**8)\n        pts.add((3 * k, 4 * k) if t == 1 else (-4 * k, 3 * k))\npts = sorted(pts)\nrandom.shuffle(pts)\nprint(len(pts))\nfor x, y in pts:\n    print(x, y)\n",
+    "output": "40755\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "v14",
+  "title": "Subtraction Game with Astronomical Piles",
+  "category": "Game Theory",
+  "difficulty": "Impossible",
+  "timeLimit": 5,
+  "description": "<p>A subtraction set <code>S</code> of distinct positive integers is fixed. There are <code>n</code> piles. A move removes exactly <code>s</code> stones from one pile for some <code>s &isin; S</code> (the pile must have at least <code>s</code> stones). The player who cannot move loses. Alice moves first; both play optimally.</p><p>If Alice wins, also count her winning first moves: pairs <code>(pile i, s)</code> after which Bob is in a losing position.</p><p>Hint: by the Sprague&ndash;Grundy theorem each pile has a Grundy value <code>g(x)</code>; the sequence <code>g(0), g(1), ...</code> is eventually periodic. For every test it is guaranteed that the sequence becomes periodic (pre-period plus period) within the first <code>10<sup>5</sup></code> values.</p><h4>Constraints</h4><ul><li><code>1 &le; |S| &le; 10</code>, <code>1 &le; s &le; 20</code></li><li><code>1 &le; n &le; 10<sup>4</sup></code></li><li><code>0 &le; a<sub>i</sub> &le; 10<sup>18</sup></code></li></ul><h4>Input</h4><p>The first line contains <code>n k</code> (<code>k = |S|</code>). The second line contains the <code>k</code> elements of <code>S</code>. The third line contains <code>a<sub>1</sub> ... a<sub>n</sub></code>.</p><h4>Output</h4><p>Print <code>Bob</code> if Bob wins, otherwise <code>Alice W</code> where <code>W</code> is the number of winning first moves.</p><h4>Example</h4><p>Input:</p><pre>2 2\n1 2\n4 5</pre><p>Output:</p><pre>Alice 2</pre>",
+  "solution": "import sys\ndef main():\n    d = sys.stdin.buffer.read().split()\n    n, k = int(d[0]), int(d[1])\n    S = sorted(set(int(v) for v in d[2:2 + k])); M = S[-1]\n    a = [int(v) for v in d[2 + k:2 + k + n]]\n    g = []; seen = {}\n    x = 0\n    while True:\n        if x >= M:\n            w = tuple(g[x - M:x])\n            if w in seen:\n                start = seen[w]; per = x - start; break\n            seen[w] = x\n        s = {g[x - t] for t in S if t <= x}\n        v = 0\n        while v in s: v += 1\n        g.append(v); x += 1\n    def G(v):\n        return g[v] if v < len(g) else g[start + (v - start) % per]\n    X = 0\n    for v in a: X ^= G(v)\n    if X == 0:\n        print(\"Bob\"); return\n    w = 0\n    for v in a:\n        target = G(v) ^ X\n        for t in S:\n            if t <= v and G(v - t) == target: w += 1\n    print(\"Alice\", w)\nmain()\n",
+  "tests": [
+   {
+    "input": "2 2\n1 2\n4 5\n",
+    "output": "Alice 2\n",
+    "hidden": false
+   },
+   {
+    "input": "1 3\n1 3 4\n7\n",
+    "output": "Bob\n",
+    "hidden": false
+   },
+   {
+    "input": "3 1\n1\n0 0 0\n",
+    "output": "Bob\n",
+    "hidden": true
+   },
+   {
+    "input": "2 1\n3\n1000000000000000000 999999999999999999\n",
+    "output": "Bob\n",
+    "hidden": true
+   },
+   {
+    "input": "3 3\n2 5 7\n1000000000000000000 123456789123456789 7\n",
+    "output": "Alice 3\n",
+    "hidden": true
+   },
+   {
+    "input": "4 2\n4 9\n0 1 2 3\n",
+    "output": "Bob\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1414)\nS = [3, 7, 11, 13, 17, 19, 20]\nn = 10000\nprint(n, len(S))\nprint(*S)\nprint(*[random.randint(0, 10**18) for _ in range(n)])\n",
+    "output": "Alice 29114\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1415)\nS = random.sample(range(1, 21), 10)\nn = 10000\nprint(n, len(S))\nprint(*S)\nprint(*[random.randint(10**17, 10**18) for _ in range(n)])\n",
+    "output": "Alice 14221\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1416)\nS = [1, 6, 15]\nn = 10000\nprint(n, len(S))\nprint(*S)\nprint(*[random.randint(0, 10**18) for _ in range(n)])\n",
+    "output": "Alice 4181\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "v15",
+  "title": "Cutting Branches (Green Hackenbush on Trees)",
+  "category": "Game Theory",
+  "difficulty": "Impossible",
+  "timeLimit": 5,
+  "description": "<p>A garden has a forest of rooted trees. Node <code>i</code> hangs from its parent <code>p<sub>i</sub></code> by a branch; if <code>p<sub>i</sub> = 0</code>, node <code>i</code> is a root and its branch is attached to the ground. So there are exactly <code>n</code> branches, one above every node.</p><p>Players alternate cutting one remaining branch. After a cut, everything no longer connected to the ground (the whole subtree below the cut branch) disappears. The player who cannot cut loses. Alice moves first; both play optimally.</p><p>If Alice wins, also count her winning first moves (the number of branches whose cut leaves Bob in a losing position).</p><h4>Constraints</h4><ul><li><code>1 &le; n &le; 2&middot;10<sup>5</sup></code></li><li>The parent pointers form a forest (no cycles). Parents may have larger indices than children; trees can be very deep (use iteration, not recursion).</li></ul><h4>Input</h4><p>The first line contains <code>n</code>. The second line contains <code>p<sub>1</sub> ... p<sub>n</sub></code>.</p><h4>Output</h4><p>Print <code>Bob</code> if Bob wins, otherwise <code>Alice W</code>.</p><h4>Example</h4><p>Input:</p><pre>3\n0 1 1</pre><p>Output:</p><pre>Alice 1</pre>",
+  "solution": "import sys\ndef main():\n    d = sys.stdin.buffer.read().split(); n = int(d[0])\n    par = [0] + [int(v) for v in d[1:n + 1]]\n    ch = [[] for _ in range(n + 1)]\n    for v in range(1, n + 1):\n        ch[par[v]].append(v)\n    order = [0]\n    for v in order:\n        order.extend(ch[v])\n    g = [0] * (n + 1)\n    for v in reversed(order):\n        x = 0\n        for c in ch[v]: x ^= g[c] + 1\n        g[v] = x\n    if g[0] == 0:\n        print(\"Bob\"); return\n    need = [-1] * (n + 1); need[0] = 0\n    w = 0\n    for v in order:\n        if need[v] < 0: continue\n        base = need[v] ^ g[v]\n        for c in ch[v]:\n            x = base ^ (g[c] + 1)\n            if x == 0: w += 1\n            else: need[c] = x - 1\n    print(\"Alice\", w)\nmain()\n",
+  "tests": [
+   {
+    "input": "3\n0 1 1\n",
+    "output": "Alice 1\n",
+    "hidden": false
+   },
+   {
+    "input": "2\n0 0\n",
+    "output": "Bob\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n0\n",
+    "output": "Alice 1\n",
+    "hidden": true
+   },
+   {
+    "input": "4\n0 1 2 3\n",
+    "output": "Alice 1\n",
+    "hidden": true
+   },
+   {
+    "input": "5\n2 0 2 0 4\n",
+    "output": "Alice 3\n",
+    "hidden": true
+   },
+   {
+    "input": "6\n0 1 1 0 4 4\n",
+    "output": "Bob\n",
+    "hidden": true
+   },
+   {
+    "input": "7\n0 1 2 2 0 5 6\n",
+    "output": "Alice 3\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1515)\nn = 200000\nperm = list(range(1, n + 1))\nrandom.shuffle(perm)\npar = [0] * (n + 1)\nfor i in range(1, n):\n    if random.randint(0, 999) == 0:\n        continue\n    par[perm[i]] = perm[random.randint(max(0, i - 50), i - 1)]\nprint(n)\nprint(*par[1:])\n",
+    "output": "Alice 33\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1516)\nn = 200000\nperm = list(range(1, n + 1))\nrandom.shuffle(perm)\npar = [0] * (n + 1)\nfor i in range(1, n):\n    par[perm[i]] = perm[i - 1] if i < 150000 else perm[random.randint(0, i - 1)]\nprint(n)\nprint(*par[1:])\n",
+    "output": "Alice 1\n",
+    "hidden": true
+   }
+  ]
+ }
+]
