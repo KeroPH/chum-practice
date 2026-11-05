@@ -1,0 +1,892 @@
+[
+ {
+  "id": "x01",
+  "title": "The Silent Exam Hall",
+  "category": "Contest Mix",
+  "difficulty": "Impossible",
+  "timeLimit": 5,
+  "description": "<p>An exam hall has a single row of <code>N</code> seats numbered <code>1..N</code>. Students are paranoid about cheating accusations, so when a student arrives they always take the free seat whose distance to the <b>nearest seated student</b> is as large as possible. If several seats are equally good, they take the one with the <b>smallest number</b>. If the hall is empty, the student takes seat <code>1</code>. Students may also leave at any time, freeing their seat.</p><p>You are given the log of <code>Q</code> events. Let <code>s<sub>k</sub></code> be the seat taken by the <code>k</code>-th arrival (counting arrivals only, starting at 1). To keep the output short, print <code>(1&middot;s<sub>1</sub> + 2&middot;s<sub>2</sub> + 3&middot;s<sub>3</sub> + ...) mod 1000000007</code>.</p><p>In the example the first four arrivals take seats 1, 10, 5 and 3 (seats 3 and 7 are both at distance 2, and 3 is smaller). Then the student in seat 5 leaves, and the fifth arrival takes seat 6 (distance 3 to seat 3 and 4 to seat 10). The checksum is <code>1&middot;1 + 2&middot;10 + 3&middot;5 + 4&middot;3 + 5&middot;6 = 78</code>.</p><p>The hall can be enormous, so scanning the seats is hopeless; keep the gaps between seated students in a priority queue.</p><h4>Constraints</h4><ul><li>1 &le; N &le; 10<sup>9</sup></li><li>1 &le; Q &le; 10<sup>5</sup></li><li>Student ids are integers in <code>[1, 10<sup>9</sup>]</code>. An <code>A</code> event never uses an id that is currently seated, and is never issued when all seats are taken. An <code>L</code> event always names a currently seated student. An id may arrive again after leaving.</li></ul><h4>Input</h4><p>The first line contains <code>N</code> and <code>Q</code>. Each of the next <code>Q</code> lines is either <code>A id</code> (student <code>id</code> arrives) or <code>L id</code> (student <code>id</code> leaves).</p><h4>Output</h4><p>Print the checksum described above.</p><h4>Example</h4><p>Input:</p><pre>10 6\nA 1\nA 2\nA 3\nA 4\nL 3\nA 5</pre><p>Output:</p><pre>78</pre>",
+  "solution": "import sys, heapq\ndef main():\n    data = sys.stdin.buffer.read().split()\n    N = int(data[0]); Q = int(data[1])\n    INF = 1 << 62\n    nxt = {0: N + 1}\n    prv = {N + 1: 0}\n    seat = {}\n    h = []\n    push = heapq.heappush\n    def seg(a, b):\n        if a == 0 and b == N + 1:\n            push(h, (-INF, 1, a, b))\n        elif a == 0:\n            if b > 1:\n                push(h, (-(b - 1), 1, a, b))\n        elif b == N + 1:\n            if a < N:\n                push(h, (-(N - a), N, a, b))\n        elif b - a >= 2:\n            m = (a + b) // 2\n            push(h, (-(m - a), m, a, b))\n    seg(0, N + 1)\n    MOD = 10 ** 9 + 7\n    total = 0\n    k = 0\n    idx = 2\n    for _ in range(Q):\n        op = data[idx]; sid = data[idx + 1]; idx += 2\n        if op == b\"A\":\n            while True:\n                d, s, a, b = heapq.heappop(h)\n                if nxt.get(a) == b:\n                    break\n            nxt[a] = s; prv[s] = a; nxt[s] = b; prv[b] = s\n            seg(a, s); seg(s, b)\n            seat[sid] = s\n            k += 1\n            total = (total + k * s) % MOD\n        else:\n            p = seat.pop(sid)\n            a = prv.pop(p); b = nxt.pop(p)\n            nxt[a] = b; prv[b] = a\n            seg(a, b)\n    print(total)\nmain()\n",
+  "tests": [
+   {
+    "input": "10 6\nA 1\nA 2\nA 3\nA 4\nL 3\nA 5\n",
+    "output": "78\n",
+    "hidden": false
+   },
+   {
+    "input": "1 5\nA 7\nL 7\nA 8\nL 8\nA 7\n",
+    "output": "6\n",
+    "hidden": false
+   },
+   {
+    "input": "2 4\nA 1\nA 2\nL 1\nA 3\n",
+    "output": "8\n",
+    "hidden": true
+   },
+   {
+    "input": "5 7\nA 1\nA 2\nA 3\nL 1\nA 4\nL 2\nA 5\n",
+    "output": "49\n",
+    "hidden": true
+   },
+   {
+    "input": "1000000000 6\nA 1\nA 2\nA 3\nA 4\nA 5\nL 2\n",
+    "output": "749999952\n",
+    "hidden": true
+   },
+   {
+    "input": "7 11\nA 10\nA 20\nA 30\nA 40\nL 10\nL 30\nA 50\nA 60\nL 40\nA 70\nA 80\n",
+    "output": "99\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(11)\nN = 1000000000\nQ = 100000\nseated = []\nout = []\nnid = 1\nfor _ in range(Q):\n    if seated and (len(seated) == N or random.randint(1, 100) <= 30):\n        j = random.randrange(len(seated))\n        seated[j], seated[-1] = seated[-1], seated[j]\n        out.append(\"L %d\" % seated.pop())\n    else:\n        nid += random.randint(1, 3)\n        seated.append(nid)\n        out.append(\"A %d\" % nid)\nprint(N, Q)\nprint(\"\\n\".join(out))\n",
+    "output": "960827159\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(12)\nN = 60000\nQ = 100000\nseated = []\nout = []\nnid = 1\nfor _ in range(Q):\n    if seated and (len(seated) == N or random.randint(1, 100) <= 45):\n        j = random.randrange(len(seated))\n        seated[j], seated[-1] = seated[-1], seated[j]\n        out.append(\"L %d\" % seated.pop())\n    else:\n        nid += random.randint(1, 3)\n        seated.append(nid)\n        out.append(\"A %d\" % nid)\nprint(N, Q)\nprint(\"\\n\".join(out))\n",
+    "output": "290849957\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(13)\nN = 3\nQ = 100000\nseated = []\nout = []\nnid = 1\nfor _ in range(Q):\n    if seated and (len(seated) == N or random.randint(1, 100) <= 50):\n        j = random.randrange(len(seated))\n        seated[j], seated[-1] = seated[-1], seated[j]\n        out.append(\"L %d\" % seated.pop())\n    else:\n        nid += random.randint(1, 3)\n        seated.append(nid)\n        out.append(\"A %d\" % nid)\nprint(N, Q)\nprint(\"\\n\".join(out))\n",
+    "output": "277552352\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "x02",
+  "title": "Budget-Friendly Stretches",
+  "category": "Contest Mix",
+  "difficulty": "Hard",
+  "timeLimit": 5,
+  "description": "<p>A startup logged its daily profit (possibly negative) for <code>n</code> consecutive days. The investors call a stretch of consecutive days <b>budget-friendly</b> if the total profit over the stretch lies between <code>L</code> and <code>R</code> inclusive. Count the budget-friendly stretches.</p><p>Checking every stretch is far too slow for the full input. Think about prefix sums and a data structure that counts earlier prefix sums inside a value range.</p><h4>Constraints</h4><ul><li>1 &le; n &le; 5&middot;10<sup>4</sup></li><li>-10<sup>9</sup> &le; profit &le; 10<sup>9</sup></li><li>-10<sup>14</sup> &le; L &le; R &le; 10<sup>14</sup></li></ul><h4>Input</h4><p>The first line contains <code>n</code>, <code>L</code> and <code>R</code>. The second line contains the <code>n</code> daily profits.</p><h4>Output</h4><p>Print the number of pairs <code>(i, j)</code>, <code>i &le; j</code>, such that <code>L &le; a<sub>i</sub> + ... + a<sub>j</sub> &le; R</code>.</p><h4>Example</h4><p>Input:</p><pre>5 -1 2\n3 -2 1 -3 2</pre><p>Output:</p><pre>9</pre>",
+  "solution": "import sys\nfrom bisect import bisect_left, bisect_right\ndef main():\n    d = sys.stdin.buffer.read().split()\n    n, L, R = int(d[0]), int(d[1]), int(d[2])\n    P = [0] * (n + 1)\n    s = 0\n    for i in range(n):\n        s += int(d[3 + i]); P[i + 1] = s\n    vals = sorted(set(P)); m = len(vals)\n    tree = [0] * (m + 1)\n    ans = 0\n    i = bisect_left(vals, 0) + 1\n    while i <= m:\n        tree[i] += 1; i += i & -i\n    for j in range(1, n + 1):\n        p = P[j]\n        lo = bisect_left(vals, p - R); hi = bisect_right(vals, p - L)\n        if hi > lo:\n            c = 0\n            i = hi\n            while i > 0:\n                c += tree[i]; i -= i & -i\n            i = lo\n            while i > 0:\n                c -= tree[i]; i -= i & -i\n            ans += c\n        i = bisect_left(vals, p) + 1\n        while i <= m:\n            tree[i] += 1; i += i & -i\n    print(ans)\nmain()\n",
+  "tests": [
+   {
+    "input": "5 -1 2\n3 -2 1 -3 2\n",
+    "output": "9\n",
+    "hidden": false
+   },
+   {
+    "input": "4 0 0\n0 0 0 0\n",
+    "output": "10\n",
+    "hidden": false
+   },
+   {
+    "input": "1 5 5\n4\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "1 -7 -7\n-7\n",
+    "output": "1\n",
+    "hidden": true
+   },
+   {
+    "input": "6 -100000000000000 100000000000000\n1000000000 -1000000000 1000000000 -1000000000 1000000000 -1000000000\n",
+    "output": "21\n",
+    "hidden": true
+   },
+   {
+    "input": "8 3 3\n1 2 -1 4 -4 3 0 3\n",
+    "output": "8\n",
+    "hidden": true
+   },
+   {
+    "input": "7 -5 -2\n-3 1 -1 -2 2 -5 1\n",
+    "output": "17\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(21)\nn = 50000\na = [random.randint(-1000000000, 1000000000) for _ in range(n)]\nprint(n, -1000000000, 2000000000)\nprint(\" \".join(map(str, a)))\n",
+    "output": "29235514\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(22)\nn = 50000\na = [random.randint(-5, 5) for _ in range(n)]\nprint(n, -3, 4)\nprint(\" \".join(map(str, a)))\n",
+    "output": "15051164\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(23)\nn = 50000\na = [random.randint(-1000, 1000) for _ in range(n)]\nprint(n, 0, 0)\nprint(\" \".join(map(str, a)))\n",
+    "output": "8647\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "x03",
+  "title": "Reshelving the Archive",
+  "category": "Contest Mix",
+  "difficulty": "Hard",
+  "timeLimit": 5,
+  "description": "<p>An archive shelf holds <code>n</code> boxes with distinct catalogue numbers, currently in order <code>A</code>. The head archivist wants the shelf to read <code>B</code> from left to right. Two crews bid for the job:</p><ul><li>The <b>crane crew</b> can swap any two boxes in one move.</li><li>The <b>hand crew</b> can only swap two <b>adjacent</b> boxes in one move.</li></ul><p>Compute the minimum number of moves each crew needs. If <code>B</code> is not a rearrangement of <code>A</code>, the job is impossible.</p><h4>Constraints</h4><ul><li>1 &le; n &le; 10<sup>5</sup></li><li>1 &le; catalogue numbers &le; 10<sup>9</sup></li><li>The numbers in <code>A</code> are pairwise distinct.</li></ul><h4>Input</h4><p>Line 1: <code>n</code>. Line 2: the sequence <code>A</code>. Line 3: the sequence <code>B</code>.</p><h4>Output</h4><p>Print two integers separated by a space: the minimum moves for the crane crew and for the hand crew. If the job is impossible print <code>-1</code>.</p><h4>Example</h4><p>Input:</p><pre>4\n10 20 30 40\n40 10 30 20</pre><p>Output:</p><pre>2 4</pre>",
+  "solution": "import sys\ndef main():\n    d = sys.stdin.buffer.read().split()\n    n = int(d[0])\n    A = list(map(int, d[1:1 + n])); B = list(map(int, d[1 + n:1 + 2 * n]))\n    if sorted(A) != sorted(B):\n        print(-1); return\n    pos = {v: i for i, v in enumerate(B)}\n    p = [pos[v] for v in A]\n    seen = [False] * n\n    cyc = 0\n    for i in range(n):\n        if not seen[i]:\n            cyc += 1\n            j = i\n            while not seen[j]:\n                seen[j] = True; j = p[j]\n    tree = [0] * (n + 1)\n    inv = 0\n    for i in range(n - 1, -1, -1):\n        j = p[i]\n        while j > 0:\n            inv += tree[j]; j -= j & -j\n        j = p[i] + 1\n        while j <= n:\n            tree[j] += 1; j += j & -j\n    print(n - cyc, inv)\nmain()\n",
+  "tests": [
+   {
+    "input": "4\n10 20 30 40\n40 10 30 20\n",
+    "output": "2 4\n",
+    "hidden": false
+   },
+   {
+    "input": "3\n5 6 7\n5 6 8\n",
+    "output": "-1\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n9\n9\n",
+    "output": "0 0\n",
+    "hidden": true
+   },
+   {
+    "input": "5\n1 2 3 4 5\n5 4 3 2 1\n",
+    "output": "2 10\n",
+    "hidden": true
+   },
+   {
+    "input": "6\n2 1 4 3 6 5\n1 2 3 4 5 6\n",
+    "output": "3 3\n",
+    "hidden": true
+   },
+   {
+    "input": "5\n7 3 9 1 4\n7 3 9 1 4\n",
+    "output": "0 0\n",
+    "hidden": true
+   },
+   {
+    "input": "4\n1 2 3 4\n1 2 3 3\n",
+    "output": "-1\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(31)\nn = 100000\nA = random.sample(range(1, 10**9), n)\nB = A[:]\nrandom.shuffle(B)\n\nprint(n)\nprint(\" \".join(map(str, A)))\nprint(\" \".join(map(str, B)))\n",
+    "output": "99985 2498716127\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(32)\nn = 100000\nA = random.sample(range(1, 10**9), n)\nB = A[:]\nrandom.shuffle(B)\nB = sorted(A)\nprint(n)\nprint(\" \".join(map(str, A)))\nprint(\" \".join(map(str, B)))\n",
+    "output": "99984 2506131484\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(33)\nn = 100000\nA = random.sample(range(1, 10**9), n)\nB = A[:]\nrandom.shuffle(B)\nB[5] = 10**9\nprint(n)\nprint(\" \".join(map(str, A)))\nprint(\" \".join(map(str, B)))\n",
+    "output": "-1\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "x04",
+  "title": "Rising Islands",
+  "category": "Contest Mix",
+  "difficulty": "Hard",
+  "timeLimit": 5,
+  "description": "<p>A volcanic sea is modelled as an <code>R &times; C</code> grid that is initially all water. Every day one cell rises above the sea and becomes land (a cell may be reported more than once &mdash; raising land again changes nothing). Two land cells belong to the same island if they share a side.</p><p>After each of the <code>Q</code> days the geologists record the number of islands. Report the sum of all recorded values and the largest recorded value. Recounting the islands from scratch every day is too slow.</p><h4>Constraints</h4><ul><li>1 &le; R, C &le; 1000, R&middot;C &le; 10<sup>6</sup></li><li>1 &le; Q &le; 10<sup>5</sup></li><li>1 &le; r &le; R, 1 &le; c &le; C</li></ul><h4>Input</h4><p>The first line contains <code>R</code>, <code>C</code> and <code>Q</code>. Each of the next <code>Q</code> lines contains a cell <code>r c</code> (1-based).</p><h4>Output</h4><p>Print two integers: the sum of the island counts after each day, and the maximum island count.</p><h4>Example</h4><p>Input:</p><pre>3 3 5\n1 1\n1 3\n3 3\n1 2\n2 3</pre><p>Output:</p><pre>9 3</pre>",
+  "solution": "import sys\ndef main():\n    d = sys.stdin.buffer.read().split()\n    R, C, Q = int(d[0]), int(d[1]), int(d[2])\n    parent = [-1] * (R * C)\n    cnt = 0; S = 0; M = 0; idx = 3\n    for _ in range(Q):\n        r = int(d[idx]) - 1; c = int(d[idx + 1]) - 1; idx += 2\n        v = r * C + c\n        if parent[v] == -1:\n            parent[v] = v\n            cnt += 1\n            for nr, nc in ((r - 1, c), (r + 1, c), (r, c - 1), (r, c + 1)):\n                if 0 <= nr < R and 0 <= nc < C:\n                    u = nr * C + nc\n                    if parent[u] != -1:\n                        a = u\n                        while parent[a] != a: a = parent[a]\n                        while parent[u] != a: parent[u], u = a, parent[u]\n                        b = v\n                        while parent[b] != b: b = parent[b]\n                        if a != b:\n                            parent[a] = b\n                            cnt -= 1\n        S += cnt\n        if cnt > M: M = cnt\n    print(S, M)\nmain()\n",
+  "tests": [
+   {
+    "input": "3 3 5\n1 1\n1 3\n3 3\n1 2\n2 3\n",
+    "output": "9 3\n",
+    "hidden": false
+   },
+   {
+    "input": "1 1 2\n1 1\n1 1\n",
+    "output": "2 1\n",
+    "hidden": false
+   },
+   {
+    "input": "2 2 4\n1 1\n2 2\n1 2\n2 1\n",
+    "output": "5 2\n",
+    "hidden": true
+   },
+   {
+    "input": "1 5 5\n1 1\n1 3\n1 5\n1 2\n1 4\n",
+    "output": "9 3\n",
+    "hidden": true
+   },
+   {
+    "input": "3 3 9\n1 1\n1 3\n3 1\n3 3\n2 2\n1 2\n2 1\n2 3\n3 2\n",
+    "output": "22 5\n",
+    "hidden": true
+   },
+   {
+    "input": "4 1 4\n4 1\n1 1\n3 1\n2 1\n",
+    "output": "6 2\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(41)\nR, C, Q = 1000, 1000, 100000\nout = []\nfor _ in range(Q):\n    out.append(\"%d %d\" % (random.randint(1, R), random.randint(1, C)))\nprint(R, C, Q)\nprint(\"\\n\".join(out))\n",
+    "output": "4217504842 77054\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(42)\nR, C, Q = 200, 250, 100000\nout = []\nfor _ in range(Q):\n    out.append(\"%d %d\" % (random.randint(1, R), random.randint(1, C)))\nprint(R, C, Q)\nprint(\"\\n\".join(out))\n",
+    "output": "212975798 6485\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(43)\nR, C, Q = 1, 1000000, 100000\nout = []\nfor _ in range(Q):\n    out.append(\"%d %d\" % (random.randint(1, R), random.randint(1, C)))\nprint(R, C, Q)\nprint(\"\\n\".join(out))\n",
+    "output": "4532818311 86195\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(44)\nR, C = 300, 300\ncells = [(r, c) for r in range(1, R + 1) for c in range(1, C + 1) if (r + c) % 2 == 0]\nrandom.shuffle(cells)\nrest = [(r, c) for r in range(1, R + 1) for c in range(1, C + 1) if (r + c) % 2 == 1]\nrandom.shuffle(rest)\nops = cells + rest[:100000 - len(cells)]\nprint(R, C, len(ops))\nprint(\"\\n\".join(\"%d %d\" % rc for rc in ops))\n",
+    "output": "1460280270 45000\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "x05",
+  "title": "Solar Panel Rectangles",
+  "category": "Contest Mix",
+  "difficulty": "Impossible",
+  "timeLimit": 5,
+  "description": "<p>A solar farm is a grid of <code>R &times; C</code> mounting slots; a <code>1</code> means the slot holds a working panel, a <code>0</code> means it is broken. A contractor wants to know how many axis-aligned rectangular blocks (of any size, at any position) consist <b>only</b> of working panels. Two blocks are different if their sets of cells differ.</p><p>Enumerating rectangles, or even pairs of rows, is too slow for a 400 &times; 400 farm. Fix the bottom row, think of column heights, and count the rectangles ending at each cell with a monotonic stack.</p><h4>Constraints</h4><ul><li>1 &le; R, C &le; 400</li><li>Each row is a string of exactly <code>C</code> characters <code>0</code>/<code>1</code>.</li></ul><h4>Input</h4><p>The first line contains <code>R</code> and <code>C</code>. The next <code>R</code> lines contain the rows.</p><h4>Output</h4><p>Print the number of all-ones rectangles.</p><h4>Example</h4><p>Input:</p><pre>3 3\n101\n111\n110</pre><p>Output:</p><pre>17</pre>",
+  "solution": "import sys\ndef main():\n    d = sys.stdin.buffer.read().split()\n    R, C = int(d[0]), int(d[1])\n    h = [0] * C\n    total = 0\n    for r in range(R):\n        row = d[2 + r]\n        for c in range(C):\n            if row[c] == 49:\n                h[c] += 1\n            else:\n                h[c] = 0\n        st = []\n        s = [0] * C\n        for c in range(C):\n            hc = h[c]\n            while st and h[st[-1]] >= hc:\n                st.pop()\n            if st:\n                p = st[-1]\n                v = s[p] + hc * (c - p)\n            else:\n                v = hc * (c + 1)\n            s[c] = v\n            total += v\n            st.append(c)\n    print(total)\nmain()\n",
+  "tests": [
+   {
+    "input": "3 3\n101\n111\n110\n",
+    "output": "17\n",
+    "hidden": false
+   },
+   {
+    "input": "2 3\n111\n111\n",
+    "output": "18\n",
+    "hidden": false
+   },
+   {
+    "input": "1 1\n0\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "1 1\n1\n",
+    "output": "1\n",
+    "hidden": true
+   },
+   {
+    "input": "3 4\n0000\n0000\n0000\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "4 4\n1111\n1111\n1111\n1111\n",
+    "output": "100\n",
+    "hidden": true
+   },
+   {
+    "input": "4 6\n110111\n111011\n011111\n111110\n",
+    "output": "80\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(51)\nR, C = 400, 400\nprint(R, C)\nfor _ in range(R):\n    print(\"\".join(\"1\" if random.randint(1, 100) <= 85 else \"0\" for _ in range(C)))\n",
+    "output": "2395663\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(52)\nR, C = 400, 400\nprint(R, C)\nfor _ in range(R):\n    print(\"\".join(\"1\" if random.randint(1, 100) <= 100 else \"0\" for _ in range(C)))\n",
+    "output": "6432040000\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(53)\nR, C = 250, 400\nprint(R, C)\nfor _ in range(R):\n    print(\"\".join(\"1\" if random.randint(1, 100) <= 50 else \"0\" for _ in range(C)))\n",
+    "output": "161757\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "x06",
+  "title": "The Forgiving Manager",
+  "category": "Contest Mix",
+  "difficulty": "Hard",
+  "timeLimit": 5,
+  "description": "<p>A salesperson's daily results over <code>n</code> days are given (negative numbers are losses). For the yearly bonus the manager picks one stretch of <b>consecutive</b> days and, being forgiving, may additionally erase <b>at most <code>K</code></b> days inside that stretch from the record. At least one day of the stretch must remain. The bonus equals the sum of the remaining days.</p><p>Find the largest possible bonus. Note that the answer may be negative if every day was a loss.</p><h4>Constraints</h4><ul><li>1 &le; n &le; 5&middot;10<sup>4</sup></li><li>0 &le; K &le; 20</li><li>-10<sup>9</sup> &le; a<sub>i</sub> &le; 10<sup>9</sup></li></ul><h4>Input</h4><p>The first line contains <code>n</code> and <code>K</code>. The second line contains the <code>n</code> daily results.</p><h4>Output</h4><p>Print the maximum bonus.</p><h4>Example</h4><p>Input:</p><pre>7 1\n3 -4 5 -1 -10 6 2</pre><p>Output:</p><pre>12</pre>",
+  "solution": "import sys\ndef main():\n    d = sys.stdin.buffer.read().split()\n    n, K = int(d[0]), int(d[1])\n    a = list(map(int, d[2:2 + n]))\n    NEG = -(1 << 62)\n    g = [NEG] * (K + 1)\n    best = NEG\n    rng = range(1, K + 1)\n    for x in a:\n        v = g[0]\n        ng = [(v if v > 0 else 0) + x]\n        for j in rng:\n            v = g[j]\n            keep = (v if v > 0 else 0) + x\n            dl = g[j - 1]\n            ng.append(keep if keep > dl else dl)\n        g = ng\n        m = max(g)\n        if m > best:\n            best = m\n    print(best)\nmain()\n",
+  "tests": [
+   {
+    "input": "7 1\n3 -4 5 -1 -10 6 2\n",
+    "output": "12\n",
+    "hidden": false
+   },
+   {
+    "input": "4 0\n-3 -1 -2 -5\n",
+    "output": "-1\n",
+    "hidden": false
+   },
+   {
+    "input": "3 5\n-2 -7 -1\n",
+    "output": "-1\n",
+    "hidden": true
+   },
+   {
+    "input": "1 0\n-1000000000\n",
+    "output": "-1000000000\n",
+    "hidden": true
+   },
+   {
+    "input": "6 2\n5 -100 -100 5 -1 5\n",
+    "output": "14\n",
+    "hidden": true
+   },
+   {
+    "input": "8 3\n1 -2 3 -4 5 -6 7 -8\n",
+    "output": "16\n",
+    "hidden": true
+   },
+   {
+    "input": "5 20\n0 0 0 0 0\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(61)\nn = 50000\na = [random.randint(-1000000000, 1000000000) for _ in range(n)]\nprint(n, 20)\nprint(\" \".join(map(str, a)))\n",
+    "output": "109882711343\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(62)\nn = 50000\na = [random.randint(-1000, 300) for _ in range(n)]\nprint(n, 15)\nprint(\" \".join(map(str, a)))\n",
+    "output": "3037\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(63)\nn = 50000\na = [random.randint(-1000000000, -1) for _ in range(n)]\nprint(n, 20)\nprint(\" \".join(map(str, a)))\n",
+    "output": "-33822\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "x07",
+  "title": "Robust Sensor Readings",
+  "category": "Contest Mix",
+  "difficulty": "Impossible",
+  "timeLimit": 6,
+  "description": "<p>A weather station records <code>n</code> readings. To be robust against outliers, the published value for each time window is not the average but the <code>k</code>-th smallest reading inside the window. Every window consists of <code>w</code> consecutive readings, and there are <code>n - w + 1</code> windows (one starting at each position).</p><p>Print the sum of the published values over all windows. Re-sorting each window is far too slow, and so is keeping a sorted Python list when <code>w</code> is large; use a structure that supports insert, delete and &ldquo;find the k-th smallest&rdquo; in logarithmic time.</p><h4>Constraints</h4><ul><li>1 &le; k &le; w &le; n &le; 6&middot;10<sup>4</sup></li><li>1 &le; readings &le; 10<sup>9</sup></li></ul><h4>Input</h4><p>The first line contains <code>n</code>, <code>w</code> and <code>k</code>. The second line contains the <code>n</code> readings.</p><h4>Output</h4><p>Print the sum of the <code>k</code>-th smallest values of all windows.</p><h4>Example</h4><p>Input:</p><pre>6 3 2\n5 1 4 2 8 3</pre><p>Output:</p><pre>13</pre>",
+  "solution": "import sys\ndef main():\n    d = sys.stdin.buffer.read().split()\n    n, w, k = int(d[0]), int(d[1]), int(d[2])\n    a = list(map(int, d[3:3 + n]))\n    vals = sorted(set(a)); m = len(vals)\n    rank = {v: i + 1 for i, v in enumerate(vals)}\n    r = [rank[x] for x in a]\n    tree = [0] * (m + 1)\n    LOG = 1\n    while LOG * 2 <= m:\n        LOG *= 2\n    total = 0\n    for i in range(n):\n        j = r[i]\n        while j <= m:\n            tree[j] += 1; j += j & -j\n        if i >= w:\n            j = r[i - w]\n            while j <= m:\n                tree[j] -= 1; j += j & -j\n        if i >= w - 1:\n            pos = 0; rem = k; step = LOG\n            while step:\n                q = pos + step\n                if q <= m and tree[q] < rem:\n                    pos = q; rem -= tree[q]\n                step >>= 1\n            total += vals[pos]\n    print(total)\nmain()\n",
+  "tests": [
+   {
+    "input": "6 3 2\n5 1 4 2 8 3\n",
+    "output": "13\n",
+    "hidden": false
+   },
+   {
+    "input": "4 4 4\n7 7 1 9\n",
+    "output": "9\n",
+    "hidden": false
+   },
+   {
+    "input": "1 1 1\n42\n",
+    "output": "42\n",
+    "hidden": true
+   },
+   {
+    "input": "5 2 1\n3 3 3 3 3\n",
+    "output": "12\n",
+    "hidden": true
+   },
+   {
+    "input": "6 1 1\n1 2 3 4 5 6\n",
+    "output": "21\n",
+    "hidden": true
+   },
+   {
+    "input": "7 5 3\n1000000000 1 1000000000 1 1000000000 1 1000000000\n",
+    "output": "2000000001\n",
+    "hidden": true
+   },
+   {
+    "input": "8 4 4\n8 7 6 5 4 3 2 1\n",
+    "output": "30\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(71)\nn = 60000\na = [random.randint(1, 1000000000) for _ in range(n)]\nprint(n, 30000, 15000)\nprint(\" \".join(map(str, a)))\n",
+    "output": "15007694451739\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(72)\nn = 60000\na = [random.randint(1, 50) for _ in range(n)]\nprint(n, 20000, 1)\nprint(\" \".join(map(str, a)))\n",
+    "output": "40001\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(73)\nn = 60000\na = [random.randint(1, 1000000000) for _ in range(n)]\nprint(n, 59000, 59000)\nprint(\" \".join(map(str, a)))\n",
+    "output": "1000994438444\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "x08",
+  "title": "Conference Room Juggling",
+  "category": "Contest Mix",
+  "difficulty": "Hard",
+  "timeLimit": 5,
+  "description": "<p>A company has <code>n</code> meeting rooms numbered <code>0..n-1</code> and receives <code>m</code> meeting requests <code>[s, e)</code>; all start times are distinct. Requests are handled in increasing order of their <b>original</b> start time:</p><ul><li>If at time <code>s</code> some rooms are free (a room becomes free exactly at the end time of its last meeting), the meeting takes the free room with the <b>smallest number</b>.</li><li>Otherwise the meeting waits for the room that becomes free <b>earliest</b> (ties: smallest number) and then runs for its original duration <code>e - s</code>. Its delay is the waiting time.</li></ul><p>Report the room that hosted the most meetings (ties: smallest number) and the total delay of all meetings.</p><h4>Constraints</h4><ul><li>1 &le; n &le; 100</li><li>1 &le; m &le; 10<sup>5</sup></li><li>0 &le; s &lt; e &le; 10<sup>9</sup>, all <code>s</code> distinct</li></ul><h4>Input</h4><p>The first line contains <code>n</code> and <code>m</code>. Each of the next <code>m</code> lines contains <code>s e</code>. Requests may be listed in any order.</p><h4>Output</h4><p>Print two integers: the busiest room and the total delay.</p><h4>Example</h4><p>Input:</p><pre>2 4\n0 10\n1 5\n2 7\n3 4</pre><p>Output:</p><pre>0 10</pre>",
+  "solution": "import sys, heapq\ndef main():\n    d = sys.stdin.buffer.read().split()\n    n, m = int(d[0]), int(d[1])\n    meet = sorted((int(d[2 + 2 * i]), int(d[3 + 2 * i])) for i in range(m))\n    free = list(range(n)); heapq.heapify(free)\n    busy = []\n    cnt = [0] * n\n    delay = 0\n    for s, e in meet:\n        while busy and busy[0][0] <= s:\n            heapq.heappush(free, heapq.heappop(busy)[1])\n        if free:\n            rm = heapq.heappop(free)\n            heapq.heappush(busy, (e, rm))\n        else:\n            t, rm = heapq.heappop(busy)\n            delay += t - s\n            heapq.heappush(busy, (t + e - s, rm))\n        cnt[rm] += 1\n    best = 0\n    for i in range(1, n):\n        if cnt[i] > cnt[best]:\n            best = i\n    print(best, delay)\nmain()\n",
+  "tests": [
+   {
+    "input": "2 4\n0 10\n1 5\n2 7\n3 4\n",
+    "output": "0 10\n",
+    "hidden": false
+   },
+   {
+    "input": "3 5\n1 20\n2 10\n3 5\n4 9\n6 8\n",
+    "output": "1 5\n",
+    "hidden": false
+   },
+   {
+    "input": "1 1\n5 6\n",
+    "output": "0 0\n",
+    "hidden": true
+   },
+   {
+    "input": "1 3\n10 20\n0 30\n5 6\n",
+    "output": "0 46\n",
+    "hidden": true
+   },
+   {
+    "input": "3 3\n0 5\n5 10\n10 15\n",
+    "output": "0 0\n",
+    "hidden": true
+   },
+   {
+    "input": "2 6\n0 100\n1 2\n2 3\n3 4\n4 5\n5 6\n",
+    "output": "1 0\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(81)\nn, m = 100, 100000\nstarts = random.sample(range(0, 1000000000), m)\nout = []\nfor s in starts:\n    out.append(\"%d %d\" % (s, s + random.randint(1, 3000000)))\nprint(n, m)\nprint(\"\\n\".join(out))\n",
+    "output": "40 25130903580355\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(82)\nn, m = 7, 100000\nstarts = random.sample(range(0, 1000000), m)\nout = []\nfor s in starts:\n    out.append(\"%d %d\" % (s, s + random.randint(1, 200)))\nprint(n, m)\nprint(\"\\n\".join(out))\n",
+    "output": "3 22057390919\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(83)\nn, m = 1, 100000\nstarts = random.sample(range(0, 1000000000), m)\nout = []\nfor s in starts:\n    out.append(\"%d %d\" % (s, s + random.randint(1, 10000)))\nprint(n, m)\nprint(\"\\n\".join(out))\n",
+    "output": "0 329462688\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "x09",
+  "title": "Friendship Triangles",
+  "category": "Contest Mix",
+  "difficulty": "Impossible",
+  "timeLimit": 8,
+  "description": "<p>A social network has <code>n</code> users and <code>m</code> mutual friendships. A <b>friendship triangle</b> is a set of three users who are all friends with each other. The data team wants the total number of triangles and the user who belongs to the most triangles (ties: smallest user id; if there are no triangles at all, that is user 1 with 0 triangles).</p><p>The graph contains celebrities with tens of thousands of friends, so trying all triples, or intersecting full neighbour lists for every edge in pure Python loops, is too slow. Orient every edge from the endpoint with smaller degree (ties: smaller id) to the other one; then every triangle is found exactly once and every out-list is short.</p><h4>Constraints</h4><ul><li>1 &le; n &le; 10<sup>5</sup></li><li>0 &le; m &le; 1.5&middot;10<sup>5</sup></li><li>No self-loops and no repeated friendships.</li></ul><h4>Input</h4><p>The first line contains <code>n</code> and <code>m</code>. Each of the next <code>m</code> lines contains two user ids <code>u v</code>.</p><h4>Output</h4><p>Line 1: the number of triangles. Line 2: the best user and the number of triangles containing that user, separated by a space.</p><h4>Example</h4><p>Input:</p><pre>5 6\n1 2\n2 3\n1 3\n3 4\n4 1\n4 5</pre><p>Output:</p><pre>2\n1 2</pre>",
+  "solution": "import sys\ndef main():\n    d = sys.stdin.buffer.read().split()\n    n, m = int(d[0]), int(d[1])\n    deg = [0] * (n + 1)\n    us = list(map(int, d[2:2 + 2 * m:2])); vs = list(map(int, d[3:3 + 2 * m:2]))\n    for u in us: deg[u] += 1\n    for v in vs: deg[v] += 1\n    out = [None] * (n + 1)\n    for u, v in zip(us, vs):\n        if deg[u] < deg[v] or (deg[u] == deg[v] and u < v):\n            a, b = u, v\n        else:\n            a, b = v, u\n        s = out[a]\n        if s is None:\n            out[a] = {b}\n        else:\n            s.add(b)\n    cnt = [0] * (n + 1)\n    T = 0\n    for u in range(1, n + 1):\n        ou = out[u]\n        if ou is None:\n            continue\n        for v in ou:\n            ov = out[v]\n            if ov is not None:\n                inter = ou & ov\n                if inter:\n                    k = len(inter)\n                    T += k; cnt[u] += k; cnt[v] += k\n                    for w in inter:\n                        cnt[w] += 1\n    best = 1\n    for i in range(2, n + 1):\n        if cnt[i] > cnt[best]:\n            best = i\n    print(T)\n    print(best, cnt[best])\nmain()\n",
+  "tests": [
+   {
+    "input": "5 6\n1 2\n2 3\n1 3\n3 4\n4 1\n4 5\n",
+    "output": "2\n1 2\n",
+    "hidden": false
+   },
+   {
+    "input": "3 2\n1 2\n2 3\n",
+    "output": "0\n1 0\n",
+    "hidden": false
+   },
+   {
+    "input": "1 0\n",
+    "output": "0\n1 0\n",
+    "hidden": true
+   },
+   {
+    "input": "4 6\n1 2\n1 3\n1 4\n2 3\n2 4\n3 4\n",
+    "output": "4\n1 3\n",
+    "hidden": true
+   },
+   {
+    "input": "6 7\n6 5\n5 4\n4 6\n3 2\n2 1\n1 3\n6 1\n",
+    "output": "2\n1 1\n",
+    "hidden": true
+   },
+   {
+    "input": "7 9\n7 1\n7 2\n7 3\n7 4\n1 2\n3 4\n5 6\n2 3\n4 1\n",
+    "output": "4\n7 4\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(91)\nn = 100000\nclique = 90\nm_target = 150000\nedges = set()\norder = []\nhubs = random.sample(range(1, n + 1), clique)\nfor i in range(clique):\n    for j in range(i + 1, clique):\n        a, b = hubs[i], hubs[j]\n        edges.add((min(a, b), max(a, b))); order.append((a, b))\nwhile len(order) < m_target:\n    if random.randint(1, 100) <= 35:\n        a = random.choice(hubs)\n    else:\n        a = random.randint(1, n)\n    b = random.randint(1, n)\n    if a == b:\n        continue\n    key = (min(a, b), max(a, b))\n    if key in edges:\n        continue\n    edges.add(key); order.append((a, b))\nrandom.shuffle(order)\nprint(n, len(order))\nprint(\"\\n\".join(\"%d %d\" % e for e in order))\n",
+    "output": "130860\n73040 4253\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(92)\nn = 3000\nclique = 60\nm_target = 110000\nedges = set()\norder = []\nhubs = random.sample(range(1, n + 1), clique)\nfor i in range(clique):\n    for j in range(i + 1, clique):\n        a, b = hubs[i], hubs[j]\n        edges.add((min(a, b), max(a, b))); order.append((a, b))\nwhile len(order) < m_target:\n    if random.randint(1, 100) <= 5:\n        a = random.choice(hubs)\n    else:\n        a = random.randint(1, n)\n    b = random.randint(1, n)\n    if a == b:\n        continue\n    key = (min(a, b), max(a, b))\n    if key in edges:\n        continue\n    edges.add(key); order.append((a, b))\nrandom.shuffle(order)\nprint(n, len(order))\nprint(\"\\n\".join(\"%d %d\" % e for e in order))\n",
+    "output": "115651\n387 2693\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(93)\nn = 100000\nclique = 3\nm_target = 150000\nedges = set()\norder = []\nhubs = random.sample(range(1, n + 1), clique)\nfor i in range(clique):\n    for j in range(i + 1, clique):\n        a, b = hubs[i], hubs[j]\n        edges.add((min(a, b), max(a, b))); order.append((a, b))\nwhile len(order) < m_target:\n    if random.randint(1, 100) <= 60:\n        a = random.choice(hubs)\n    else:\n        a = random.randint(1, n)\n    b = random.randint(1, n)\n    if a == b:\n        continue\n    key = (min(a, b), max(a, b))\n    if key in edges:\n        continue\n    edges.add(key); order.append((a, b))\nrandom.shuffle(order)\nprint(n, len(order))\nprint(\"\\n\".join(\"%d %d\" % e for e in order))\n",
+    "output": "39227\n94760 21064\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "x10",
+  "title": "Skyline Renovation",
+  "category": "Contest Mix",
+  "difficulty": "Impossible",
+  "timeLimit": 5,
+  "description": "<p>A street has <code>n</code> towers with heights <code>h<sub>1</sub>, ..., h<sub>n</sub></code>. The mayor wants the skyline to be <b>strictly increasing</b> from left to right. Raising or lowering a tower by one metre costs one coin, and heights may become zero or even negative (basements count!). Find the minimum total cost.</p><p>A quadratic DP over candidate heights is too slow for <code>n = 2&middot;10<sup>5</sup></code>. Hint: subtracting <code>i</code> from the <code>i</code>-th height turns &ldquo;strictly increasing&rdquo; into &ldquo;non-decreasing&rdquo;; then think about a max-heap (the classic <i>slope trick</i>).</p><h4>Constraints</h4><ul><li>1 &le; n &le; 2&middot;10<sup>5</sup></li><li>1 &le; h<sub>i</sub> &le; 10<sup>9</sup></li><li>The answer can exceed 32-bit range.</li></ul><h4>Input</h4><p>The first line contains <code>n</code>. The second line contains the <code>n</code> heights.</p><h4>Output</h4><p>Print the minimum cost.</p><h4>Example</h4><p>Input:</p><pre>7\n2 1 5 11 5 9 11</pre><p>Output:</p><pre>9</pre>",
+  "solution": "import sys, heapq\ndef main():\n    d = sys.stdin.buffer.read().split()\n    n = int(d[0])\n    h = []\n    ans = 0\n    for i in range(n):\n        x = int(d[1 + i]) - i\n        heapq.heappush(h, -x)\n        top = -h[0]\n        if top > x:\n            ans += top - x\n            heapq.heapreplace(h, -x)\n    print(ans)\nmain()\n",
+  "tests": [
+   {
+    "input": "7\n2 1 5 11 5 9 11\n",
+    "output": "9\n",
+    "hidden": false
+   },
+   {
+    "input": "5\n5 4 3 2 1\n",
+    "output": "12\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n1000000000\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "4\n1 2 3 4\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "6\n3 3 3 3 3 3\n",
+    "output": "9\n",
+    "hidden": true
+   },
+   {
+    "input": "5\n1000000000 1 1000000000 1 1000000000\n",
+    "output": "2000000000\n",
+    "hidden": true
+   },
+   {
+    "input": "8\n9 1 8 2 7 3 6 4\n",
+    "output": "24\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(101)\nn = 200000\na = [random.randint(1, 1000000000) for _ in range(n)]\nprint(n)\nprint(\" \".join(map(str, a)))\n",
+    "output": "49971996863682\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(102)\nn = 200000\na = [random.randint(1, 10) for _ in range(n)]\nprint(n)\nprint(\" \".join(map(str, a)))\n",
+    "output": "9999999030\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(103)\nn = 200000\nprint(n)\nprint(\" \".join(str(10**9 - 3 * i + random.randint(0, 5)) for i in range(n)))\n",
+    "output": "39999999290\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "x11",
+  "title": "Restoring the Smudged Code",
+  "category": "Contest Mix",
+  "difficulty": "Impossible",
+  "timeLimit": 5,
+  "description": "<p>An old program listing has been water-damaged: some of its brackets are smudged and appear as <code>?</code>. For the <code>i</code>-th smudged position (counting from the left) the restorer knows that drawing <code>(</code> there costs <code>a<sub>i</sub></code> and drawing <code>)</code> costs <code>b<sub>i</sub></code>. Every <code>?</code> must be replaced, and the result must be a <b>regular bracket sequence</b> (every prefix has at least as many <code>(</code> as <code>)</code>, and the totals are equal).</p><p>Find the minimum total cost, or report that it is impossible. Trying all <code>2<sup>m</sup></code> replacements is hopeless; a greedy scan with a priority queue that can &ldquo;change its mind&rdquo; works.</p><h4>Constraints</h4><ul><li>1 &le; length &le; 5&middot;10<sup>4</sup></li><li>0 &le; m (number of <code>?</code>) &le; length</li><li>1 &le; a<sub>i</sub>, b<sub>i</sub> &le; 10<sup>6</sup></li></ul><h4>Input</h4><p>The first line contains the pattern (characters <code>(</code>, <code>)</code>, <code>?</code>, no spaces). Each of the next <code>m</code> lines contains <code>a<sub>i</sub> b<sub>i</sub></code> for the smudged positions in left-to-right order.</p><h4>Output</h4><p>Print the minimum cost, or <code>-1</code> if no regular sequence can be obtained.</p><h4>Example</h4><p>Input:</p><pre>(??)\n1 2\n2 8</pre><p>Output:</p><pre>4</pre>",
+  "solution": "import sys, heapq\ndef main():\n    d = sys.stdin.buffer.read().split()\n    s = d[0].decode()\n    idx = 1\n    bal = 0; cost = 0; h = []\n    for ch in s:\n        if ch == \"(\":\n            bal += 1\n        elif ch == \")\":\n            bal -= 1\n        else:\n            a = int(d[idx]); b = int(d[idx + 1]); idx += 2\n            cost += b\n            bal -= 1\n            heapq.heappush(h, a - b)\n        if bal < 0:\n            if not h:\n                print(-1); return\n            cost += heapq.heappop(h)\n            bal += 2\n    print(cost if bal == 0 else -1)\nmain()\n",
+  "tests": [
+   {
+    "input": "(??)\n1 2\n2 8\n",
+    "output": "4\n",
+    "hidden": false
+   },
+   {
+    "input": "((?\n5 5\n",
+    "output": "-1\n",
+    "hidden": false
+   },
+   {
+    "input": "()\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": ")(\n",
+    "output": "-1\n",
+    "hidden": true
+   },
+   {
+    "input": "??\n7 1\n1 7\n",
+    "output": "14\n",
+    "hidden": true
+   },
+   {
+    "input": "????\n1 10\n1 10\n10 1\n10 1\n",
+    "output": "4\n",
+    "hidden": true
+   },
+   {
+    "input": "(?(?))??\n3 4\n9 2\n4 4\n1 100\n",
+    "output": "109\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(111)\nhalf = 25000\ns = []\nbal = 0\nopens = half\ncloses = half\nwhile opens or closes:\n    if opens and (bal == 0 or random.randint(0, 1) == 0):\n        s.append(\"(\"); opens -= 1; bal += 1\n    else:\n        s.append(\")\"); closes -= 1; bal -= 1\nfor i in range(len(s)):\n    if random.randint(1, 100) <= 40:\n        s[i] = \"?\"\n\nm = s.count(\"?\")\nprint(\"\".join(s))\nprint(\"\\n\".join(\"%d %d\" % (random.randint(1, 10**6), random.randint(1, 10**6)) for _ in range(m)))\n",
+    "output": "6612280467\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(112)\nhalf = 25000\ns = []\nbal = 0\nopens = half\ncloses = half\nwhile opens or closes:\n    if opens and (bal == 0 or random.randint(0, 1) == 0):\n        s.append(\"(\"); opens -= 1; bal += 1\n    else:\n        s.append(\")\"); closes -= 1; bal -= 1\nfor i in range(len(s)):\n    if random.randint(1, 100) <= 95:\n        s[i] = \"?\"\n\nm = s.count(\"?\")\nprint(\"\".join(s))\nprint(\"\\n\".join(\"%d %d\" % (random.randint(1, 10**6), random.randint(1, 10**6)) for _ in range(m)))\n",
+    "output": "15931784165\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(113)\nhalf = 25000\ns = []\nbal = 0\nopens = half\ncloses = half\nwhile opens or closes:\n    if opens and (bal == 0 or random.randint(0, 1) == 0):\n        s.append(\"(\"); opens -= 1; bal += 1\n    else:\n        s.append(\")\"); closes -= 1; bal -= 1\nfor i in range(len(s)):\n    if random.randint(1, 100) <= 10:\n        s[i] = \"?\"\ns[0] = \")\"\nm = s.count(\"?\")\nprint(\"\".join(s))\nprint(\"\\n\".join(\"%d %d\" % (random.randint(1, 10**6), random.randint(1, 10**6)) for _ in range(m)))\n",
+    "output": "-1\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "x12",
+  "title": "Stone Duel",
+  "category": "Contest Mix",
+  "difficulty": "Impossible",
+  "timeLimit": 8,
+  "description": "<p>Alice and Bob play with <code>n</code> stones in a row; stone <code>i</code> has value <code>a<sub>i</sub></code>. Alice moves first and the players alternate. In one move a player removes either the <b>leftmost</b> or the <b>rightmost</b> remaining stone and scores points equal to the <b>sum of the values of the stones that remain</b> after the removal. The game ends when no stones are left.</p><p>Bob knows he will lose, so he plays to minimise the difference (Alice's score minus Bob's score), while Alice plays to maximise it. Print the difference under optimal play. Searching the game tree is exponential; memoise over the remaining interval, and keep the DP tight &mdash; there are about half a million intervals.</p><h4>Constraints</h4><ul><li>1 &le; n &le; 1000</li><li>1 &le; a<sub>i</sub> &le; 1000</li></ul><h4>Input</h4><p>The first line contains <code>n</code>. The second line contains the <code>n</code> values.</p><h4>Output</h4><p>Print Alice's score minus Bob's score.</p><h4>Example</h4><p>Input:</p><pre>5\n5 3 1 4 2</pre><p>Output:</p><pre>6</pre>",
+  "solution": "import sys\ndef main():\n    d = sys.stdin.buffer.read().split()\n    n = int(d[0]); a = list(map(int, d[1:1 + n]))\n    P = [0] * (n + 1)\n    for i in range(n):\n        P[i + 1] = P[i] + a[i]\n    dp = [0] * n\n    for length in range(2, n + 1):\n        nd = [0] * (n - length + 1)\n        for l in range(n - length + 1):\n            r = l + length - 1\n            x = P[r + 1] - P[l + 1] - dp[l + 1]\n            y = P[r] - P[l] - dp[l]\n            nd[l] = x if x > y else y\n        dp = nd\n    print(dp[0])\nmain()\n",
+  "tests": [
+   {
+    "input": "5\n5 3 1 4 2\n",
+    "output": "6\n",
+    "hidden": false
+   },
+   {
+    "input": "7\n7 90 5 1 100 10 10\n",
+    "output": "101\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n1000\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "2\n3 9\n",
+    "output": "9\n",
+    "hidden": true
+   },
+   {
+    "input": "3\n1 1 1\n",
+    "output": "1\n",
+    "hidden": true
+   },
+   {
+    "input": "6\n1 1000 1 1000 1 1000\n",
+    "output": "3000\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(121)\nn = 1000\nprint(n)\nprint(\" \".join(str(random.randint(1, 1000)) for _ in range(n)))\n",
+    "output": "254142\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(122)\nn = 1000\nprint(n)\nprint(\" \".join(str(random.randint(1, 3)) for _ in range(n)))\n",
+    "output": "1021\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(123)\nn = 999\nprint(n)\nprint(\" \".join(str(random.randint(1, 1000)) for _ in range(n)))\n",
+    "output": "245259\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "x13",
+  "title": "Graffiti on the Long Fence",
+  "category": "Contest Mix",
+  "difficulty": "Impossible",
+  "timeLimit": 8,
+  "description": "<p>A fence consists of <code>n</code> planks numbered <code>1..n</code>, all initially unpainted (colour <code>0</code>). During the night <code>q</code> graffiti crews come one after another; crew <code>j</code> paints every plank from <code>l<sub>j</sub></code> to <code>r<sub>j</sub></code> with colour <code>c<sub>j</sub></code>, covering whatever was there before.</p><p>In the morning the city wants to know how many different colours are visible on the fence (colour 0 does not count) and the checksum <code>(1&middot;col<sub>1</sub> + 2&middot;col<sub>2</sub> + ... + n&middot;col<sub>n</sub>) mod 1000000007</code>. Repainting plank by plank costs up to <code>n&middot;q</code> operations. Hint: process the crews in reverse &mdash; the last crew's colour is final, and each plank needs to be coloured only once if you can skip already-coloured planks quickly.</p><h4>Constraints</h4><ul><li>1 &le; n, q &le; 2&middot;10<sup>5</sup></li><li>1 &le; l<sub>j</sub> &le; r<sub>j</sub> &le; n</li><li>1 &le; c<sub>j</sub> &le; 10<sup>9</sup></li></ul><h4>Input</h4><p>The first line contains <code>n</code> and <code>q</code>. Each of the next <code>q</code> lines contains <code>l r c</code>.</p><h4>Output</h4><p>Print two integers: the number of distinct visible colours and the checksum.</p><h4>Example</h4><p>Input:</p><pre>6 3\n1 4 5\n3 6 2\n2 2 5</pre><p>Output:</p><pre>2 51</pre>",
+  "solution": "import sys\ndef main():\n    d = sys.stdin.buffer.read().split()\n    n, q = int(d[0]), int(d[1])\n    nxt = list(range(n + 2))\n    col = [0] * (n + 2)\n    for t in range(q - 1, -1, -1):\n        b = 2 + 3 * t\n        l = int(d[b]); r = int(d[b + 1]); c = int(d[b + 2])\n        x = l\n        while True:\n            y = x\n            while nxt[y] != y:\n                y = nxt[y]\n            while nxt[x] != y:\n                nxt[x], x = y, nxt[x]\n            x = y\n            if x > r:\n                break\n            col[x] = c\n            nxt[x] = x + 1\n            x += 1\n    colors = set(col[1:n + 1])\n    colors.discard(0)\n    M = 10 ** 9 + 7\n    S = 0\n    for i in range(1, n + 1):\n        S += i * col[i]\n    print(len(colors), S % M)\nmain()\n",
+  "tests": [
+   {
+    "input": "6 3\n1 4 5\n3 6 2\n2 2 5\n",
+    "output": "2 51\n",
+    "hidden": false
+   },
+   {
+    "input": "5 2\n1 5 7\n1 5 9\n",
+    "output": "1 135\n",
+    "hidden": false
+   },
+   {
+    "input": "1 1\n1 1 1000000000\n",
+    "output": "1 1000000000\n",
+    "hidden": true
+   },
+   {
+    "input": "10 2\n1 3 4\n8 10 4\n",
+    "output": "1 132\n",
+    "hidden": true
+   },
+   {
+    "input": "4 4\n1 1 1\n2 2 2\n3 3 3\n1 4 2\n",
+    "output": "1 20\n",
+    "hidden": true
+   },
+   {
+    "input": "7 4\n2 6 1\n3 5 2\n4 4 3\n1 7 4\n",
+    "output": "1 112\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(131)\nn, q = 200000, 200000\nout = []\nfor _ in range(q):\n    l = random.randint(1, n)\n    r = min(n, l + random.randint(0, 200000))\n    out.append(\"%d %d %d\" % (l, r, random.randint(1, 1000000000)))\nprint(n, q)\nprint(\"\\n\".join(out))\n",
+    "output": "15 870089267\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(132)\nn, q = 200000, 200000\nout = []\nfor _ in range(q):\n    l = random.randint(1, n)\n    r = min(n, l + random.randint(0, 50))\n    out.append(\"%d %d %d\" % (l, r, random.randint(1, 1000)))\nprint(n, q)\nprint(\"\\n\".join(out))\n",
+    "output": "1000 252305680\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(133)\nn, q = 200000, 200000\nout = []\nfor _ in range(q):\n    l = random.randint(1, n)\n    r = min(n, l + random.randint(0, 5000))\n    out.append(\"%d %d %d\" % (l, r, random.randint(1, 30)))\nprint(n, q)\nprint(\"\\n\".join(out))\n",
+    "output": "30 447997073\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "x14",
+  "title": "Compatible Server Pairs",
+  "category": "Contest Mix",
+  "difficulty": "Impossible",
+  "timeLimit": 5,
+  "description": "<p>A data centre labels each of its <code>n</code> servers with a 20-bit configuration code. Two servers are <b>compatible</b> if the bitwise XOR of their codes is <b>strictly less</b> than a threshold <code>K</code>. Count the unordered pairs of distinct servers (by position; equal codes on different servers are different servers) that are compatible.</p><p>There are over a billion pairs in the largest input. Think about the highest bit where <code>a XOR b</code> first differs from <code>K</code> &mdash; a binary trie or bucketing by prefixes counts the pairs in <code>O(n &middot; 20)</code>.</p><h4>Constraints</h4><ul><li>1 &le; n &le; 5&middot;10<sup>4</sup></li><li>0 &le; code &lt; 2<sup>20</sup></li><li>0 &le; K &le; 2<sup>20</sup></li></ul><h4>Input</h4><p>The first line contains <code>n</code> and <code>K</code>. The second line contains the <code>n</code> codes.</p><h4>Output</h4><p>Print the number of compatible pairs.</p><h4>Example</h4><p>Input:</p><pre>5 3\n1 2 3 4 5</pre><p>Output:</p><pre>3</pre>",
+  "solution": "import sys\nfrom collections import Counter\ndef main():\n    d = sys.stdin.buffer.read().split()\n    n, K = int(d[0]), int(d[1])\n    a = list(map(int, d[2:2 + n]))\n    total = 0\n    for b in range(21):\n        if (K >> b) & 1:\n            t = (K >> b) ^ 1\n            c = Counter([x >> b for x in a])\n            if t == 0:\n                total += sum(v * (v - 1) // 2 for v in c.values())\n            else:\n                g = c.get\n                total += sum(v * g(p ^ t, 0) for p, v in c.items()) // 2\n    print(total)\nmain()\n",
+  "tests": [
+   {
+    "input": "5 3\n1 2 3 4 5\n",
+    "output": "3\n",
+    "hidden": false
+   },
+   {
+    "input": "4 0\n7 7 7 7\n",
+    "output": "0\n",
+    "hidden": false
+   },
+   {
+    "input": "1 1048576\n5\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "3 1048576\n0 1048575 524288\n",
+    "output": "3\n",
+    "hidden": true
+   },
+   {
+    "input": "6 8\n8 15 0 7 16 23\n",
+    "output": "3\n",
+    "hidden": true
+   },
+   {
+    "input": "6 1000\n1048575 1047575 0 999 1000 1001\n",
+    "output": "4\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(141)\nn = 50000\na = [random.randrange(1048576) for _ in range(n)]\nprint(n, 345678)\nprint(\" \".join(map(str, a)))\n",
+    "output": "412062233\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(142)\nn = 50000\na = [random.randrange(1048576) for _ in range(n)]\nprint(n, 1048576)\nprint(\" \".join(map(str, a)))\n",
+    "output": "1249975000\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(143)\nn = 50000\na = [random.randrange(4096) for _ in range(n)]\nprint(n, 2048)\nprint(\" \".join(map(str, a)))\n",
+    "output": "624984604\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(144)\nn = 50000\na = [random.randrange(1048576) for _ in range(n)]\nprint(n, 1)\nprint(\" \".join(map(str, a)))\n",
+    "output": "1162\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "x15",
+  "title": "The Amplifier Coupon",
+  "category": "Contest Mix",
+  "difficulty": "Impossible",
+  "timeLimit": 5,
+  "description": "<p>A streamer's <code>n</code> consecutive videos earned <code>a<sub>1</sub>, ..., a<sub>n</sub></code> (negative values are losses). The platform offers a one-time <b>amplifier coupon</b>: choose at most one block of <b>consecutive</b> videos and multiply each of their earnings by the integer <code>x</code> (which may be zero or negative). Afterwards the streamer's <b>highlight value</b> is the maximum sum of a block of consecutive videos; the empty block is allowed, so it is never negative.</p><p>Maximise the highlight value. The two blocks (amplified and highlighted) may overlap arbitrarily. Trying every amplified block is cubic or at best quadratic; a DP with three phases (before / inside / after the amplified block) runs in linear time.</p><h4>Constraints</h4><ul><li>1 &le; n &le; 2&middot;10<sup>5</sup></li><li>-100 &le; x &le; 100</li><li>-10<sup>9</sup> &le; a<sub>i</sub> &le; 10<sup>9</sup></li></ul><h4>Input</h4><p>The first line contains <code>n</code> and <code>x</code>. The second line contains the <code>n</code> earnings.</p><h4>Output</h4><p>Print the maximum highlight value.</p><h4>Example</h4><p>Input:</p><pre>5 -2\n-3 8 -2 1 -6</pre><p>Output:</p><pre>22</pre>",
+  "solution": "import sys\ndef main():\n    d = sys.stdin.buffer.read().split()\n    n, x = int(d[0]), int(d[1])\n    d0 = d1 = d2 = 0\n    ans = 0\n    for t in d[2:2 + n]:\n        a = int(t)\n        n0 = d0 + a\n        if n0 < 0: n0 = 0\n        n1 = (d0 if d0 > d1 else d1) + a * x\n        if n1 < 0: n1 = 0\n        n2 = (d1 if d1 > d2 else d2) + a\n        if n2 < 0: n2 = 0\n        d0, d1, d2 = n0, n1, n2\n        if n1 > ans: ans = n1\n        if n2 > ans: ans = n2\n        if n0 > ans: ans = n0\n    print(ans)\nmain()\n",
+  "tests": [
+   {
+    "input": "5 -2\n-3 8 -2 1 -6\n",
+    "output": "22\n",
+    "hidden": false
+   },
+   {
+    "input": "6 3\n-3 4 -1 5 -2 2\n",
+    "output": "24\n",
+    "hidden": false
+   },
+   {
+    "input": "3 0\n-1 -2 -3\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "1 -100\n-1000000000\n",
+    "output": "100000000000\n",
+    "hidden": true
+   },
+   {
+    "input": "4 1\n1 -1 1 -1\n",
+    "output": "1\n",
+    "hidden": true
+   },
+   {
+    "input": "6 -1\n5 -10 5 -10 5 -10\n",
+    "output": "25\n",
+    "hidden": true
+   },
+   {
+    "input": "5 0\n-5 10 -100 10 -5\n",
+    "output": "20\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(151)\nn = 200000\nprint(n, -37)\nprint(\" \".join(str(random.randint(-1000000000, 1000000000)) for _ in range(n)))\n",
+    "output": "15875080441736\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(152)\nn = 200000\nprint(n, 100)\nprint(\" \".join(str(random.randint(-1000000000, 1000000000)) for _ in range(n)))\n",
+    "output": "25092204852300\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(153)\nn = 200000\nprint(n, -1)\nprint(\" \".join(str(random.randint(-1000, 1000)) for _ in range(n)))\n",
+    "output": "862665\n",
+    "hidden": true
+   }
+  ]
+ }
+]

@@ -763,7 +763,7 @@
   "id": "n17",
   "title": "Maximal Rectangle of 1s",
   "category": "Matrices",
-  "difficulty": "Impossible",
+  "difficulty": "Hard",
   "description": "<p>Given a binary grid, find the largest axis-aligned <b>rectangle</b> (not necessarily square) containing only <code>1</code>s and print its area. If there is no <code>1</code>, print <code>0</code>.</p><p>Constraints: <code>1 &le; R, C &le; 120</code>. Brute force over all rectangles is far too slow; treat each row as the base of a histogram and use a monotonic stack (<code>O(R&middot;C)</code>).</p><h4>Input</h4><p>The first line contains <code>R C</code>. The next <code>R</code> lines each contain a string of exactly <code>C</code> characters, each <code>0</code> or <code>1</code>.</p><h4>Output</h4><p>Print a single integer: the maximum area.</p>",
   "solution": "r, c = map(int, input().split())\ng = [input().strip() for _ in range(r)]\nh = [0] * c\nbest = 0\nfor i in range(r):\n    for j in range(c):\n        h[j] = h[j] + 1 if g[i][j] == \"1\" else 0\n    st = []\n    for j in range(c + 1):\n        cur = h[j] if j < c else 0\n        while st and h[st[-1]] >= cur:\n            top = st.pop()\n            width = j - st[-1] - 1 if st else j\n            area = h[top] * width\n            if area > best:\n                best = area\n        st.append(j)\nprint(best)\n",
   "tests": [
@@ -813,7 +813,7 @@
   "id": "n18",
   "title": "Count Submatrices with Target Sum",
   "category": "Matrices",
-  "difficulty": "Impossible",
+  "difficulty": "Hard",
   "description": "<p>Count the number of non-empty rectangular submatrices whose elements sum to exactly <code>T</code>. Two submatrices are different if their corner coordinates differ.</p><p>Constraints: <code>1 &le; R, C &le; 60</code>, <code>|a[i][j]| &le; 5</code>, <code>|T| &le; 10<sup>4</sup></code>. Checking all <code>O(R&sup2;C&sup2;)</code> rectangles is too slow; fix a pair of rows and count subarray sums with a hash map (<code>O(R&sup2;C)</code>).</p><h4>Input</h4><p>The first line contains <code>R C</code>, followed by <code>R</code> lines of <code>C</code> integers, followed by a line containing <code>T</code>.</p><h4>Output</h4><p>Print the number of submatrices with sum <code>T</code>.</p>",
   "solution": "r, c = map(int, input().split())\na = [list(map(int, input().split())) for _ in range(r)]\nt = int(input())\nif r > c:\n    a = [list(col) for col in zip(*a)]\n    r, c = c, r\ntotal = 0\nfor top in range(r):\n    col = [0] * c\n    for bot in range(top, r):\n        row = a[bot]\n        for j in range(c):\n            col[j] += row[j]\n        cnt = {0: 1}\n        s = 0\n        for v in col:\n            s += v\n            total += cnt.get(s - t, 0)\n            cnt[s] = cnt.get(s, 0) + 1\nprint(total)\n",
   "tests": [
@@ -863,7 +863,7 @@
   "id": "n19",
   "title": "Game of Life on a Torus After K Generations",
   "category": "Simulation",
-  "difficulty": "Impossible",
+  "difficulty": "Hard",
   "description": "<p>Run Conway's Game of Life on an <code>R x C</code> <b>torus</b>: the grid wraps around, so the left edge neighbours the right edge and the top neighbours the bottom . The 8 neighbours of cell <code>(i, j)</code> are <code>((i+di) mod R, (j+dj) mod C)</code> for all <code>di, dj</code> in <code>{-1, 0, 1}</code> except <code>(0, 0)</code>; on very small grids the same cell may be counted several times (even the cell itself). Rules: a live cell with 2 or 3 live neighbours survives; a dead cell with exactly 3 live neighbours is born; every other cell is dead in the next generation.</p><p>Print the grid after <code>K</code> generations. <code>K</code> can be as large as <code>10<sup>18</sup></code>, so you cannot simulate every step: the board's state must eventually repeat &mdash; detect the cycle and skip ahead. For all test data the state repeats within the first 3000 generations.</p><p>Constraints: <code>1 &le; R, C &le; 10</code>, <code>0 &le; K &le; 10<sup>18</sup></code>.</p><h4>Input</h4><p>The first line contains <code>R C K</code>. The next <code>R</code> lines each contain a string of <code>C</code> characters, <code>1</code> (alive) or <code>0</code> (dead).</p><h4>Output</h4><p>Print the grid after <code>K</code> generations as <code>R</code> strings of <code>0</code>/<code>1</code>.</p>",
   "solution": "r, c, k = map(int, input().split())\ng = tuple(input().strip() for _ in range(r))\ndef step(g):\n    res = []\n    for i in range(r):\n        row = []\n        for j in range(c):\n            n = 0\n            for di in (-1, 0, 1):\n                for dj in (-1, 0, 1):\n                    if di or dj:\n                        n += g[(i + di) % r][(j + dj) % c] == \"1\"\n            row.append(\"1\" if n == 3 or (n == 2 and g[i][j] == \"1\") else \"0\")\n        res.append(\"\".join(row))\n    return tuple(res)\nseen = {g: 0}\nhist = [g]\nt = 0\nwhile t < k:\n    g = step(g)\n    t += 1\n    if g in seen:\n        start = seen[g]\n        period = t - start\n        g = hist[start + (k - start) % period]\n        break\n    seen[g] = t\n    hist.append(g)\nprint(\"\\n\".join(g))\n",
   "tests": [
@@ -913,7 +913,7 @@
   "id": "n20",
   "title": "K-th Smallest in a Multiplication Table",
   "category": "Matrices",
-  "difficulty": "Impossible",
+  "difficulty": "Hard",
   "description": "<p>The <code>M x N</code> multiplication table is the matrix with <code>table[i][j] = i &middot; j</code> for <code>1 &le; i &le; M</code>, <code>1 &le; j &le; N</code>. Its rows and columns are sorted. Find the <code>K</code>-th smallest value among all <code>M&middot;N</code> entries (counting duplicates).</p><p>Constraints: <code>1 &le; M, N &le; 2&middot;10<sup>4</sup></code>, <code>1 &le; K &le; M&middot;N</code>. The table can have <code>4&middot;10<sup>8</sup></code> entries, so do not build it: binary search on the answer <code>x</code>, counting how many entries are <code>&le; x</code> row by row.</p><h4>Input</h4><p>One line with three integers <code>M N K</code>.</p><h4>Output</h4><p>Print the <code>K</code>-th smallest entry.</p>",
   "solution": "m, n, k = map(int, input().split())\nif m > n:\n    m, n = n, m\nlo, hi = 1, m * n\nwhile lo < hi:\n    mid = (lo + hi) // 2\n    cnt = 0\n    for i in range(1, min(m, mid) + 1):\n        q = mid // i\n        cnt += q if q < n else n\n    if cnt >= k:\n        hi = mid\n    else:\n        lo = mid + 1\nprint(lo)\n",
   "tests": [

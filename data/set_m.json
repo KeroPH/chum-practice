@@ -233,7 +233,7 @@
   "id": "m06",
   "title": "Largest Rectangle in a Histogram",
   "category": "Stacks & Queues",
-  "difficulty": "Impossible",
+  "difficulty": "Hard",
   "description": "<p>A histogram has <code>n</code> bars of width 1 and the given heights, standing side by side. Find the area of the largest rectangle that fits completely inside the histogram (the rectangle must be axis-aligned and rest on the base line).</p><ul><li>1 &le; n &le; 3500</li><li>0 &le; height &le; 9999</li><li>Checking every pair of borders is too slow for the largest inputs; use a monotonic stack to find, for each bar, how far it can extend left and right.</li></ul><h4>Input</h4><p>The first line contains <code>n</code>. The second line contains the <code>n</code> heights.</p><h4>Output</h4><p>Print the maximum rectangle area.</p><h4>Example</h4><p>Input:</p><pre>6\n2 1 5 6 2 3</pre><p>Output:</p><pre>10</pre>",
   "solution": "n = int(input())\nh = list(map(int, input().split())) + [0]\nst = []\nbest = 0\nfor i in range(n + 1):\n    start = i\n    while st and st[-1][1] >= h[i]:\n        idx, height = st.pop()\n        best = max(best, height * (i - idx))\n        start = idx\n    st.append((start, h[i]))\nprint(best)\n",
   "tests": [
@@ -548,7 +548,7 @@
   "id": "m13",
   "title": "Longest Valid Parentheses",
   "category": "Stacks & Queues",
-  "difficulty": "Impossible",
+  "difficulty": "Hard",
   "description": "<p>Given a string of <code>(</code> and <code>)</code>, find the longest contiguous substring that is a valid (well-formed) parentheses string. Report its length and the 0-based index where it starts. If several longest substrings exist, report the <b>leftmost</b> one.</p><ul><li>1 &le; length &le; 15000</li><li>Checking every substring is far too slow; a stack of indices (with a sentinel for the last unmatched position) finds the answer in one pass.</li></ul><h4>Input</h4><p>A single line containing the string.</p><h4>Output</h4><p>Print two integers separated by a space: the maximum length and the start index. If there is no valid substring, print <code>0 -1</code>.</p><h4>Example</h4><p>Input:</p><pre>)()())</pre><p>Output:</p><pre>4 1</pre>",
   "solution": "s = input().strip()\nst = [-1]\nbest = 0\nstart = -1\nfor i, ch in enumerate(s):\n    if ch == \"(\":\n        st.append(i)\n    else:\n        st.pop()\n        if not st:\n            st.append(i)\n        else:\n            L = i - st[-1]\n            if L > best:\n                best = L\n                start = st[-1] + 1\nprint(best, start)\n",
   "tests": [
@@ -688,7 +688,7 @@
   "id": "m16",
   "title": "Subarrays with Exactly K Distinct",
   "category": "Hashing",
-  "difficulty": "Impossible",
+  "difficulty": "Hard",
   "description": "<p>Count the contiguous subarrays that contain <b>exactly</b> <code>k</code> different values.</p><ul><li>1 &le; k &le; n &le; 5000</li><li>1 &le; a[i] &le; 100</li><li>Enumerating all subarrays is too slow. Hint: <i>exactly(k) = atMost(k) &minus; atMost(k&minus;1)</i>, and <i>atMost</i> can be counted with a sliding window and a frequency map.</li></ul><h4>Input</h4><p>The first line contains <code>n</code> and <code>k</code>. The second line contains the <code>n</code> integers.</p><h4>Output</h4><p>Print the number of subarrays with exactly <code>k</code> distinct values.</p><h4>Example</h4><p>Input:</p><pre>5 2\n1 2 1 2 3</pre><p>Output:</p><pre>7</pre>",
   "solution": "n, k = map(int, input().split())\na = list(map(int, input().split()))\ndef at_most(m):\n    if m <= 0:\n        return 0\n    freq = {}\n    left = 0\n    total = 0\n    for right, x in enumerate(a):\n        freq[x] = freq.get(x, 0) + 1\n        while len(freq) > m:\n            y = a[left]\n            freq[y] -= 1\n            if freq[y] == 0:\n                del freq[y]\n            left += 1\n        total += right - left + 1\n    return total\nprint(at_most(k) - at_most(k - 1))\n",
   "tests": [
@@ -828,7 +828,7 @@
   "id": "m19",
   "title": "Sum of Subarray Minimums",
   "category": "Stacks & Queues",
-  "difficulty": "Impossible",
+  "difficulty": "Hard",
   "description": "<p>For every contiguous subarray take its minimum element; print the sum of all these minimums modulo <code>1000000007</code>.</p><ul><li>1 &le; n &le; 4000</li><li>1 &le; a[i] &le; 9999</li><li>Enumerating all <code>n(n+1)/2</code> subarrays is too slow for the largest inputs. For each element count how many subarrays have it as their minimum using monotonic stacks (careful with equal values: count each subarray exactly once).</li></ul><h4>Input</h4><p>The first line contains <code>n</code>. The second line contains the <code>n</code> integers.</p><h4>Output</h4><p>Print the sum modulo <code>1000000007</code>.</p><h4>Example</h4><p>Input:</p><pre>4\n3 1 2 4</pre><p>Output:</p><pre>17</pre>",
   "solution": "n = int(input())\na = list(map(int, input().split()))\nM = 10 ** 9 + 7\nleft = [0] * n\nright = [0] * n\nst = []\nfor i in range(n):\n    while st and a[st[-1]] > a[i]:\n        st.pop()\n    left[i] = i - st[-1] if st else i + 1\n    st.append(i)\nst = []\nfor i in range(n - 1, -1, -1):\n    while st and a[st[-1]] >= a[i]:\n        st.pop()\n    right[i] = st[-1] - i if st else n - i\n    st.append(i)\nprint(sum(a[i] * left[i] * right[i] for i in range(n)) % M)\n",
   "tests": [

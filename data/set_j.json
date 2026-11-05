@@ -788,7 +788,7 @@
   "id": "j17",
   "title": "Smallest Lexicographic Rotation",
   "category": "Strings",
-  "difficulty": "Impossible",
+  "difficulty": "Hard",
   "description": "<p>Among all rotations of string <code>s</code> (rotation <code>k</code> is <code>s[k:] + s[:k]</code>), find the lexicographically smallest one. If several values of <code>k</code> give the same smallest rotation, choose the smallest <code>k</code>.</p><h4>Constraints</h4><ul><li>1 &le; |s| &le; 15000</li><li><code>s</code> contains only lowercase letters</li><li>Comparing all n rotations naively is O(n<sup>2</sup>) and too slow; aim for O(n) (e.g. the minimum-expression two-pointer method or Booth's algorithm)</li></ul><h4>Input</h4><p>A single line containing <code>s</code>.</p><h4>Output</h4><p>Line 1: the index <code>k</code>. Line 2: the smallest rotation.</p>",
   "solution": "s = input().strip()\nn = len(s)\ni, j, k = 0, 1, 0\nwhile i < n and j < n and k < n:\n    a = s[(i + k) % n]\n    b = s[(j + k) % n]\n    if a == b:\n        k += 1\n        continue\n    if a > b:\n        i += k + 1\n    else:\n        j += k + 1\n    if i == j:\n        j += 1\n    k = 0\np = min(i, j)\nprint(p)\nprint(s[p:] + s[:p])\n",
   "tests": [
@@ -838,7 +838,7 @@
   "id": "j18",
   "title": "Shortest Palindrome by Prepending",
   "category": "Strings",
-  "difficulty": "Impossible",
+  "difficulty": "Hard",
   "description": "<p>You may add characters only to the <b>front</b> of string <code>s</code>. Find the shortest palindrome you can make this way.</p><p>Example: <code>abcd</code> &rarr; <code>dcbabcd</code>, <code>aacecaaa</code> &rarr; <code>aaacecaaa</code>.</p><h4>Constraints</h4><ul><li>1 &le; |s| &le; 8000</li><li><code>s</code> contains only lowercase letters</li><li>Checking every prefix for being a palindrome is O(n<sup>2</sup>); use the KMP failure function for O(n)</li></ul><h4>Input</h4><p>A single line containing <code>s</code>.</p><h4>Output</h4><p>The shortest palindrome.</p>",
   "solution": "s = input().strip()\nt = s + '#' + s[::-1]\nf = [0] * len(t)\nk = 0\nfor i in range(1, len(t)):\n    while k and t[i] != t[k]:\n        k = f[k - 1]\n    if t[i] == t[k]:\n        k += 1\n    f[i] = k\nprint(s[f[-1]:][::-1] + s)\n",
   "tests": [
@@ -888,7 +888,7 @@
   "id": "j19",
   "title": "Wildcard Matching",
   "category": "Strings",
-  "difficulty": "Impossible",
+  "difficulty": "Hard",
   "description": "<p>Decide whether the pattern <code>p</code> matches the <b>entire</b> string <code>s</code>, where:</p><ul><li><code>?</code> matches any single character;</li><li><code>*</code> matches any sequence of characters (including the empty sequence);</li><li>any other character matches only itself.</li></ul><h4>Constraints</h4><ul><li>1 &le; |s|, |p| &le; 1000</li><li><code>s</code> contains lowercase letters; <code>p</code> contains lowercase letters, <code>?</code> and <code>*</code></li><li>Plain backtracking is exponential on patterns with many <code>*</code>; use dynamic programming or the greedy star-backtrack method</li></ul><h4>Input</h4><ul><li>Line 1: the string <code>s</code></li><li>Line 2: the pattern <code>p</code></li></ul><h4>Output</h4><p><code>YES</code> if the pattern matches the whole string, otherwise <code>NO</code>.</p>",
   "solution": "s = input().strip()\np = input().strip()\ni = j = 0\nstar = -1\nmark = 0\nok = True\nwhile i < len(s):\n    if j < len(p) and (p[j] == '?' or p[j] == s[i]):\n        i += 1\n        j += 1\n    elif j < len(p) and p[j] == '*':\n        star = j\n        mark = i\n        j += 1\n    elif star != -1:\n        j = star + 1\n        mark += 1\n        i = mark\n    else:\n        ok = False\n        break\nif ok:\n    while j < len(p) and p[j] == '*':\n        j += 1\n    ok = j == len(p)\nprint(\"YES\" if ok else \"NO\")\n",
   "tests": [
@@ -938,7 +938,7 @@
   "id": "j20",
   "title": "Regular Expression Matching",
   "category": "Strings",
-  "difficulty": "Impossible",
+  "difficulty": "Hard",
   "description": "<p>Implement simple regular-expression matching over the <b>entire</b> string <code>s</code>, where:</p><ul><li><code>.</code> matches any single character;</li><li><code>x*</code> matches zero or more copies of the preceding element <code>x</code> (a letter or <code>.</code>);</li><li>any other character matches only itself.</li></ul><p>Example: <code>aab</code> matches <code>c*a*b</code> (zero <code>c</code>, two <code>a</code>, one <code>b</code>); <code>ab</code> matches <code>.*</code>.</p><h4>Constraints</h4><ul><li>1 &le; |s|, |p| &le; 200</li><li><code>s</code> contains lowercase letters; <code>p</code> contains lowercase letters, <code>.</code> and <code>*</code></li><li>Every <code>*</code> in <code>p</code> is preceded by a letter or <code>.</code> (no leading <code>*</code>, no <code>**</code>)</li><li>Naive recursion is exponential; use dynamic programming</li></ul><h4>Input</h4><ul><li>Line 1: the string <code>s</code></li><li>Line 2: the pattern <code>p</code></li></ul><h4>Output</h4><p><code>YES</code> if the pattern matches the whole string, otherwise <code>NO</code>.</p>",
   "solution": "s = input().strip()\np = input().strip()\nn, m = len(s), len(p)\ndp = [[False] * (m + 1) for _ in range(n + 1)]\ndp[n][m] = True\nfor i in range(n, -1, -1):\n    for j in range(m - 1, -1, -1):\n        first = i < n and (p[j] == s[i] or p[j] == '.')\n        if j + 1 < m and p[j + 1] == '*':\n            dp[i][j] = dp[i][j + 2] or (first and dp[i + 1][j])\n        else:\n            dp[i][j] = first and dp[i + 1][j + 1]\nprint(\"YES\" if dp[0][0] else \"NO\")\n",
   "tests": [

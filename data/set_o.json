@@ -193,7 +193,7 @@
   "id": "o05",
   "title": "Aggressive Cows",
   "category": "Sorting & Searching",
-  "difficulty": "Impossible",
+  "difficulty": "Hard",
   "description": "<p>A barn has <code>n</code> stalls at distinct positions on a line (given in <b>no particular order</b>). You must place <code>c</code> cows in different stalls so that the <b>minimum distance between any two cows is as large as possible</b>. Print that largest possible minimum distance. Brute force over placements is far too slow; sort and binary search on the answer with a greedy check.</p><ul><li>2 &le; c &le; n &le; 2000</li><li>0 &le; position &le; 10<sup>9</sup>, all distinct</li></ul><h4>Input</h4><p>Line 1: <code>n c</code>. Line 2: <code>n</code> stall positions.</p><h4>Output</h4><p>The largest minimum distance.</p><h4>Example</h4><p>Input:</p><pre>5 3\n1 2 8 4 9</pre><p>Output:</p><pre>3</pre>",
   "solution": "n, c = map(int, input().split())\nxs = sorted(map(int, input().split()))\ndef ok(d):\n    cnt, last = 1, xs[0]\n    for x in xs[1:]:\n        if x - last >= d:\n            cnt += 1\n            last = x\n            if cnt >= c:\n                return True\n    return cnt >= c\nlo, hi = 1, xs[-1] - xs[0]\nwhile lo < hi:\n    m = (lo + hi + 1) // 2\n    if ok(m):\n        lo = m\n    else:\n        hi = m - 1\nprint(lo)\n",
   "tests": [
@@ -378,7 +378,7 @@
   "id": "o09",
   "title": "Largest Concatenated Number",
   "category": "Greedy",
-  "difficulty": "Impossible",
+  "difficulty": "Hard",
   "description": "<p>Arrange <code>n</code> non-negative integers so that, written next to each other, they form the <b>largest possible number</b>. Print that number as a string. The result must not have unnecessary leading zeros: if every value is 0, print just <code>0</code>.</p><p>Hint: ordinary numeric or string sorting is wrong (compare <code>3</code> and <code>30</code>, or <code>824</code> and <code>8247</code>); compare two strings <code>a</code>, <code>b</code> by which of <code>a+b</code> and <code>b+a</code> is bigger.</p><ul><li>1 &le; n &le; 1500, 0 &le; a<sub>i</sub> &le; 10<sup>9</sup></li></ul><h4>Input</h4><p>Line 1: <code>n</code>. Line 2: <code>n</code> integers.</p><h4>Output</h4><p>The largest number.</p><h4>Example</h4><p>Input:</p><pre>5\n3 30 34 5 9</pre><p>Output:</p><pre>9534330</pre>",
   "solution": "from functools import cmp_to_key\nn = int(input())\na = input().split()\na = [str(int(x)) for x in a]\na.sort(key=cmp_to_key(lambda x, y: (x + y < y + x) - (x + y > y + x)))\ns = \"\".join(a).lstrip(\"0\")\nprint(s if s else \"0\")\n",
   "tests": [
@@ -748,7 +748,7 @@
   "id": "o17",
   "title": "Job Sequencing with Deadlines",
   "category": "Greedy",
-  "difficulty": "Impossible",
+  "difficulty": "Hard",
   "description": "<p>There are <code>n</code> jobs. Job <code>i</code> takes exactly one unit of time, has a deadline <code>d</code> and a profit <code>p</code>; it earns its profit only if it is completed by time <code>d</code>, i.e. scheduled in one of the time slots 1, 2, ..., <code>d</code>. Only one job can run per slot. Choose a schedule that <b>maximises total profit</b>, then print the number of jobs in it and the total profit.</p><p>Deadlines can be as large as 10<sup>9</sup>, so a slot array is impossible; and n is large enough that an <code>O(n&middot;d)</code> or exponential search is too slow. (With all profits positive, every maximum-profit schedule contains the same number of jobs.)</p><ul><li>1 &le; n &le; 2000, 1 &le; d &le; 10<sup>9</sup>, 1 &le; p &le; 10<sup>6</sup></li></ul><h4>Input</h4><p>Line 1: <code>n</code>. Next <code>n</code> lines: <code>d p</code>.</p><h4>Output</h4><p>Two integers separated by a space: the number of scheduled jobs and the maximum total profit.</p><h4>Example</h4><p>Input:</p><pre>4\n4 20\n1 10\n1 40\n1 30</pre><p>Output:</p><pre>2 60</pre>",
   "solution": "import heapq\nn = int(input())\njs = sorted(tuple(map(int, input().split())) for _ in range(n))\nh = []\nfor d, p in js:\n    heapq.heappush(h, p)\n    if len(h) > d:\n        heapq.heappop(h)\nprint(len(h), sum(h))\n",
   "tests": [
@@ -843,7 +843,7 @@
   "id": "o19",
   "title": "Split Array Largest Sum",
   "category": "Sorting & Searching",
-  "difficulty": "Impossible",
+  "difficulty": "Hard",
   "description": "<p>Split an array of <code>n</code> non-negative integers into exactly <code>k</code> <b>non-empty contiguous</b> parts so that the <b>largest part sum is as small as possible</b>. Print that minimum possible largest sum. Trying all cut positions is exponential; binary search on the answer with a greedy feasibility check (or DP) is required.</p><ul><li>1 &le; k &le; n &le; 3000, 0 &le; a<sub>i</sub> &le; 10<sup>6</sup></li></ul><h4>Input</h4><p>Line 1: <code>n k</code>. Line 2: <code>n</code> integers.</p><h4>Output</h4><p>The minimised largest part sum.</p><h4>Example</h4><p>Input:</p><pre>5 2\n7 2 5 10 8</pre><p>Output:</p><pre>18</pre>",
   "solution": "n, k = map(int, input().split())\na = list(map(int, input().split()))\ndef parts(limit):\n    cnt, cur = 1, 0\n    for x in a:\n        if cur + x > limit:\n            cnt += 1\n            cur = x\n        else:\n            cur += x\n    return cnt\nlo, hi = max(a), sum(a)\nwhile lo < hi:\n    m = (lo + hi) // 2\n    if parts(m) <= k:\n        hi = m\n    else:\n        lo = m + 1\nprint(lo)\n",
   "tests": [

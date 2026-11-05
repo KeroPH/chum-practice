@@ -1,0 +1,857 @@
+[
+ {
+  "id": "r01",
+  "title": "Traveling Salesman Tour",
+  "category": "Dynamic Programming",
+  "difficulty": "Hard",
+  "timeLimit": 5,
+  "description": "<p>A courier must start at city <code>1</code>, visit every one of the <code>n</code> cities <b>exactly once</b>, and finally return to city <code>1</code>. Travelling directly from city <code>i</code> to city <code>j</code> costs <code>d[i][j]</code>. Costs are <b>not necessarily symmetric</b> (<code>d[i][j]</code> may differ from <code>d[j][i]</code>). Find the minimum total cost of such a tour.</p><p>With <code>n = 1</code> the courier never moves and the cost is <code>0</code>.</p><h4>Constraints</h4><ul><li><code>1 ≤ n ≤ 14</code></li><li><code>0 ≤ d[i][j] ≤ 10<sup>6</sup></code>, <code>d[i][i] = 0</code></li><li>Trying all <code>(n−1)!</code> orders is far too slow for <code>n = 14</code>.</li></ul><h4>Input</h4><ul><li>Line 1: integer <code>n</code>.</li><li>Next <code>n</code> lines: <code>n</code> integers each; the <code>j</code>-th number on line <code>i</code> is <code>d[i][j]</code>.</li></ul><h4>Output</h4><p>A single integer: the minimum tour cost.</p><h4>Example</h4><p>Input:</p><pre>4\n0 10 15 20\n10 0 35 25\n15 35 0 30\n20 25 30 0</pre><p>Output:</p><pre>80</pre>",
+  "solution": "import sys\ndef main():\n    t = sys.stdin.read().split()\n    n = int(t[0])\n    d = [[int(t[1 + i * n + j]) for j in range(n)] for i in range(n)]\n    if n == 1:\n        print(0)\n        return\n    INF = 1 << 60\n    full = (1 << n) - 1\n    dp = [[INF] * n for _ in range(1 << n)]\n    dp[1][0] = 0\n    for mask in range(1, 1 << n, 2):\n        row = dp[mask]\n        outs = [b for b in range(1, n) if not (mask >> b) & 1]\n        if not outs:\n            continue\n        for last in range(n):\n            c = row[last]\n            if c >= INF:\n                continue\n            dl = d[last]\n            for nx in outs:\n                v = c + dl[nx]\n                tgt = dp[mask | (1 << nx)]\n                if v < tgt[nx]:\n                    tgt[nx] = v\n    print(min(dp[full][j] + d[j][0] for j in range(1, n)))\nmain()\n",
+  "tests": [
+   {
+    "input": "4\n0 10 15 20\n10 0 35 25\n15 35 0 30\n20 25 30 0\n",
+    "output": "80\n",
+    "hidden": false
+   },
+   {
+    "input": "3\n0 1 100\n100 0 1\n1 100 0\n",
+    "output": "3\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n0\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "2\n0 5\n7 0\n",
+    "output": "12\n",
+    "hidden": true
+   },
+   {
+    "input": "5\n0 0 0 0 0\n0 0 0 0 0\n0 0 0 0 0\n0 0 0 0 0\n0 0 0 0 0\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "4\n0 1 1 9\n9 0 9 1\n9 1 0 1\n1 9 9 0\n",
+    "output": "4\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(101)\nn=14\nprint(n)\nfor i in range(n):\n    print(*[0 if i==j else random.randint(1,10**6) for j in range(n)])",
+    "output": "1637622\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(102)\nn=14\npts=[(random.randint(0,1000),random.randint(0,1000)) for _ in range(n)]\nprint(n)\nfor i in range(n):\n    print(*[abs(pts[i][0]-pts[j][0])+abs(pts[i][1]-pts[j][1])+(random.randint(0,50) if i!=j else 0) for j in range(n)])",
+    "output": "4057\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(103)\nn=13\nprint(n)\nfor i in range(n):\n    print(*[0 if i==j else random.choice([1,2,3,1000]) for j in range(n)])",
+    "output": "14\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "r02",
+  "title": "Workers and Jobs Assignment",
+  "category": "Dynamic Programming",
+  "difficulty": "Hard",
+  "timeLimit": 5,
+  "description": "<p>There are <code>n</code> workers and <code>n</code> jobs. Worker <code>i</code> can do job <code>j</code> for cost <code>c[i][j]</code>, or cannot do it at all when <code>c[i][j] = −1</code>. Assign every worker to a <b>different</b> job so that every job is done and the total cost is minimum.</p><p>If no complete assignment exists, print <code>-1</code>.</p><h4>Constraints</h4><ul><li><code>1 ≤ n ≤ 15</code></li><li><code>c[i][j] = −1</code> or <code>0 ≤ c[i][j] ≤ 10<sup>6</sup></code></li><li>Greedy choices fail; trying all <code>n!</code> assignments is too slow.</li></ul><h4>Input</h4><ul><li>Line 1: integer <code>n</code>.</li><li>Next <code>n</code> lines: <code>n</code> integers; line <code>i</code> holds <code>c[i][1] … c[i][n]</code>.</li></ul><h4>Output</h4><p>A single integer: the minimum total cost, or <code>-1</code>.</p><h4>Example</h4><p>Input:</p><pre>3\n9 2 7\n6 4 3\n5 8 1</pre><p>Output:</p><pre>9</pre>",
+  "solution": "import sys\ndef main():\n    t = sys.stdin.read().split()\n    n = int(t[0])\n    c = [[int(t[1 + i * n + j]) for j in range(n)] for i in range(n)]\n    INF = 1 << 60\n    size = 1 << n\n    dp = [INF] * size\n    dp[0] = 0\n    for mask in range(size):\n        v = dp[mask]\n        if v >= INF:\n            continue\n        i = bin(mask).count(\"1\")\n        if i == n:\n            continue\n        row = c[i]\n        for j in range(n):\n            w = row[j]\n            if w >= 0 and not (mask >> j) & 1:\n                nm = mask | (1 << j)\n                if v + w < dp[nm]:\n                    dp[nm] = v + w\n    print(dp[size - 1] if dp[size - 1] < INF else -1)\nmain()\n",
+  "tests": [
+   {
+    "input": "3\n9 2 7\n6 4 3\n5 8 1\n",
+    "output": "9\n",
+    "hidden": false
+   },
+   {
+    "input": "2\n-1 5\n-1 3\n",
+    "output": "-1\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n-1\n",
+    "output": "-1\n",
+    "hidden": true
+   },
+   {
+    "input": "1\n0\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "3\n1 2 -1\n-1 1 2\n2 -1 1\n",
+    "output": "3\n",
+    "hidden": true
+   },
+   {
+    "input": "4\n1 1 1 100\n1 1 1 100\n1 1 1 100\n100 100 100 1000\n",
+    "output": "202\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(201)\nn=15\nprint(n)\nfor i in range(n):\n    print(*[-1 if random.random()<0.2 else random.randint(0,10**6) for j in range(n)])",
+    "output": "1702389\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(202)\nn=15\np=list(range(n))\nrandom.shuffle(p)\nprint(n)\nfor i in range(n):\n    print(*[random.randint(0,10**6) if (j==p[i] or random.random()<0.25) else -1 for j in range(n)])",
+    "output": "5961035\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(203)\nn=15\nprint(n)\nfor i in range(n):\n    print(*[random.randint(1,6) for j in range(n)])",
+    "output": "15\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "r03",
+  "title": "Digit Sums Without Repeats",
+  "category": "Dynamic Programming",
+  "difficulty": "Impossible",
+  "timeLimit": 5,
+  "description": "<p>Call a non-negative integer <b>nice</b> if, written in decimal without leading zeros, <ul><li>no two <b>adjacent</b> digits are equal, and</li><li>the sum of its digits is divisible by <code>k</code>.</li></ul>For example, with <code>k = 3</code>: <code>12</code>, <code>102</code> and <code>0</code> are nice, but <code>33</code> (adjacent equal digits) and <code>13</code> (digit sum 4) are not.</p><p>Answer <code>Q</code> queries: how many nice integers lie in the range <code>[L, R]</code>?</p><h4>Constraints</h4><ul><li><code>1 ≤ k ≤ 100</code></li><li><code>1 ≤ Q ≤ 200</code></li><li><code>0 ≤ L ≤ R ≤ 10<sup>18</sup></code></li><li>Ranges are far too large to scan; use digit DP.</li></ul><h4>Input</h4><ul><li>Line 1: integers <code>k</code> and <code>Q</code>.</li><li>Next <code>Q</code> lines: two integers <code>L R</code>.</li></ul><h4>Output</h4><p><code>Q</code> lines, the answer to each query in order.</p><h4>Example</h4><p>Input:</p><pre>3 2\n1 30\n0 0</pre><p>Output:</p><pre>10\n1</pre>",
+  "solution": "import sys\ndef main():\n    t = sys.stdin.read().split()\n    k, q = int(t[0]), int(t[1])\n    # g[l][last][r]: strings of length l, adjacent digits distinct, first digit != last, digit sum = r (mod k)\n    g = [[[0] * k for _ in range(11)] for _ in range(20)]\n    for last in range(11):\n        g[0][last][0] = 1\n    for l in range(1, 20):\n        prev = g[l - 1]\n        for last in range(11):\n            row = g[l][last]\n            for d in range(10):\n                if d == last:\n                    continue\n                src = prev[d]\n                for r in range(k):\n                    row[(r + d) % k] += src[r]\n    def f(n):\n        if n < 0:\n            return 0\n        if n == 0:\n            return 1\n        D = list(map(int, str(n)))\n        L = len(D)\n        res = 1  # the number 0\n        for l in range(1, L):\n            for d in range(1, 10):\n                res += g[l - 1][d][(-d) % k]\n        s = 0\n        prevd = 10\n        for i, cd in enumerate(D):\n            for d in range(1 if i == 0 else 0, cd):\n                if d != prevd:\n                    res += g[L - i - 1][d][(-s - d) % k]\n            if cd == prevd:\n                break\n            s += cd\n            prevd = cd\n        else:\n            if s % k == 0:\n                res += 1\n        return res\n    out = []\n    for i in range(q):\n        L, R = int(t[2 + 2 * i]), int(t[3 + 2 * i])\n        out.append(str(f(R) - f(L - 1)))\n    print(\"\\n\".join(out))\nmain()\n",
+  "tests": [
+   {
+    "input": "3 2\n1 30\n0 0\n",
+    "output": "10\n1\n",
+    "hidden": false
+   },
+   {
+    "input": "1 3\n0 9\n10 22\n100 120\n",
+    "output": "10\n11\n10\n",
+    "hidden": false
+   },
+   {
+    "input": "1 1\n0 1000000000000000000\n",
+    "output": "168856464709124011\n",
+    "hidden": true
+   },
+   {
+    "input": "100 2\n0 99\n1000000000000000000 1000000000000000000\n",
+    "output": "1\n0\n",
+    "hidden": true
+   },
+   {
+    "input": "7 3\n1 1\n7 7\n987654321 987654321\n",
+    "output": "0\n1\n0\n",
+    "hidden": true
+   },
+   {
+    "input": "2 2\n11 11\n0 1000\n",
+    "output": "0\n410\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(301)\nk=random.randint(2,100)\nq=200\nprint(k,q)\nfor _ in range(q):\n    a=random.randint(0,10**18)\n    b=random.randint(0,10**18)\n    print(min(a,b),max(a,b))",
+    "output": "270342084021518\n147680231649914\n297374819810023\n93588024035641\n73009373444361\n442517807880524\n237174796370747\n490424791036896\n454777871892316\n223812010614589\n556531537270736\n423904688933741\n292556873191587\n587750938096648\n158135963999125\n53600469529499\n106753512271818\n182509451005571\n512514963409054\n468712433824375\n4476341692762\n12588346090791\n287488514173034\n423747872073892\n148246684696902\n334476897752377\n48690130113737\n157192116031496\n210259808631488\n108172409175937\n407258447867123\n130490661076665\n97271144302465\n407760532428296\n514557736726408\n190496120412133\n425957774350605\n580073539406631\n365367411307898\n29927049024592\n305679903381349\n211932078007028\n80944673302505\n329570348948919\n72651118910207\n105232656632304\n88249956678303\n130752150775163\n228047132110308\n33920501649564\n355905162993061\n106673084416880\n446810624297869\n13030598543374\n65770267588712\n147388695908296\n24998167655167\n635714318381942\n0\n233360082448967\n184412303629573\n346682592441418\n71793859047136\n243155185359306\n104348923310997\n313201389200696\n241064344729382\n485304977258545\n384549804514700\n171755962890939\n287618996533551\n179152803927265\n388264785419051\n262353656202306\n389365115700315\n280771762188885\n160700172219978\n24578534893876\n207358224636275\n298671538127293\n219336575270140\n532319292721539\n103518084482880\n511221756873981\n74456228503627\n226709355600518\n82758562848144\n104064817489958\n189410122899159\n208187970364215\n522641262266630\n58082368028990\n98073199793977\n86298990537999\n410015452768691\n507542457836567\n110560196860579\n324225317496889\n186762227290627\n97109800690982\n17312134572923\n49994062704856\n81503023470047\n91179983328192\n122468831946308\n233403898598572\n287466577570237\n292493589624751\n587228757550350\n248081119735367\n188638941029246\n316782683154548\n127608561192434\n114738744465870\n389535431959911\n507163659240500\n261457445877354\n164468215354324\n587523329740471\n172041863363423\n409415661162985\n398946257549438\n58371057493013\n445924888389551\n124073349041424\n270332372415211\n389997573101697\n54306386572200\n105138341029353\n438950869429253\n309616198914623\n309088956545629\n14632851662163\n658391161296501\n172742833064408\n565085358770742\n65191140449525\n44416024193340\n245870034970916\n10712566478635\n372102488187566\n308278465724238\n242291718802996\n5525731178995\n2649543020333\n302905678616954\n126111372181170\n201739625622826\n19691781518797\n202835610304688\n89746414900980\n173606879818487\n162336021706773\n139682531532215\n107771298990979\n383872687373082\n97709076327264\n147030739472117\n427056166870700\n328507577005054\n130121231997376\n283614267143018\n140170500911080\n260132121161898\n137988861695807\n142714602510205\n369898180416647\n79964120372290\n485441554580347\n215018237315166\n87676062227263\n10179765461715\n385603274528693\n82050297085484\n25349761950212\n311413672581707\n436910315206524\n251473601817059\n85559587222259\n30460600318829\n120148604413469\n268199992102439\n561068708718034\n499366595822230\n184380869706930\n82429085636745\n367145494024564\n64191136402612\n143584886346502\n386406620746358\n70731521146296\n447472164896063\n555775623740485\n384579813490075\n173762769356691\n142413887033459\n136619505125596\n85993558738470\n77468908953599\n247655415004077\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(302)\nq=200\nprint(97,q)\nfor _ in range(q):\n    e=random.randint(1,18)\n    a=random.randint(0,10**e)\n    b=a+random.randint(0,10**random.randint(0,18))\n    print(a,min(b,10**18))",
+    "output": "1044662194239\n7\n0\n0\n0\n0\n0\n0\n91700967178243\n0\n24269592945\n0\n0\n0\n121078041111042\n0\n4201414385\n0\n602880978\n0\n0\n0\n42769\n7\n0\n5446272\n0\n24\n0\n62178501915\n0\n0\n0\n0\n0\n11349543\n0\n21709\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n0\n786622938957006\n7794261635\n372259\n713826804\n0\n0\n0\n0\n0\n1147655882\n0\n0\n1214246860107920\n7106390230\n0\n243650407\n1090526345706441\n17631026623926\n0\n51382517096\n0\n123754828\n0\n0\n55836062016268\n34731777\n0\n168927\n7927399\n0\n169374155\n0\n0\n44216749408733\n0\n3020197350475\n0\n1707092616612\n0\n164396\n0\n0\n34909010\n45794314208697\n0\n2\n0\n0\n0\n300113010281\n65985514490406\n31432238409213\n0\n0\n0\n40541791\n0\n993081417162275\n0\n0\n0\n0\n0\n0\n0\n0\n0\n747463932\n0\n49499415977915\n0\n0\n19918457\n5898563823854\n1059503525\n0\n0\n0\n162233386525846\n0\n0\n216831\n0\n3847765013\n2065962\n0\n90744511366956\n16628336482154\n0\n0\n2684767545867\n20\n0\n124884272\n0\n0\n61483340133809\n0\n48814373632314\n108996129206\n1153294805\n146593523999\n0\n0\n1598454992\n285478112\n0\n0\n0\n0\n49591314250\n0\n0\n738112\n91768\n789179\n362668\n0\n5960374094674\n0\n0\n0\n0\n0\n405\n0\n20840605936\n3226091571\n1\n606624133072823\n0\n0\n0\n0\n0\n0\n0\n30772229993\n779345\n0\n0\n8263685863\n62114\n0\n0\n16439136520409\n1241585758062\n1161226768\n0\n12919640011\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "r04",
+  "title": "Burst Balloons for Coins",
+  "category": "Dynamic Programming",
+  "difficulty": "Hard",
+  "timeLimit": 5,
+  "description": "<p><code>n</code> balloons stand in a row; balloon <code>i</code> shows number <code>a[i]</code>. You burst them one at a time, in any order you like. Bursting balloon <code>i</code> earns <code>left · a[i] · right</code> coins, where <code>left</code> and <code>right</code> are the numbers on the balloons that are currently its nearest <b>remaining</b> neighbours (a missing neighbour counts as <code>1</code>). After bursting, the neighbours become adjacent.</p><p>Find the maximum number of coins you can collect by bursting all balloons.</p><h4>Constraints</h4><ul><li><code>1 ≤ n ≤ 200</code></li><li><code>0 ≤ a[i] ≤ 100</code></li><li>Trying all <code>n!</code> orders is impossible; think about which balloon is burst <b>last</b> in an interval.</li></ul><h4>Input</h4><ul><li>Line 1: integer <code>n</code>.</li><li>Line 2: <code>n</code> integers <code>a[1] … a[n]</code>.</li></ul><h4>Output</h4><p>A single integer: the maximum coins.</p><h4>Example</h4><p>Input:</p><pre>4\n3 1 5 8</pre><p>Output:</p><pre>167</pre>",
+  "solution": "import sys\ndef main():\n    t = sys.stdin.read().split()\n    n = int(t[0])\n    b = [1] + [int(x) for x in t[1:1 + n]] + [1]\n    m = n + 2\n    dp = [[0] * m for _ in range(m)]   # dp[i][j]: best for open interval (i, j)\n    col = [[0] * m for _ in range(m)]  # col[j][k] = dp[k][j]\n    for length in range(2, m):\n        for i in range(0, m - length):\n            j = i + length\n            bij = b[i] * b[j]\n            di = dp[i]\n            cj = col[j]\n            best = 0\n            for k in range(i + 1, j):\n                v = di[k] + cj[k] + bij * b[k]\n                if v > best:\n                    best = v\n            di[j] = best\n            cj[i] = best\n    print(dp[0][m - 1])\nmain()\n",
+  "tests": [
+   {
+    "input": "4\n3 1 5 8\n",
+    "output": "167\n",
+    "hidden": false
+   },
+   {
+    "input": "2\n1 5\n",
+    "output": "10\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n7\n",
+    "output": "7\n",
+    "hidden": true
+   },
+   {
+    "input": "1\n0\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "5\n0 0 0 0 0\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "3\n9 0 9\n",
+    "output": "90\n",
+    "hidden": true
+   },
+   {
+    "input": "6\n100 1 100 1 100 1\n",
+    "output": "1030200\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(401)\nn=200\nprint(n)\nprint(*[random.randint(0,100) for _ in range(n)])",
+    "output": "61958688\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(402)\nn=200\nprint(n)\nprint(*[random.choice([0,1,2,99,100]) for _ in range(n)])",
+    "output": "80091988\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "r05",
+  "title": "Palindrome Demolition",
+  "category": "Dynamic Programming",
+  "difficulty": "Impossible",
+  "timeLimit": 5,
+  "description": "<p>A line of <code>n</code> coloured blocks is given, block <code>i</code> having colour <code>c[i]</code>. In one move you may choose any <b>contiguous</b> group of blocks whose colours form a <b>palindrome</b> and remove it; the remaining blocks close the gap and form a single line again. Find the minimum number of moves needed to remove all blocks.</p><p>For <code>1 4 4 2 3 2 1</code>: remove <code>4 4</code>, leaving <code>1 2 3 2 1</code>, which is a palindrome — 2 moves.</p><h4>Constraints</h4><ul><li><code>1 ≤ n ≤ 200</code></li><li><code>1 ≤ c[i] ≤ n</code></li></ul><h4>Input</h4><ul><li>Line 1: integer <code>n</code>.</li><li>Line 2: <code>n</code> integers <code>c[1] … c[n]</code>.</li></ul><h4>Output</h4><p>A single integer: the minimum number of moves.</p><h4>Example</h4><p>Input:</p><pre>7\n1 4 4 2 3 2 1</pre><p>Output:</p><pre>2</pre>",
+  "solution": "import sys\ndef main():\n    t = sys.stdin.read().split()\n    n = int(t[0])\n    c = [int(x) for x in t[1:1 + n]]\n    pos = {}\n    for i, x in enumerate(c):\n        pos.setdefault(x, []).append(i)\n    later = [[k for k in pos[c[i]] if k > i + 1] for i in range(n)]\n    dp = [[0] * (n + 2) for _ in range(n + 2)]  # dp[i][j] for closed [i, j]; 0 when j < i\n    for i in range(n - 1, -1, -1):\n        di = dp[i]\n        di1 = dp[i + 1]\n        di[i] = 1\n        li = later[i]\n        for j in range(i + 1, n):\n            best = 1 + di1[j]\n            if c[i] == c[i + 1]:\n                v = 1 + dp[i + 2][j]\n                if v < best:\n                    best = v\n            for k in li:\n                if k > j:\n                    break\n                v = di1[k - 1] + dp[k + 1][j]\n                if v < best:\n                    best = v\n            di[j] = best\n    print(dp[0][n - 1])\nmain()\n",
+  "tests": [
+   {
+    "input": "7\n1 4 4 2 3 2 1\n",
+    "output": "2\n",
+    "hidden": false
+   },
+   {
+    "input": "3\n1 2 3\n",
+    "output": "3\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n1\n",
+    "output": "1\n",
+    "hidden": true
+   },
+   {
+    "input": "3\n1 2 1\n",
+    "output": "1\n",
+    "hidden": true
+   },
+   {
+    "input": "4\n1 1 2 2\n",
+    "output": "2\n",
+    "hidden": true
+   },
+   {
+    "input": "6\n1 2 1 2 1 2\n",
+    "output": "2\n",
+    "hidden": true
+   },
+   {
+    "input": "8\n1 2 3 1 2 3 1 2\n",
+    "output": "4\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(501)\nn=200\nprint(n)\nprint(*[random.randint(1,4) for _ in range(n)])",
+    "output": "33\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(502)\nn=200\nprint(n)\nprint(*[random.randint(1,2) for _ in range(n)])",
+    "output": "14\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(503)\nn=200\nprint(n)\nprint(*[random.randint(1,30) for _ in range(n)])",
+    "output": "110\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "r06",
+  "title": "Best and Worst Meeting Point",
+  "category": "Dynamic Programming",
+  "difficulty": "Hard",
+  "timeLimit": 5,
+  "description": "<p>A country has <code>n</code> towns connected by <code>n − 1</code> two-way roads so that every town can reach every other (a tree). Road <code>i</code> has length <code>w</code>.</p><p>For a town <code>v</code>, let <code>S(v)</code> be the sum of shortest-path distances from <code>v</code> to <b>all</b> towns. Find the town with the smallest <code>S</code> and the town with the largest <code>S</code>. If several towns tie, choose the one with the <b>smallest index</b>.</p><h4>Constraints</h4><ul><li><code>1 ≤ n ≤ 10<sup>5</sup></code></li><li><code>1 ≤ w ≤ 10<sup>4</sup></code></li><li>Running a search from every town is <code>O(n²)</code> — too slow. The tree can be a long path, so avoid deep recursion.</li></ul><h4>Input</h4><ul><li>Line 1: integer <code>n</code>.</li><li>Next <code>n − 1</code> lines: <code>u v w</code> — a road between towns <code>u</code> and <code>v</code> of length <code>w</code>.</li></ul><h4>Output</h4><ul><li>Line 1: <code>S_min v_min</code></li><li>Line 2: <code>S_max v_max</code></li></ul><h4>Example</h4><p>Input:</p><pre>4\n1 2 1\n2 3 1\n2 4 1</pre><p>Output:</p><pre>3 2\n5 1</pre>",
+  "solution": "import sys\ndef main():\n    t = sys.stdin.buffer.read().split()\n    n = int(t[0])\n    adj = [[] for _ in range(n + 1)]\n    for i in range(n - 1):\n        u = int(t[1 + 3 * i]); v = int(t[2 + 3 * i]); w = int(t[3 + 3 * i])\n        adj[u].append((v, w)); adj[v].append((u, w))\n    parent = [0] * (n + 1)\n    pw = [0] * (n + 1)\n    order = [1]\n    parent[1] = -1\n    for x in order:\n        for y, w in adj[x]:\n            if y != parent[x]:\n                parent[y] = x; pw[y] = w; order.append(y)\n    size = [1] * (n + 1)\n    total = 0\n    for x in reversed(order):\n        if x != 1:\n            size[parent[x]] += size[x]\n            total += size[x] * pw[x]\n    S = [0] * (n + 1)\n    S[1] = total\n    for x in order:\n        if x != 1:\n            S[x] = S[parent[x]] + pw[x] * (n - 2 * size[x])\n    vals = S[1:]\n    mn = min(vals); mx = max(vals)\n    print(mn, vals.index(mn) + 1)\n    print(mx, vals.index(mx) + 1)\nmain()\n",
+  "tests": [
+   {
+    "input": "4\n1 2 1\n2 3 1\n2 4 1\n",
+    "output": "3 2\n5 1\n",
+    "hidden": false
+   },
+   {
+    "input": "3\n1 2 5\n2 3 5\n",
+    "output": "10 2\n15 1\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n",
+    "output": "0 1\n0 1\n",
+    "hidden": true
+   },
+   {
+    "input": "2\n2 1 7\n",
+    "output": "7 1\n7 1\n",
+    "hidden": true
+   },
+   {
+    "input": "5\n1 2 1\n1 3 1\n1 4 1\n1 5 1\n",
+    "output": "4 1\n7 2\n",
+    "hidden": true
+   },
+   {
+    "input": "6\n1 2 3\n2 3 1\n3 4 1\n4 5 1\n5 6 3\n",
+    "output": "13 3\n27 1\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(601)\nn=100000\nlab=list(range(1,n+1))\nrandom.shuffle(lab)\nprint(n)\nfor i in range(2,n+1):\n    p=random.randint(max(1,i-100000),i-1)\n    print(lab[i-1],lab[p-1],random.randint(1,10000))",
+    "output": "4863924655 52429\n17183580941 23936\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(602)\nn=100000\nlab=list(range(1,n+1))\nrandom.shuffle(lab)\nprint(n)\nfor i in range(2,n+1):\n    p=random.randint(max(1,i-1),i-1)\n    print(lab[i-1],lab[p-1],random.randint(1,10000))",
+    "output": "12519342745092 22298\n25028050116356 35694\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(603)\nn=100000\nlab=list(range(1,n+1))\nrandom.shuffle(lab)\nprint(n)\nfor i in range(2,n+1):\n    p=random.randint(max(1,i-3),i-1)\n    print(lab[i-1],lab[p-1],random.randint(1,1))",
+    "output": "1249875136 91300\n2507120320 21601\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "r07",
+  "title": "Optimal Guard Selections",
+  "category": "Dynamic Programming",
+  "difficulty": "Impossible",
+  "timeLimit": 5,
+  "description": "<p>A castle has <code>n</code> towers connected by <code>n − 1</code> corridors forming a tree. Placing a guard in tower <code>i</code> gives value <code>w[i]</code>, but two guards must never be placed in towers joined directly by a corridor.</p><p>Find the maximum total value <code>W</code> of a valid guard placement, and the number <code>C</code> of <b>different</b> sets of towers that achieve exactly <code>W</code> (the empty set is a valid placement). Print <code>C</code> modulo <code>10<sup>9</sup> + 7</code>. Note that towers with value <code>0</code> can create many optimal sets.</p><h4>Constraints</h4><ul><li><code>1 ≤ n ≤ 10<sup>5</sup></code></li><li><code>0 ≤ w[i] ≤ 10<sup>9</sup></code></li><li>The tree may be a long path — avoid deep recursion.</li></ul><h4>Input</h4><ul><li>Line 1: integer <code>n</code>.</li><li>Line 2: <code>n</code> integers <code>w[1] … w[n]</code>.</li><li>Next <code>n − 1</code> lines: <code>u v</code> — a corridor.</li></ul><h4>Output</h4><p>One line: <code>W C</code> (<code>W</code> exactly, <code>C</code> modulo 10<sup>9</sup>+7).</p><h4>Example</h4><p>Input:</p><pre>3\n1 1 1\n1 2\n2 3</pre><p>Output:</p><pre>2 1</pre>",
+  "solution": "import sys\ndef main():\n    MOD = 10 ** 9 + 7\n    t = sys.stdin.buffer.read().split()\n    n = int(t[0])\n    w = [0] + [int(x) for x in t[1:1 + n]]\n    adj = [[] for _ in range(n + 1)]\n    base = 1 + n\n    for i in range(n - 1):\n        u = int(t[base + 2 * i]); v = int(t[base + 2 * i + 1])\n        adj[u].append(v); adj[v].append(u)\n    parent = [0] * (n + 1)\n    parent[1] = -1\n    order = [1]\n    for x in order:\n        for y in adj[x]:\n            if y != parent[x]:\n                parent[y] = x; order.append(y)\n    inc = w[:]           # best value with x chosen\n    exc = [0] * (n + 1)  # best value with x not chosen\n    ci = [1] * (n + 1)\n    ce = [1] * (n + 1)\n    for x in reversed(order):\n        p = parent[x]\n        if p < 0:\n            continue\n        inc[p] += exc[x]\n        ci[p] = ci[p] * ce[x] % MOD\n        if inc[x] > exc[x]:\n            bv, bc = inc[x], ci[x]\n        elif exc[x] > inc[x]:\n            bv, bc = exc[x], ce[x]\n        else:\n            bv, bc = inc[x], (ci[x] + ce[x]) % MOD\n        exc[p] += bv\n        ce[p] = ce[p] * bc % MOD\n    if inc[1] > exc[1]:\n        print(inc[1], ci[1])\n    elif exc[1] > inc[1]:\n        print(exc[1], ce[1])\n    else:\n        print(inc[1], (ci[1] + ce[1]) % MOD)\nmain()\n",
+  "tests": [
+   {
+    "input": "3\n1 1 1\n1 2\n2 3\n",
+    "output": "2 1\n",
+    "hidden": false
+   },
+   {
+    "input": "4\n0 0 0 0\n1 2\n1 3\n1 4\n",
+    "output": "0 9\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n0\n",
+    "output": "0 2\n",
+    "hidden": true
+   },
+   {
+    "input": "1\n5\n",
+    "output": "5 1\n",
+    "hidden": true
+   },
+   {
+    "input": "2\n3 3\n1 2\n",
+    "output": "3 2\n",
+    "hidden": true
+   },
+   {
+    "input": "5\n2 1 1 1 1\n1 2\n1 3\n1 4\n1 5\n",
+    "output": "4 1\n",
+    "hidden": true
+   },
+   {
+    "input": "6\n1 0 1 0 1 0\n1 2\n2 3\n3 4\n4 5\n5 6\n",
+    "output": "3 1\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(701)\nn=100000\nprint(n)\nprint(*[random.randint(0,10**9) for _ in range(n)])\nfor i in range(2,n+1):\n    print(i,random.randint(1,i-1))",
+    "output": "33313313000119 1\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(702)\nn=100000\nlab=list(range(1,n+1))\nrandom.shuffle(lab)\nprint(n)\nprint(*[random.choice([0,0,1]) for _ in range(n)])\nfor i in range(2,n+1):\n    print(lab[i-1],lab[i-2])",
+    "output": "24789 108004240\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(703)\nn=100000\nprint(n)\nprint(*[random.randint(0,2) for _ in range(n)])\nfor i in range(2,n+1):\n    print(i,random.randint(max(1,i-5),i-1))",
+    "output": "67163 514944425\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "r08",
+  "title": "Counting Increasing Subsequences",
+  "category": "Dynamic Programming",
+  "difficulty": "Impossible",
+  "timeLimit": 5,
+  "description": "<p>Given an array <code>a</code> of <code>n</code> integers, count its <b>strictly increasing subsequences</b> of length at least 1. A subsequence is chosen by a set of indices <code>i<sub>1</sub> &lt; i<sub>2</sub> &lt; … &lt; i<sub>k</sub></code>; two subsequences are different if their index sets differ, even if the values are the same. It is strictly increasing if <code>a[i<sub>1</sub>] &lt; a[i<sub>2</sub>] &lt; … &lt; a[i<sub>k</sub>]</code>.</p><p>Print the count modulo <code>10<sup>9</sup> + 7</code>.</p><h4>Constraints</h4><ul><li><code>1 ≤ n ≤ 5·10<sup>4</sup></code></li><li><code>−10<sup>9</sup> ≤ a[i] ≤ 10<sup>9</sup></code></li><li>An <code>O(n²)</code> DP is too slow; you need <code>O(n log n)</code>.</li></ul><h4>Input</h4><ul><li>Line 1: integer <code>n</code>.</li><li>Line 2: <code>n</code> integers.</li></ul><h4>Output</h4><p>A single integer: the count modulo 10<sup>9</sup>+7.</p><h4>Example</h4><p>Input:</p><pre>3\n1 2 3</pre><p>Output:</p><pre>7</pre>",
+  "solution": "import sys\ndef main():\n    MOD = 10 ** 9 + 7\n    t = sys.stdin.buffer.read().split()\n    n = int(t[0])\n    a = [int(x) for x in t[1:1 + n]]\n    rank = {v: i + 1 for i, v in enumerate(sorted(set(a)))}\n    m = len(rank)\n    tree = [0] * (m + 1)\n    total = 0\n    for x in a:\n        r = rank[x] - 1\n        s = 1\n        while r > 0:\n            s += tree[r]\n            r &= r - 1\n        s %= MOD\n        total += s\n        r = rank[x]\n        while r <= m:\n            tree[r] = (tree[r] + s) % MOD\n            r += r & -r\n    print(total % MOD)\nmain()\n",
+  "tests": [
+   {
+    "input": "3\n1 2 3\n",
+    "output": "7\n",
+    "hidden": false
+   },
+   {
+    "input": "4\n2 2 1 3\n",
+    "output": "7\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n-7\n",
+    "output": "1\n",
+    "hidden": true
+   },
+   {
+    "input": "5\n5 4 3 2 1\n",
+    "output": "5\n",
+    "hidden": true
+   },
+   {
+    "input": "5\n4 4 4 4 4\n",
+    "output": "5\n",
+    "hidden": true
+   },
+   {
+    "input": "6\n-1 0 -1 0 1 1\n",
+    "output": "23\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(801)\nn=50000\nprint(n)\nprint(*[random.randint(-10**9,10**9) for _ in range(n)])",
+    "output": "743456789\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(802)\nn=50000\nprint(n)\nprint(*[i//3+random.randint(0,2) for i in range(n)])",
+    "output": "782186907\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(803)\nn=50000\nprint(n)\nprint(*[random.randint(1,50) for _ in range(n)])",
+    "output": "300700231\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "r09",
+  "title": "Disjoint Bitmask Pairs",
+  "category": "Dynamic Programming",
+  "difficulty": "Impossible",
+  "timeLimit": 5,
+  "description": "<p>You are given <code>n</code> integers, each below <code>2<sup>16</sup></code>. Count the pairs of positions <code>(i, j)</code> with <code>i &lt; j</code> such that <code>a[i] AND a[j] = 0</code> (bitwise AND, i.e. the two numbers share no set bit).</p><h4>Constraints</h4><ul><li><code>1 ≤ n ≤ 10<sup>5</sup></code></li><li><code>0 ≤ a[i] &lt; 65536</code></li><li>Checking every pair is about <code>5·10<sup>9</sup></code> operations; even grouping equal values leaves too many pairs of distinct values. Think <b>sum over subsets</b>.</li></ul><h4>Input</h4><ul><li>Line 1: integer <code>n</code>.</li><li>Line 2: <code>n</code> integers.</li></ul><h4>Output</h4><p>A single integer: the number of pairs (exact, no modulo).</p><h4>Example</h4><p>Input:</p><pre>4\n1 2 3 4</pre><p>Output:</p><pre>4</pre>",
+  "solution": "import sys\ndef main():\n    t = sys.stdin.buffer.read().split()\n    n = int(t[0])\n    a = [int(x) for x in t[1:1 + n]]\n    B = 16\n    size = 1 << B\n    f = [0] * size\n    for x in a:\n        f[x] += 1\n    # f[mask] = how many a[i] are submasks of mask\n    for b in range(B):\n        bit = 1 << b\n        step = bit << 1\n        for base in range(0, size, step):\n            hi = base + bit\n            f[hi:hi + bit] = [x + y for x, y in zip(f[hi:hi + bit], f[base:hi])]\n    full = size - 1\n    total = 0\n    for x in a:\n        total += f[full ^ x]\n    zeros = f[0]\n    print((total - zeros) // 2)\nmain()\n",
+  "tests": [
+   {
+    "input": "4\n1 2 3 4\n",
+    "output": "4\n",
+    "hidden": false
+   },
+   {
+    "input": "3\n0 0 5\n",
+    "output": "3\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n0\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "2\n65535 0\n",
+    "output": "1\n",
+    "hidden": true
+   },
+   {
+    "input": "5\n7 7 7 7 7\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "6\n1 2 4 8 16 32\n",
+    "output": "15\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(901)\nn=100000\nprint(n)\nprint(*[random.randrange(65536) for _ in range(n)])",
+    "output": "49943700\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(902)\nn=100000\nprint(n)\nprint(*[random.randrange(65536) & random.randrange(65536) & random.randrange(65536) for _ in range(n)])",
+    "output": "3892353541\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(903)\nn=100000\nprint(n)\nprint(*[1<<random.randrange(16) if random.random()<0.5 else 0 for _ in range(n)])",
+    "output": "4921225242\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "r10",
+  "title": "Domino Tiling with Holes",
+  "category": "Dynamic Programming",
+  "difficulty": "Impossible",
+  "timeLimit": 5,
+  "description": "<p>A floor is an <code>r × c</code> grid. Some cells are broken (<code>#</code>) and must stay uncovered; all other cells (<code>.</code>) must be covered. Count the ways to cover <b>every</b> free cell with <code>1 × 2</code> dominoes (horizontal or vertical) so that dominoes do not overlap and never cover a broken cell.</p><p>If every cell is broken, there is exactly 1 way (place nothing). Print the count modulo <code>10<sup>9</sup> + 7</code>.</p><h4>Constraints</h4><ul><li><code>1 ≤ r ≤ 8</code></li><li><code>1 ≤ c ≤ 200</code></li><li>Use a DP over the boundary profile (broken-profile DP).</li></ul><h4>Input</h4><ul><li>Line 1: integers <code>r</code> and <code>c</code>.</li><li>Next <code>r</code> lines: strings of length <code>c</code> made of <code>.</code> and <code>#</code>.</li></ul><h4>Output</h4><p>A single integer: the number of tilings modulo 10<sup>9</sup>+7.</p><h4>Example</h4><p>Input:</p><pre>2 3\n...\n...</pre><p>Output:</p><pre>3</pre>",
+  "solution": "import sys\ndef main():\n    MOD = 10 ** 9 + 7\n    t = sys.stdin.read().split()\n    r, c = int(t[0]), int(t[1])\n    g = t[2:2 + r]\n    size = 1 << r\n    dp = [0] * size\n    dp[0] = 1\n    for j in range(c):\n        for i in range(r):\n            new = [0] * size\n            free = g[i][j] == '.'\n            right = j + 1 < c and g[i][j + 1] == '.'\n            down = i + 1 < r and g[i + 1][j] == '.'\n            bi = 1 << i\n            bd = 1 << (i + 1)\n            for mask in range(size):\n                v = dp[mask]\n                if not v:\n                    continue\n                if mask & bi:\n                    m2 = mask ^ bi\n                    new[m2] = (new[m2] + v) % MOD\n                elif not free:\n                    new[mask] = (new[mask] + v) % MOD\n                else:\n                    if right:\n                        m2 = mask | bi\n                        new[m2] = (new[m2] + v) % MOD\n                    if down and not (mask & bd):\n                        m2 = mask | bd\n                        new[m2] = (new[m2] + v) % MOD\n            dp = new\n    print(dp[0] % MOD)\nmain()\n",
+  "tests": [
+   {
+    "input": "2 3\n...\n...\n",
+    "output": "3\n",
+    "hidden": false
+   },
+   {
+    "input": "3 3\n...\n.#.\n...\n",
+    "output": "2\n",
+    "hidden": false
+   },
+   {
+    "input": "1 1\n#\n",
+    "output": "1\n",
+    "hidden": true
+   },
+   {
+    "input": "1 1\n.\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "2 2\n#.\n.#\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "1 6\n......\n",
+    "output": "1\n",
+    "hidden": true
+   },
+   {
+    "input": "4 4\n....\n....\n....\n....\n",
+    "output": "36\n",
+    "hidden": true
+   },
+   {
+    "gen": "r,c=8,200\nprint(r,c)\nfor _ in range(r):\n    print('.'*c)",
+    "output": "991420786\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1002)\nr,c=8,200\ng=[['.']*c for _ in range(r)]\nfor _ in range(60):\n    i=random.randrange(r)\n    j=random.randrange(0,c,2)\n    g[i][j]=g[i][j+1]='#'\nprint(r,c)\nfor row in g:\n    print(''.join(row))",
+    "output": "26162933\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1003)\nr,c=8,200\ng=[['.']*c for _ in range(r)]\nfor _ in range(120):\n    i=random.randrange(0,r,2)\n    j=random.randrange(c)\n    g[i][j]=g[i+1][j]='#'\nprint(r,c)\nfor row in g:\n    print(''.join(row))",
+    "output": "827947335\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "r11",
+  "title": "Heavy Knapsack, Light Values",
+  "category": "Dynamic Programming",
+  "difficulty": "Hard",
+  "timeLimit": 5,
+  "description": "<p>There are <code>n</code> items; item <code>i</code> has weight <code>w[i]</code> and value <code>v[i]</code>. Choose a subset with total weight at most <code>W</code> and maximum total value. Each item can be taken at most once.</p><p>Here the weights and the capacity are <b>huge</b>, so the usual table indexed by capacity does not fit — but the values are small.</p><h4>Constraints</h4><ul><li><code>1 ≤ n ≤ 100</code></li><li><code>1 ≤ W ≤ 10<sup>9</sup></code></li><li><code>1 ≤ w[i] ≤ 10<sup>9</sup></code></li><li><code>1 ≤ v[i] ≤ 100</code></li></ul><h4>Input</h4><ul><li>Line 1: integers <code>n</code> and <code>W</code>.</li><li>Next <code>n</code> lines: <code>w[i] v[i]</code>.</li></ul><h4>Output</h4><p>A single integer: the maximum total value.</p><h4>Example</h4><p>Input:</p><pre>3 8\n3 30\n4 50\n5 60</pre><p>Output:</p><pre>90</pre>",
+  "solution": "import sys\ndef main():\n    t = sys.stdin.read().split()\n    n, W = int(t[0]), int(t[1])\n    items = [(int(t[2 + 2 * i]), int(t[3 + 2 * i])) for i in range(n)]\n    V = sum(v for _, v in items)\n    INF = 1 << 62\n    dp = [INF] * (V + 1)   # dp[val] = minimum weight reaching exactly value val\n    dp[0] = 0\n    top = 0\n    for w, v in items:\n        top += v\n        for val in range(top, v - 1, -1):\n            cand = dp[val - v] + w\n            if cand < dp[val]:\n                dp[val] = cand\n    best = 0\n    for val in range(V, -1, -1):\n        if dp[val] <= W:\n            best = val\n            break\n    print(best)\nmain()\n",
+  "tests": [
+   {
+    "input": "3 8\n3 30\n4 50\n5 60\n",
+    "output": "90\n",
+    "hidden": false
+   },
+   {
+    "input": "1 1000000000\n1000000000 10\n",
+    "output": "10\n",
+    "hidden": false
+   },
+   {
+    "input": "1 5\n6 100\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "6 15\n6 5\n5 6\n6 4\n6 6\n3 5\n7 2\n",
+    "output": "17\n",
+    "hidden": true
+   },
+   {
+    "input": "4 3000000000\n1000000000 1\n1000000000 1\n1000000000 1\n1000000000 1\n",
+    "output": "3\n",
+    "hidden": true
+   },
+   {
+    "input": "5 10\n11 100\n12 100\n10 3\n5 2\n5 2\n",
+    "output": "4\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1101)\nn=100\nprint(n,10**9)\nfor _ in range(n):\n    print(random.randint(1,10**8),random.randint(1,100))",
+    "output": "2421\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1102)\nn=100\nprint(n,random.randint(10**9//2,10**9))\nfor _ in range(n):\n    print(random.randint(10**6,10**9),random.randint(90,100))",
+    "output": "1441\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "r12",
+  "title": "Subset Sums in a Range",
+  "category": "Dynamic Programming",
+  "difficulty": "Impossible",
+  "timeLimit": 8,
+  "description": "<p>Given <code>n</code> integers (possibly negative), count the subsets whose sum <code>s</code> satisfies <code>L ≤ s ≤ R</code>. The empty subset (sum <code>0</code>) counts too. Subsets are chosen by positions, so equal values at different positions give different subsets.</p><h4>Constraints</h4><ul><li><code>1 ≤ n ≤ 36</code></li><li><code>|a[i]| ≤ 10<sup>12</sup></code></li><li><code>−4·10<sup>13</sup> ≤ L ≤ R ≤ 4·10<sup>13</sup></code></li><li><code>2<sup>36</sup></code> subsets is too many, and the sums are too large for a DP table. Split the array in half.</li></ul><h4>Input</h4><ul><li>Line 1: integers <code>n L R</code>.</li><li>Line 2: <code>n</code> integers.</li></ul><h4>Output</h4><p>A single integer: the number of subsets.</p><h4>Example</h4><p>Input:</p><pre>3 2 4\n1 2 3</pre><p>Output:</p><pre>4</pre>",
+  "solution": "import sys\nfrom bisect import bisect_left, bisect_right\ndef main():\n    t = sys.stdin.read().split()\n    n, L, R = int(t[0]), int(t[1]), int(t[2])\n    a = [int(x) for x in t[3:3 + n]]\n    def sums(arr):\n        s = [0]\n        for x in arr:\n            s += [y + x for y in s]\n        return s\n    left = sums(a[:n // 2])\n    right = sums(a[n // 2:])\n    right.sort()\n    cnt = 0\n    for x in left:\n        cnt += bisect_right(right, R - x) - bisect_left(right, L - x)\n    print(cnt)\nmain()\n",
+  "tests": [
+   {
+    "input": "3 2 4\n1 2 3\n",
+    "output": "4\n",
+    "hidden": false
+   },
+   {
+    "input": "4 0 0\n1 -1 2 -2\n",
+    "output": "4\n",
+    "hidden": false
+   },
+   {
+    "input": "1 5 5\n3\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "1 0 0\n7\n",
+    "output": "1\n",
+    "hidden": true
+   },
+   {
+    "input": "3 -10 10\n100 200 300\n",
+    "output": "1\n",
+    "hidden": true
+   },
+   {
+    "input": "5 0 0\n0 0 0 0 0\n",
+    "output": "32\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1201)\nn=36\nprint(n,-10**12,10**12)\nprint(*[random.randint(-10**12,10**12) for _ in range(n)])",
+    "output": "23783700514\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1202)\nn=36\nprint(n,100,200)\nprint(*[random.randint(-100,100) for _ in range(n)])",
+    "output": "1937239957\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1203)\nn=35\nprint(n,5*10**12,9*10**12)\nprint(*[random.randint(1,10**12) for _ in range(n)])",
+    "output": "19240053349\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "r13",
+  "title": "Board Game with Trapdoors",
+  "category": "Dynamic Programming",
+  "difficulty": "Impossible",
+  "timeLimit": 5,
+  "description": "<p>A token starts on square <code>0</code> of a board with squares <code>0, 1, …, N</code>. Each turn you roll a fair die with faces <code>1 … m</code> and move forward that many squares, except that if the move would go <b>past</b> square <code>N</code>, the token does not move (the turn is still used). Some squares are <b>trapdoors</b>: landing on one immediately sends the token back to square <code>0</code> (in the same turn). The game ends when the token lands exactly on square <code>N</code>.</p><p>The expected number of turns is a rational number <code>p / q</code>. Print <code>p · q<sup>−1</sup> mod (10<sup>9</sup> + 7)</code>. It is guaranteed that the answer is finite and that <code>q</code> is not divisible by 10<sup>9</sup>+7.</p><h4>Constraints</h4><ul><li><code>1 ≤ N ≤ 2·10<sup>5</sup></code></li><li><code>1 ≤ m ≤ 2·10<sup>5</sup></code></li><li>Trapdoors are distinct squares in <code>1 … N−1</code>; there are never <code>m</code> or more consecutive trapdoors.</li><li>Hint: the trapdoors make every expectation depend on the unknown <code>E[0]</code> itself — write each <code>E[i]</code> as <code>A[i] + B[i]·E[0]</code>.</li></ul><h4>Input</h4><ul><li>Line 1: integers <code>N m T</code> (<code>T</code> = number of trapdoors).</li><li>Line 2: <code>T</code> integers, the trapdoor squares (the line is empty when <code>T = 0</code>).</li></ul><h4>Output</h4><p>A single integer: the expected number of turns modulo 10<sup>9</sup>+7.</p><h4>Example</h4><p>Input:</p><pre>2 2 0</pre><p>Output:</p><pre>2</pre>",
+  "solution": "import sys\ndef main():\n    MOD = 10 ** 9 + 7\n    t = sys.stdin.read().split()\n    N, m, T = int(t[0]), int(t[1]), int(t[2])\n    trap = bytearray(N + 1)\n    for x in t[3:3 + T]:\n        trap[int(x)] = 1\n    lim = min(m, N)\n    inv = [0, 1] + [0] * lim\n    for i in range(2, lim + 1):\n        inv[i] = (MOD - (MOD // i) * inv[MOD % i] % MOD) % MOD\n    A = [0] * (N + 2)\n    B = [0] * (N + 2)\n    SA = [0] * (N + 2)  # suffix sums: SA[i] = A[i] + ... + A[N]\n    SB = [0] * (N + 2)\n    for i in range(N - 1, -1, -1):\n        if trap[i] and i > 0:\n            A[i], B[i] = 0, 1\n        else:\n            cnt = min(m, N - i)\n            sa = (SA[i + 1] - SA[i + 1 + cnt]) % MOD\n            sb = (SB[i + 1] - SB[i + 1 + cnt]) % MOD\n            iv = inv[cnt]\n            A[i] = (m + sa) * iv % MOD\n            B[i] = sb * iv % MOD\n        SA[i] = (SA[i + 1] + A[i]) % MOD\n        SB[i] = (SB[i + 1] + B[i]) % MOD\n    print(A[0] * pow((1 - B[0]) % MOD, MOD - 2, MOD) % MOD)\nmain()\n",
+  "tests": [
+   {
+    "input": "2 2 0\n\n",
+    "output": "2\n",
+    "hidden": false
+   },
+   {
+    "input": "3 2 1\n1\n",
+    "output": "4\n",
+    "hidden": false
+   },
+   {
+    "input": "1 1 0\n\n",
+    "output": "1\n",
+    "hidden": true
+   },
+   {
+    "input": "1 6 0\n\n",
+    "output": "6\n",
+    "hidden": true
+   },
+   {
+    "input": "5 1 0\n\n",
+    "output": "5\n",
+    "hidden": true
+   },
+   {
+    "input": "6 3 2\n2 3\n",
+    "output": "15\n",
+    "hidden": true
+   },
+   {
+    "input": "10 6 4\n1 3 5 7\n",
+    "output": "317647071\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1301)\nN=200000\nm=6\ntr=[]\nrun=0\nfor i in range(1,N):\n    if random.random()<0.3 and run+1<m:\n        tr.append(i); run+=1\n    else:\n        run=0\nprint(N,m,len(tr))\nprint(*tr)",
+    "output": "713658973\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1302)\nN=200000\nm=1000\ntr=random.sample(range(1,N),50000)\ntr.sort()\nprint(N,m,len(tr))\nprint(*tr)",
+    "output": "490330199\n",
+    "hidden": true
+   },
+   {
+    "gen": "N=200000\nprint(N,200000,0)\nprint()",
+    "output": "200000\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "r14",
+  "title": "Frog on Rising Stones",
+  "category": "Dynamic Programming",
+  "difficulty": "Impossible",
+  "timeLimit": 5,
+  "description": "<p>There are <code>n</code> stones with strictly increasing heights <code>h[1] &lt; h[2] &lt; … &lt; h[n]</code>. A frog starts on stone 1 and wants to reach stone <code>n</code>. From stone <code>i</code> it may jump to <b>any</b> stone <code>j &gt; i</code>, paying <code>(h[j] − h[i])² + C</code>.</p><p>Find the minimum total cost to reach stone <code>n</code> (0 if <code>n = 1</code>).</p><h4>Constraints</h4><ul><li><code>1 ≤ n ≤ 2·10<sup>5</sup></code></li><li><code>1 ≤ h[i] ≤ 10<sup>6</sup></code>, strictly increasing</li><li><code>0 ≤ C ≤ 10<sup>12</sup></code></li><li>The obvious DP is <code>O(n²)</code>. Each candidate is a line in <code>h[j]</code> — use the convex hull trick.</li></ul><h4>Input</h4><ul><li>Line 1: integers <code>n</code> and <code>C</code>.</li><li>Line 2: <code>n</code> integers <code>h[1] … h[n]</code>.</li></ul><h4>Output</h4><p>A single integer: the minimum cost.</p><h4>Example</h4><p>Input:</p><pre>5 6\n1 2 3 4 5</pre><p>Output:</p><pre>20</pre>",
+  "solution": "import sys\ndef main():\n    t = sys.stdin.buffer.read().split()\n    n, C = int(t[0]), int(t[1])\n    h = [int(x) for x in t[2:2 + n]]\n    # dp[i] = h_i^2 + C + min_j (-2 h_j * h_i + dp[j] + h_j^2)\n    M = [0] * n  # slopes (decreasing)\n    K = [0] * n  # intercepts\n    head = 0\n    tail = 0\n    M[0] = -2 * h[0]\n    K[0] = h[0] * h[0]\n    tail = 1\n    dpi = 0\n    for i in range(1, n):\n        x = h[i]\n        while tail - head >= 2 and M[head + 1] * x + K[head + 1] <= M[head] * x + K[head]:\n            head += 1\n        dpi = M[head] * x + K[head] + x * x + C\n        m3 = -2 * x\n        k3 = dpi + x * x\n        while tail - head >= 2:\n            m1, k1 = M[tail - 2], K[tail - 2]\n            m2, k2 = M[tail - 1], K[tail - 1]\n            # line2 is useless if intersection(1,3) <= intersection(1,2)\n            if (k3 - k1) * (m1 - m2) <= (k2 - k1) * (m1 - m3):\n                tail -= 1\n            else:\n                break\n        M[tail] = m3\n        K[tail] = k3\n        tail += 1\n    print(dpi if n > 1 else 0)\nmain()\n",
+  "tests": [
+   {
+    "input": "5 6\n1 2 3 4 5\n",
+    "output": "20\n",
+    "hidden": false
+   },
+   {
+    "input": "3 1000\n1 10 20\n",
+    "output": "1361\n",
+    "hidden": false
+   },
+   {
+    "input": "1 5\n7\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "2 0\n1 1000000\n",
+    "output": "999998000001\n",
+    "hidden": true
+   },
+   {
+    "input": "6 0\n1 2 3 4 5 6\n",
+    "output": "5\n",
+    "hidden": true
+   },
+   {
+    "input": "4 1000000000000\n1 2 3 1000000\n",
+    "output": "1999998000001\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1401)\nn=200000\nh=sorted(random.sample(range(1,10**6+1),n))\nprint(n,random.randint(0,10**12))\nprint(*h)",
+    "output": "1047277214929\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1402)\nn=200000\nh=sorted(random.sample(range(1,10**6+1),n))\nprint(n,25)\nprint(*h)",
+    "output": "13107903\n",
+    "hidden": true
+   },
+   {
+    "gen": "n=200000\nprint(n,0)\nprint(*range(1,n+1))",
+    "output": "199999\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "r15",
+  "title": "Cut the Sequence",
+  "category": "Dynamic Programming",
+  "difficulty": "Impossible",
+  "timeLimit": 5,
+  "description": "<p>Split an array of <code>n</code> non-negative integers into consecutive non-empty segments so that the sum of every segment is <b>at most</b> <code>S</code>. The cost of a split is the sum, over all segments, of the <b>maximum</b> element of the segment. Find the minimum possible cost, or print <code>-1</code> if no valid split exists.</p><p>For <code>S = 17</code> and <code>2 2 2 8 1 8 2 1</code> the best split is <code>[2 2 2] [8 1 8] [2 1]</code> with cost <code>2 + 8 + 2 = 12</code> (the middle segment's sum is exactly 17, which is allowed).</p><h4>Constraints</h4><ul><li><code>1 ≤ n ≤ 10<sup>5</sup></code></li><li><code>0 ≤ a[i] ≤ 10<sup>6</sup></code></li><li><code>0 ≤ S ≤ 10<sup>12</sup></code></li><li><code>O(n²)</code> is too slow. Combine a monotonic deque of segment maxima with a heap (or another ordered structure).</li></ul><h4>Input</h4><ul><li>Line 1: integers <code>n</code> and <code>S</code>.</li><li>Line 2: <code>n</code> integers.</li></ul><h4>Output</h4><p>A single integer: the minimum cost, or <code>-1</code>.</p><h4>Example</h4><p>Input:</p><pre>8 17\n2 2 2 8 1 8 2 1</pre><p>Output:</p><pre>12</pre>",
+  "solution": "import sys, heapq\nfrom collections import deque\ndef main():\n    t = sys.stdin.buffer.read().split()\n    n, S = int(t[0]), int(t[1])\n    a = [0] + [int(x) for x in t[2:2 + n]]\n    if max(a[1:]) > S:\n        print(-1)\n        return\n    P = [0] * (n + 1)\n    for i in range(1, n + 1):\n        P[i] = P[i - 1] + a[i]\n    dp = [0] * (n + 1)\n    alive = bytearray(n + 1)\n    q = deque()\n    heap = []\n    lo = 0\n    push, pop = heapq.heappush, heapq.heappop\n    for i in range(1, n + 1):\n        ai = a[i]\n        while P[i] - P[lo] > S:\n            lo += 1\n        while q and a[q[-1]] <= ai:\n            alive[q.pop()] = 0\n        if q:\n            push(heap, (dp[q[-1]] + ai, q[-1], i))\n        q.append(i)\n        alive[i] = 1\n        while q[0] <= lo:\n            alive[q.popleft()] = 0\n        best = dp[lo] + a[q[0]]\n        while heap and not (alive[heap[0][1]] and alive[heap[0][2]]):\n            pop(heap)\n        if heap and heap[0][0] < best:\n            best = heap[0][0]\n        dp[i] = best\n    print(dp[n])\nmain()\n",
+  "tests": [
+   {
+    "input": "8 17\n2 2 2 8 1 8 2 1\n",
+    "output": "12\n",
+    "hidden": false
+   },
+   {
+    "input": "3 4\n5 1 1\n",
+    "output": "-1\n",
+    "hidden": false
+   },
+   {
+    "input": "1 0\n0\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "1 5\n5\n",
+    "output": "5\n",
+    "hidden": true
+   },
+   {
+    "input": "5 100\n3 9 1 9 3\n",
+    "output": "9\n",
+    "hidden": true
+   },
+   {
+    "input": "6 3\n1 1 1 1 1 1\n",
+    "output": "2\n",
+    "hidden": true
+   },
+   {
+    "input": "4 0\n0 0 0 0\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1501)\nn=100000\nprint(n,5*10**6)\nprint(*[random.randint(0,10**6) for _ in range(n)])",
+    "output": "9704693172\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1502)\nn=100000\nprint(n,10**12)\nprint(*sorted([random.randint(0,10**6) for _ in range(n)],reverse=True))",
+    "output": "1000000\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1503)\nn=100000\nprint(n,3*10**5)\nprint(*[random.randint(0,10**5) if i%50 else 10**5 for i in range(n)])",
+    "output": "1653859574\n",
+    "hidden": true
+   }
+  ]
+ }
+]

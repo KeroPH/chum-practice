@@ -668,7 +668,7 @@
   "id": "p17",
   "title": "Josephus Survivor",
   "category": "Puzzles",
-  "difficulty": "Impossible",
+  "difficulty": "Hard",
   "description": "<p><code>n</code> people stand in a circle, numbered 1 to <code>n</code> clockwise. Starting the count at person 1, every <code>k</code>-th person (counting the remaining people) is removed, and counting continues with the next person. Print the number of the last survivor.</p><p>Here <code>n</code> goes up to 10<sup>18</sup>, so neither simulation nor the <code>O(n)</code> recurrence <code>J(n) = (J(n-1) + k) mod n</code> is fast enough. Since <code>k</code> is small, remove <code>&lfloor;n/k&rfloor;</code> people per round and adjust the index, giving about <code>O(k log n)</code> steps.</p><ul><li>1 &le; t &le; 10, 1 &le; n &le; 10<sup>18</sup>, 1 &le; k &le; 100</li></ul><h4>Input</h4><p>Line 1: <code>t</code>. Next <code>t</code> lines: <code>n k</code>.</p><h4>Output</h4><p>The survivor's number per line.</p><h4>Example</h4><p>Input:</p><pre>2\n7 3\n5 2</pre><p>Output:</p><pre>4\n3</pre>",
   "solution": "def jos(n, k):\n    if k == 1:\n        return n - 1\n    stack = []\n    while n >= k:\n        stack.append(n)\n        n -= n // k\n    r = 0\n    for m in range(2, n + 1):\n        r = (r + k) % m\n    while stack:\n        m = stack.pop()\n        r -= m % k\n        if r < 0:\n            r += m\n        else:\n            r += r // (k - 1)\n    return r\nt = int(input())\nfor _ in range(t):\n    n, k = map(int, input().split())\n    print(jos(n, k) + 1)\n",
   "tests": [
@@ -713,7 +713,7 @@
   "id": "p18",
   "title": "Square Spiral Coordinates",
   "category": "Puzzles",
-  "difficulty": "Impossible",
+  "difficulty": "Hard",
   "description": "<p>The positive integers are written on an infinite grid in a square spiral: <code>1</code> is at <code>(0,0)</code>, then the path moves right 1, up 1, left 2, down 2, right 3, up 3, left 4, down 4, ... writing the next number in every cell. So <code>2</code> is at <code>(1,0)</code>, <code>3</code> at <code>(1,1)</code>, <code>4</code> at <code>(0,1)</code>, <code>5</code> at <code>(-1,1)</code>, <code>6</code> at <code>(-1,0)</code>, <code>7</code> at <code>(-1,-1)</code>, <code>8</code> at <code>(0,-1)</code>, <code>9</code> at <code>(1,-1)</code>, <code>10</code> at <code>(2,-1)</code>. (x grows to the right, y grows upward.)</p><p>Answer queries of two kinds:</p><ul><li><code>1 n</code>: print the coordinates <code>x y</code> of number <code>n</code>.</li><li><code>2 x y</code>: print the number written at <code>(x, y)</code>.</li></ul><p>Numbers reach 10<sup>18</sup>, so walking the spiral is impossible: find the ring <code>k</code> (ring <code>k</code> ends with <code>(2k+1)<sup>2</sup></code> at <code>(k,-k)</code>) with an exact integer square root and then the side. Beware of the four corners.</p><ul><li>1 &le; t &le; 1000, 1 &le; n &le; 10<sup>18</sup>, |x|, |y| &le; 10<sup>9</sup></li></ul><h4>Input</h4><p>Line 1: <code>t</code>. Next <code>t</code> lines: a query.</p><h4>Output</h4><p>One answer per query line: <code>x y</code> for type 1, a number for type 2.</p><h4>Example</h4><p>Input:</p><pre>3\n1 10\n2 -1 1\n1 1</pre><p>Output:</p><pre>2 -1\n5\n0 0</pre>",
   "solution": "from math import isqrt\ndef pos(n):\n    if n == 1:\n        return 0, 0\n    k = (isqrt(n - 1) + 1) // 2\n    t = n - (2 * k - 1) ** 2\n    if t <= 2 * k:\n        return k, t - k\n    if t <= 4 * k:\n        return k - (t - 2 * k), k\n    if t <= 6 * k:\n        return -k, k - (t - 4 * k)\n    return -k + (t - 6 * k), -k\ndef num(x, y):\n    k = max(abs(x), abs(y))\n    if k == 0:\n        return 1\n    base = (2 * k - 1) ** 2\n    if x == k and y > -k:\n        t = y + k\n    elif y == k:\n        t = 2 * k + (k - x)\n    elif x == -k:\n        t = 4 * k + (k - y)\n    else:\n        t = 6 * k + (x + k)\n    return base + t\nq = int(input())\nfor _ in range(q):\n    p = list(map(int, input().split()))\n    if p[0] == 1:\n        print(*pos(p[1]))\n    else:\n        print(num(p[1], p[2]))\n",
   "tests": [
@@ -753,7 +753,7 @@
   "id": "p19",
   "title": "Maximum XOR of Two Numbers",
   "category": "Bitwise",
-  "difficulty": "Impossible",
+  "difficulty": "Hard",
   "description": "<p>Given <code>n</code> non-negative integers, print the maximum value of <code>a<sub>i</sub> XOR a<sub>j</sub></code> over all pairs <code>i &lt; j</code>. Checking all pairs is too slow for large inputs in the judge; build the answer greedily bit by bit from the most significant bit using a binary trie (or a prefix set).</p><ul><li>2 &le; n &le; 3000, 0 &le; a<sub>i</sub> &lt; 2<sup>20</sup></li></ul><h4>Input</h4><p>Line 1: <code>n</code>. Line 2: <code>n</code> integers.</p><h4>Output</h4><p>The maximum pairwise XOR.</p><h4>Example</h4><p>Input:</p><pre>6\n3 10 5 25 2 8</pre><p>Output:</p><pre>28</pre>",
   "solution": "n = int(input())\na = list(map(int, input().split()))\nbest = 0\nfor b in range(20, -1, -1):\n    cand = best | (1 << b)\n    pre = {x >> b for x in a}\n    if any((cand >> b) ^ p in pre for p in pre):\n        best = cand\nprint(best)\n",
   "tests": [
@@ -803,7 +803,7 @@
   "id": "p20",
   "title": "Count Numbers with K Set Bits",
   "category": "Bitwise",
-  "difficulty": "Impossible",
+  "difficulty": "Hard",
   "description": "<p>For each query <code>N K</code>, count the integers <code>x</code> with <code>1 &le; x &le; N</code> whose binary representation contains <b>exactly</b> <code>K</code> ones. With <code>N</code> up to 10<sup>18</sup> you cannot iterate: walk the bits of <code>N</code> from the top and, at each <code>1</code> bit, count completions with binomial coefficients (do not forget <code>N</code> itself).</p><ul><li>1 &le; t &le; 1000, 1 &le; N &le; 10<sup>18</sup>, 1 &le; K &le; 64</li></ul><h4>Input</h4><p>Line 1: <code>t</code>. Next <code>t</code> lines: <code>N K</code>.</p><h4>Output</h4><p>The count per line.</p><h4>Example</h4><p>Input:</p><pre>2\n5 2\n8 1</pre><p>Output:</p><pre>2\n4</pre>",
   "solution": "from math import comb\nt = int(input())\nfor _ in range(t):\n    n, k = map(int, input().split())\n    res = 0\n    ones = 0\n    for b in range(n.bit_length() - 1, -1, -1):\n        if n >> b & 1:\n            need = k - ones\n            if 0 <= need <= b:\n                res += comb(b, need)\n            ones += 1\n    if bin(n).count(\"1\") == k:\n        res += 1\n    print(res)\n",
   "tests": [

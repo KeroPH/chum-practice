@@ -1,0 +1,832 @@
+[
+ {
+  "id": "w01",
+  "title": "K-th Smallest Pair Distance",
+  "category": "Sorting & Searching",
+  "difficulty": "Hard",
+  "timeLimit": 6,
+  "description": "<p>The <b>distance</b> of a pair of indices <code>i &lt; j</code> is <code>|a<sub>i</sub> - a<sub>j</sub>|</code>. Among all <code>n(n-1)/2</code> pairs, print the <code>k</code>-th smallest distance (pairs with equal distance are all counted separately).</p>\n<p>With <code>n = 5&middot;10<sup>4</sup></code> there are over 10<sup>9</sup> pairs, so listing them is hopeless. Binary search on the answer <code>D</code> and count pairs with distance &le; <code>D</code> in near-linear time.</p>\n<h4>Constraints</h4><ul><li>2 &le; n &le; 5&middot;10<sup>4</sup></li><li>0 &le; a<sub>i</sub> &le; 10<sup>6</sup></li><li>1 &le; k &le; n(n-1)/2</li></ul>\n<h4>Input</h4><p>Line 1: <code>n k</code>. Line 2: <code>n</code> integers.</p>\n<h4>Output</h4><p>The <code>k</code>-th smallest pair distance.</p><h4>Example</h4><p>Input:</p><pre>3 1\n1 3 1</pre><p>Output:</p><pre>0</pre>",
+  "solution": "import sys\nfrom bisect import bisect_right\nfrom itertools import repeat\ndef main():\n    d = sys.stdin.buffer.read().split()\n    n, k = int(d[0]), int(d[1])\n    a = sorted(map(int, d[2:2 + n]))\n    lo, hi = 0, a[-1] - a[0]\n    base = n * (n + 1) // 2\n    while lo < hi:\n        m = (lo + hi) // 2\n        c = sum(map(bisect_right, repeat(a, n), [x + m for x in a])) - base\n        if c >= k:\n            hi = m\n        else:\n            lo = m + 1\n    print(lo)\nmain()\n",
+  "tests": [
+   {
+    "input": "3 1\n1 3 1\n",
+    "output": "0\n",
+    "hidden": false
+   },
+   {
+    "input": "4 4\n1 6 1 9\n",
+    "output": "5\n",
+    "hidden": false
+   },
+   {
+    "input": "2 1\n1000000 0\n",
+    "output": "1000000\n",
+    "hidden": true
+   },
+   {
+    "input": "5 10\n7 7 7 7 7\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "6 15\n0 1 3 6 10 15\n",
+    "output": "15\n",
+    "hidden": true
+   },
+   {
+    "input": "6 7\n5 1 4 1 5 9\n",
+    "output": "4\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(101)\nn = 50000\na = [random.randint(0, 10**6) for _ in range(n)]\nprint(n, random.randint(1, n * (n - 1) // 2))\nprint(*a)\n",
+    "output": "223288\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(102)\nn = 50000\na = [random.randint(0, 40) for _ in range(n)]\nprint(n, n * (n - 1) // 2 - 3)\nprint(*a)\n",
+    "output": "40\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(103)\nn = 50000\na = random.sample(range(10**6 + 1), n)\nprint(n, 1)\nprint(*a)\n",
+    "output": "1\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "w02",
+  "title": "Fewest Refueling Stops",
+  "category": "Greedy",
+  "difficulty": "Hard",
+  "timeLimit": 5,
+  "description": "<p>A car drives east from position 0 to a target at position <code>target</code>. It burns one litre per kilometre and starts with <code>startFuel</code> litres; the tank has no capacity limit. Along the road there are <code>n</code> fuel stations; station <code>i</code> is at position <code>pos<sub>i</sub></code> and holds <code>fuel<sub>i</sub></code> litres. When the car stops at a station it takes <b>all</b> of that station's fuel. Reaching a station or the target with exactly 0 litres left is fine.</p>\n<p>Print the <b>minimum number of stops</b> needed to reach the target, or <code>-1</code> if it is impossible. An <code>O(n<sup>2</sup>)</code> DP is too slow for <code>n = 10<sup>5</sup></code>.</p>\n<h4>Constraints</h4><ul><li>1 &le; target, startFuel &le; 10<sup>9</sup></li><li>0 &le; n &le; 10<sup>5</sup></li><li>0 &lt; pos<sub>1</sub> &lt; pos<sub>2</sub> &lt; ... &lt; pos<sub>n</sub> &lt; target</li><li>1 &le; fuel<sub>i</sub> &le; 10<sup>9</sup></li></ul>\n<h4>Input</h4><p>Line 1: <code>target startFuel n</code>. Next <code>n</code> lines: <code>pos fuel</code>.</p>\n<h4>Output</h4><p>The minimum number of stops, or <code>-1</code>.</p><h4>Example</h4><p>Input:</p><pre>100 10 4\n10 60\n20 30\n30 30\n60 40</pre><p>Output:</p><pre>2</pre>",
+  "solution": "import sys, heapq\ndef main():\n    d = sys.stdin.buffer.read().split()\n    target, fuel, n = int(d[0]), int(d[1]), int(d[2])\n    st = [(int(d[3 + 2 * i]), int(d[4 + 2 * i])) for i in range(n)]\n    st.append((target, 0))\n    h = []\n    stops = 0\n    for pos, f in st:\n        while fuel < pos and h:\n            fuel -= heapq.heappop(h)\n            stops += 1\n        if fuel < pos:\n            print(-1)\n            return\n        heapq.heappush(h, -f)\n    print(stops)\nmain()\n",
+  "tests": [
+   {
+    "input": "100 10 4\n10 60\n20 30\n30 30\n60 40\n",
+    "output": "2\n",
+    "hidden": false
+   },
+   {
+    "input": "100 1 1\n10 100\n",
+    "output": "-1\n",
+    "hidden": false
+   },
+   {
+    "input": "1 1 0\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "50 50 2\n10 5\n20 5\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "100 10 3\n10 10\n20 10\n40 100\n",
+    "output": "-1\n",
+    "hidden": true
+   },
+   {
+    "input": "1000000000 1 3\n1 1\n2 999999998\n500000000 1\n",
+    "output": "2\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(201)\nn = 100000\nps = sorted(random.sample(range(1, 10**9), n))\nprint(10**9, 50000, n)\nprint(\"\\n\".join(f\"{p} {random.randint(1, 25000)}\" for p in ps))\n",
+    "output": "55340\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(202)\nn = 100000\nps = sorted(random.sample(range(1, 10**9), n))\nprint(10**9, 30000, n)\nprint(\"\\n\".join(f\"{p} {random.choice([1, 1, 1, 2, random.randint(1, 10**6)])}\" for p in ps))\n",
+    "output": "1028\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(203)\nn = 100000\nps = sorted(random.sample(range(1, 10**9), n))\nprint(10**9, 20000, n)\nprint(\"\\n\".join(f\"{p} {random.randint(1, 20000)}\" for p in ps))\n",
+    "output": "-1\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "w03",
+  "title": "Venture Capital Ladder",
+  "category": "Greedy",
+  "difficulty": "Hard",
+  "timeLimit": 5,
+  "description": "<p>A start-up begins with capital <code>W</code>. There are <code>n</code> projects; project <code>i</code> can only be started if the current capital is at least <code>c<sub>i</sub></code>, and after finishing it the capital grows by its profit <code>p<sub>i</sub></code> (the required capital is <b>not</b> spent). Projects are done one at a time, each at most once, and at most <code>k</code> projects can be completed.</p>\n<p>Print the <b>maximum possible final capital</b>. Trying projects in all orders or rescanning the whole list after every project (<code>O(nk)</code>) is too slow.</p>\n<h4>Constraints</h4><ul><li>1 &le; k &le; n &le; 10<sup>5</sup></li><li>0 &le; W, p<sub>i</sub>, c<sub>i</sub> &le; 10<sup>9</sup></li></ul>\n<h4>Input</h4><p>Line 1: <code>n k W</code>. Next <code>n</code> lines: <code>p c</code> (profit, then required capital).</p>\n<h4>Output</h4><p>The maximum final capital.</p><h4>Example</h4><p>Input:</p><pre>3 2 0\n1 0\n2 1\n3 1</pre><p>Output:</p><pre>4</pre>",
+  "solution": "import sys, heapq\ndef main():\n    d = sys.stdin.buffer.read().split()\n    n, k, W = int(d[0]), int(d[1]), int(d[2])\n    pr = sorted((int(d[4 + 2 * i]), int(d[3 + 2 * i])) for i in range(n))\n    h = []\n    i = 0\n    for _ in range(k):\n        while i < n and pr[i][0] <= W:\n            heapq.heappush(h, -pr[i][1])\n            i += 1\n        if not h:\n            break\n        W -= heapq.heappop(h)\n    print(W)\nmain()\n",
+  "tests": [
+   {
+    "input": "3 2 0\n1 0\n2 1\n3 1\n",
+    "output": "4\n",
+    "hidden": false
+   },
+   {
+    "input": "3 3 0\n1 0\n2 1\n3 2\n",
+    "output": "6\n",
+    "hidden": false
+   },
+   {
+    "input": "2 2 0\n5 1\n7 2\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "4 2 10\n0 0\n0 5\n100 11\n3 10\n",
+    "output": "113\n",
+    "hidden": true
+   },
+   {
+    "input": "1 1 1000000000\n1000000000 1000000000\n",
+    "output": "2000000000\n",
+    "hidden": true
+   },
+   {
+    "input": "5 3 1\n1 1\n1 1\n10 3\n100 13\n1000 12\n",
+    "output": "13\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(301)\nn = 100000\nprint(n, n, 100000)\nrows = [f\"{random.randint(0, 40000)} {random.randint(0, 10**9)}\" for _ in range(n - 10)] + [f\"{random.randint(1, 1000)} 0\" for _ in range(10)]\nrandom.shuffle(rows)\nprint(\"\\n\".join(rows))\n",
+    "output": "1993360132\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(302)\nn = 100000\nprint(n, 60000, 5)\nprint(\"\\n\".join(f\"{random.randint(0, 10**9)} {random.randint(0, 10**9)}\" for _ in range(n)))\n",
+    "output": "5\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(303)\nn = 100000\nprint(n, 99999, 100)\nprint(\"\\n\".join(f\"{random.randint(0, 3)} {random.randint(0, 150000)}\" for _ in range(n)))\n",
+    "output": "1260\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "w04",
+  "title": "Dream Team Performance",
+  "category": "Greedy",
+  "difficulty": "Hard",
+  "timeLimit": 5,
+  "description": "<p>There are <code>n</code> engineers; engineer <code>i</code> has speed <code>s<sub>i</sub></code> and efficiency <code>e<sub>i</sub></code>. Choose a team of <b>at least 1 and at most</b> <code>k</code> engineers. The team's performance is <code>(sum of their speeds) &times; (minimum of their efficiencies)</code>. Find the maximum performance and print it <b>modulo 10<sup>9</sup>+7</b> (maximise the true value first, then take the remainder).</p>\n<h4>Constraints</h4><ul><li>1 &le; k &le; n &le; 10<sup>5</sup></li><li>1 &le; s<sub>i</sub> &le; 10<sup>5</sup>, 1 &le; e<sub>i</sub> &le; 10<sup>8</sup></li></ul>\n<h4>Input</h4><p>Line 1: <code>n k</code>. Line 2: speeds. Line 3: efficiencies.</p>\n<h4>Output</h4><p>The maximum performance modulo 1000000007.</p><h4>Example</h4><p>Input:</p><pre>6 2\n2 10 3 1 5 8\n5 4 3 9 7 2</pre><p>Output:</p><pre>60</pre>",
+  "solution": "import sys, heapq\ndef main():\n    d = sys.stdin.buffer.read().split()\n    n, k = int(d[0]), int(d[1])\n    s = list(map(int, d[2:2 + n]))\n    e = list(map(int, d[2 + n:2 + 2 * n]))\n    eng = sorted(zip(e, s), reverse=True)\n    h = []\n    tot = 0\n    best = 0\n    for ef, sp in eng:\n        heapq.heappush(h, sp)\n        tot += sp\n        if len(h) > k:\n            tot -= heapq.heappop(h)\n        if tot * ef > best:\n            best = tot * ef\n    print(best % 1000000007)\nmain()\n",
+  "tests": [
+   {
+    "input": "6 2\n2 10 3 1 5 8\n5 4 3 9 7 2\n",
+    "output": "60\n",
+    "hidden": false
+   },
+   {
+    "input": "6 3\n2 10 3 1 5 8\n5 4 3 9 7 2\n",
+    "output": "68\n",
+    "hidden": false
+   },
+   {
+    "input": "1 1\n100000\n100000000\n",
+    "output": "999930007\n",
+    "hidden": true
+   },
+   {
+    "input": "4 4\n1 1 1 1\n1 1 1 1\n",
+    "output": "4\n",
+    "hidden": true
+   },
+   {
+    "input": "3 1\n5 1 1\n1 100 100\n",
+    "output": "100\n",
+    "hidden": true
+   },
+   {
+    "input": "5 5\n100000 100000 100000 100000 100000\n100000000 99999999 100000000 99999998 100000000\n",
+    "output": "998650007\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(401)\nn = 100000\nprint(n, 40000)\nprint(*[random.randint(1, 10**5) for _ in range(n)])\nprint(*[random.randint(1, 10**8) for _ in range(n)])\n",
+    "output": "362591273\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(402)\nn = 100000\nprint(n, n)\nprint(*[random.randint(1, 10**5) for _ in range(n)])\nprint(*[random.randint(10**8 - 1000, 10**8) for _ in range(n)])\n",
+    "output": "721400998\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "w05",
+  "title": "Fill the Highway Gaps",
+  "category": "Sorting & Searching",
+  "difficulty": "Hard",
+  "timeLimit": 5,
+  "description": "<p>There are <code>n</code> gas stations at integer positions <code>x<sub>1</sub> &lt; x<sub>2</sub> &lt; ... &lt; x<sub>n</sub></code> on a highway. You may build exactly <code>k</code> new stations at <b>any real positions</b>. Let <code>D</code> be the largest distance between two adjacent stations afterwards. Print the minimum possible <code>D</code> <b>exactly</b>, as an irreducible fraction <code>p/q</code> (print <code>q</code> even when it is 1).</p>\n<p>Hint: placing <code>c</code> stations evenly in a gap of length <code>g</code> gives pieces of length <code>g/(c+1)</code>. <code>k</code> is far too large to add stations one by one, and floating-point binary search alone cannot tell two very close fractions apart.</p>\n<h4>Constraints</h4><ul><li>2 &le; n &le; 2000</li><li>0 &le; x<sub>1</sub> &lt; ... &lt; x<sub>n</sub> &le; 10<sup>8</sup></li><li>1 &le; k &le; 10<sup>9</sup></li></ul>\n<h4>Input</h4><p>Line 1: <code>n k</code>. Line 2: the <code>n</code> positions in increasing order.</p>\n<h4>Output</h4><p>The minimum possible maximum gap as <code>p/q</code> with <code>gcd(p, q) = 1</code>.</p><h4>Example</h4><p>Input:</p><pre>10 9\n1 2 3 4 5 6 7 8 9 10</pre><p>Output:</p><pre>1/2</pre>",
+  "solution": "import sys\nfrom math import gcd\nfrom fractions import Fraction\ndef main():\n    d = sys.stdin.buffer.read().split()\n    n, k = int(d[0]), int(d[1])\n    x = list(map(int, d[2:2 + n]))\n    g = [b - a for a, b in zip(x, x[1:])]\n    # D* = (k+1)-th largest value in the union of {g/m : m >= 1}\n    need = k + 1\n    lo, hi = 0.0, float(max(g)) * 1.0000001\n    for _ in range(110):\n        m = (lo + hi) / 2\n        if sum(int(v / m) for v in g) >= need:\n            lo = m\n        else:\n            hi = m\n    cand = set()\n    for v in g:\n        b = int(v / lo) if lo > 0 else 1\n        for mm in range(b - 2, b + 3):\n            if mm >= 1:\n                cand.add(Fraction(v, mm))\n    cand = sorted(cand)\n    def cnt(fr):\n        p, q = fr.numerator, fr.denominator\n        return sum(v * q // p for v in g)\n    l, r = 0, len(cand) - 1\n    while l < r:  # largest candidate with cnt >= need\n        mid = (l + r + 1) // 2\n        if cnt(cand[mid]) >= need:\n            l = mid\n        else:\n            r = mid - 1\n    a = cand[l]\n    print(f\"{a.numerator}/{a.denominator}\")\nmain()\n",
+  "tests": [
+   {
+    "input": "10 9\n1 2 3 4 5 6 7 8 9 10\n",
+    "output": "1/2\n",
+    "hidden": false
+   },
+   {
+    "input": "3 3\n0 10 13\n",
+    "output": "3/1\n",
+    "hidden": false
+   },
+   {
+    "input": "2 1\n0 100000000\n",
+    "output": "50000000/1\n",
+    "hidden": true
+   },
+   {
+    "input": "4 2\n0 7 14 21\n",
+    "output": "7/1\n",
+    "hidden": true
+   },
+   {
+    "input": "3 1000000000\n0 99999999 100000000\n",
+    "output": "99999999/999999991\n",
+    "hidden": true
+   },
+   {
+    "input": "5 4\n0 3 9 12 30\n",
+    "output": "9/2\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(501)\nn = 2000\nxs = sorted(random.sample(range(10**8 + 1), n))\nprint(n, 10**9)\nprint(*xs)\n",
+    "output": "35298/353215\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(502)\nn = 2000\nxs = sorted(random.sample(range(10**8 + 1), n))\nprint(n, 987654)\nprint(*xs)\n",
+    "output": "11624/115\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(503)\nn = 2000\nxs = sorted(random.sample(range(10**5), n))\nprint(n, 3999)\nprint(*xs)\n",
+    "output": "121/6\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "w06",
+  "title": "Cram Before the Deadlines",
+  "category": "Greedy",
+  "difficulty": "Impossible",
+  "timeLimit": 5,
+  "description": "<p>There are <code>n</code> online courses. Course <code>i</code> takes <code>t<sub>i</sub></code> consecutive days and must be <b>finished no later than day</b> <code>d<sub>i</sub></code>. You start on day 1 and can take only one course at a time; a course taking <code>t</code> days started right after the previous one finishes ends <code>t</code> days later (the first course taken ends on day <code>t</code>). Courses cannot be interrupted, and you may skip any course.</p>\n<p>Print the <b>maximum number of courses</b> you can complete. Durations differ, so simply taking courses by deadline or by length is wrong; and the deadlines are too large for a DP over days.</p>\n<h4>Constraints</h4><ul><li>1 &le; n &le; 10<sup>5</sup></li><li>1 &le; t<sub>i</sub>, d<sub>i</sub> &le; 10<sup>9</sup></li></ul>\n<h4>Input</h4><p>Line 1: <code>n</code>. Next <code>n</code> lines: <code>t d</code>.</p>\n<h4>Output</h4><p>The maximum number of courses.</p><h4>Example</h4><p>Input:</p><pre>4\n100 200\n200 1300\n1000 1250\n2000 3200</pre><p>Output:</p><pre>3</pre>",
+  "solution": "import sys, heapq\ndef main():\n    d = sys.stdin.buffer.read().split()\n    n = int(d[0])\n    cs = sorted((int(d[2 + 2 * i]), int(d[1 + 2 * i])) for i in range(n))\n    h = []\n    time = 0\n    for last, t in cs:\n        heapq.heappush(h, -t)\n        time += t\n        if time > last:\n            time += heapq.heappop(h)\n    print(len(h))\nmain()\n",
+  "tests": [
+   {
+    "input": "4\n100 200\n200 1300\n1000 1250\n2000 3200\n",
+    "output": "3\n",
+    "hidden": false
+   },
+   {
+    "input": "3\n5 5\n4 6\n2 6\n",
+    "output": "2\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n2 1\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "3\n1 1000000000\n1000000000 1000000000\n1 1\n",
+    "output": "2\n",
+    "hidden": true
+   },
+   {
+    "input": "5\n3 3\n3 3\n3 6\n2 6\n1 6\n",
+    "output": "3\n",
+    "hidden": true
+   },
+   {
+    "input": "6\n7 17\n3 12\n10 20\n9 10\n5 20\n10 19\n",
+    "output": "3\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(601)\nn = 100000\nprint(n)\nprint(\"\\n\".join(f\"{random.randint(1, 10**5)} {random.randint(1, 10**9)}\" for _ in range(n)))\n",
+    "output": "44640\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(602)\nn = 100000\nprint(n)\nprint(\"\\n\".join(f\"{random.randint(1, 10**9)} {random.randint(1, 10**9)}\" for _ in range(n)))\n",
+    "output": "466\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(603)\nn = 100000\nprint(n)\nprint(\"\\n\".join(f\"{random.randint(1, 100)} {random.randint(1, 3 * 10**6)}\" for _ in range(n)))\n",
+    "output": "76862\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "w07",
+  "title": "Tightest Range Touching Every List",
+  "category": "Sorting & Searching",
+  "difficulty": "Impossible",
+  "timeLimit": 5,
+  "description": "<p>You are given <code>k</code> lists of integers, each sorted in non-decreasing order. Find the smallest range <code>[a, b]</code> (integers, <code>a &le; b</code>) that contains <b>at least one number from every list</b>. Range <code>[a, b]</code> is smaller than <code>[c, d]</code> if <code>b - a &lt; d - c</code>, or if <code>b - a == d - c</code> and <code>a &lt; c</code>. Lists may contain duplicates, and the same value may appear in several lists.</p>\n<h4>Constraints</h4><ul><li>1 &le; k &le; 10<sup>4</sup>; every list has at least 1 element</li><li>Total number of elements &le; 10<sup>5</sup></li><li>-10<sup>9</sup> &le; values &le; 10<sup>9</sup></li></ul>\n<h4>Input</h4><p>Line 1: <code>k</code>. Next <code>k</code> lines: <code>len v<sub>1</sub> v<sub>2</sub> ... v<sub>len</sub></code>.</p>\n<h4>Output</h4><p>Two integers <code>a b</code>.</p><h4>Example</h4><p>Input:</p><pre>3\n5 4 10 15 24 26\n4 0 9 12 20\n4 5 18 22 30</pre><p>Output:</p><pre>20 24</pre>",
+  "solution": "import sys\ndef main():\n    d = sys.stdin.buffer.read().split()\n    k = int(d[0])\n    items = []\n    p = 1\n    for i in range(k):\n        ln = int(d[p]); p += 1\n        items.extend((int(v), i) for v in d[p:p + ln])\n        p += ln\n    items.sort()\n    cnt = [0] * k\n    have = 0\n    l = 0\n    ba, bb = None, None\n    for v, i in items:\n        if cnt[i] == 0:\n            have += 1\n        cnt[i] += 1\n        if have == k:\n            while cnt[items[l][1]] > 1:\n                cnt[items[l][1]] -= 1\n                l += 1\n            a = items[l][0]\n            if ba is None or v - a < bb - ba or (v - a == bb - ba and a < ba):\n                ba, bb = a, v\n    print(ba, bb)\nmain()\n",
+  "tests": [
+   {
+    "input": "3\n5 4 10 15 24 26\n4 0 9 12 20\n4 5 18 22 30\n",
+    "output": "20 24\n",
+    "hidden": false
+   },
+   {
+    "input": "3\n3 1 2 3\n3 1 2 3\n3 1 2 3\n",
+    "output": "1 1\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n3 -5 7 7\n",
+    "output": "-5 -5\n",
+    "hidden": true
+   },
+   {
+    "input": "2\n2 1 10\n2 5 14\n",
+    "output": "1 5\n",
+    "hidden": true
+   },
+   {
+    "input": "3\n1 -1000000000\n1 1000000000\n2 0 0\n",
+    "output": "-1000000000 1000000000\n",
+    "hidden": true
+   },
+   {
+    "input": "4\n2 1 9\n2 2 20\n2 3 21\n2 10 22\n",
+    "output": "2 10\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(701)\nk = 1000\nprint(k)\nfor _ in range(k):\n    ln = 100\n    print(ln, *sorted(random.randint(-10**9, 10**9) for _ in range(ln)))\n",
+    "output": "79159642 179059119\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(702)\nk = 10000\nprint(k)\nfor _ in range(k):\n    ln = random.randint(1, 18)\n    print(ln, *sorted(random.randint(0, 10**6) for _ in range(ln)))\n",
+    "output": "539 999359\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(703)\nk = 50\nprint(k)\nfor _ in range(k):\n    ln = 2000\n    print(ln, *sorted(random.randint(-10**5, 10**5) for _ in range(ln)))\n",
+    "output": "18002 18182\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "w08",
+  "title": "City Skyline Checksum",
+  "category": "Sorting & Searching",
+  "difficulty": "Impossible",
+  "timeLimit": 7,
+  "description": "<p>Each building is a rectangle on flat ground: it covers <code>L &le; x &lt; R</code> and has height <code>H</code>. The <b>skyline</b> is the outline of the union of all buildings, described by its <b>key points</b> <code>(x, h)</code>: sorted by <code>x</code>, the skyline height becomes <code>h</code> at <code>x</code> and stays there until the next key point. A key point is produced exactly where the height changes, so no two consecutive key points have the same height, and the last key point always has <code>h = 0</code>. Buildings may touch or overlap.</p>\n<p>The skyline can have up to 2&middot;10<sup>5</sup> points, so instead of printing it, print three numbers: the number of key points <code>K</code>, the total <b>area</b> under the skyline, and the checksum <code>C = (&sum;<sub>i=1..K</sub> (i&middot;x<sub>i</sub> + h<sub>i</sub>)) mod 1000000007</code>, where <code>(x<sub>i</sub>, h<sub>i</sub>)</code> is the <code>i</code>-th key point (1-based).</p>\n<h4>Constraints</h4><ul><li>1 &le; n &le; 10<sup>5</sup></li><li>0 &le; L &lt; R &le; 10<sup>9</sup>, 1 &le; H &le; 10<sup>9</sup></li></ul>\n<h4>Input</h4><p>Line 1: <code>n</code>. Next <code>n</code> lines: <code>L R H</code>.</p>\n<h4>Output</h4><p>Three lines: <code>K</code>, the area (exact integer), and <code>C</code>.</p><h4>Example</h4><p>Input:</p><pre>5\n2 9 10\n3 7 15\n5 12 12\n15 20 10\n19 24 8</pre><p>Output:</p><pre>7\n212\n495</pre><p>In the example the key points are (2,10) (3,15) (7,12) (12,0) (15,10) (20,8) (24,0).</p>",
+  "solution": "import sys, heapq\ndef main():\n    d = sys.stdin.buffer.read().split()\n    n = int(d[0])\n    ev = []\n    for i in range(n):\n        l, r, h = int(d[1 + 3 * i]), int(d[2 + 3 * i]), int(d[3 + 3 * i])\n        ev.append((l, -h, r))\n        ev.append((r, 0, 0))\n    ev.sort()\n    heap = [(0, float(\"inf\"))]\n    pts = []\n    for x, nh, r in ev:\n        while heap[0][1] <= x:\n            heapq.heappop(heap)\n        if nh:\n            heapq.heappush(heap, (nh, r))\n        h = -heap[0][0]\n        if not pts or pts[-1][1] != h:\n            if pts and pts[-1][0] == x:\n                pts[-1] = (x, h)\n                if len(pts) > 1 and pts[-2][1] == h:\n                    pts.pop()\n            else:\n                pts.append((x, h))\n    area = 0\n    for (x1, h1), (x2, _) in zip(pts, pts[1:]):\n        area += (x2 - x1) * h1\n    c = 0\n    for i, (x, h) in enumerate(pts, 1):\n        c += i * x + h\n    print(len(pts))\n    print(area)\n    print(c % 1000000007)\nmain()\n",
+  "tests": [
+   {
+    "input": "5\n2 9 10\n3 7 15\n5 12 12\n15 20 10\n19 24 8\n",
+    "output": "7\n212\n495\n",
+    "hidden": false
+   },
+   {
+    "input": "2\n0 2 3\n2 5 3\n",
+    "output": "2\n15\n13\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n0 1000000000 1000000000\n",
+    "output": "2\n1000000000000000000\n999999986\n",
+    "hidden": true
+   },
+   {
+    "input": "3\n1 5 4\n1 5 4\n1 5 4\n",
+    "output": "2\n16\n15\n",
+    "hidden": true
+   },
+   {
+    "input": "3\n1 3 2\n3 6 5\n6 9 2\n",
+    "output": "4\n25\n70\n",
+    "hidden": true
+   },
+   {
+    "input": "4\n0 10 1\n2 4 3\n2 4 7\n3 8 7\n",
+    "output": "4\n46\n77\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(801)\nn = 100000\nprint(n)\nfor _ in range(n):\n    l = random.randint(0, 10**9 - 1)\n    print(l, random.randint(l + 1, min(10**9, l + 30000)), random.randint(1, 10**9))\n",
+    "output": "103528\n482016476695596013\n881491884\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(802)\nn = 100000\nprint(n)\nfor _ in range(n):\n    l = random.randint(0, 10**6 - 1)\n    print(l, random.randint(l + 1, min(10**6, l + 50)), random.randint(1, 20))\n",
+    "output": "65555\n13215669\n573408530\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(803)\nn = 100000\nprint(n)\nfor i in range(n):\n    print(i * 10, 10**9 - i * 10, i + 1)\n",
+    "output": "200000\n99900001000000\n689483653\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "w09",
+  "title": "Balance the Workload",
+  "category": "Sorting & Searching",
+  "difficulty": "Impossible",
+  "timeLimit": 8,
+  "description": "<p>There are <code>n</code> jobs; job <code>i</code> takes <code>a<sub>i</sub></code> hours. You have <code>k</code> workers, and each job must be given to exactly one worker (a worker may get zero jobs). A worker's working time is the sum of their jobs. Print the <b>minimum possible maximum working time</b>.</p>\n<p>Trying all <code>k<sup>n</sup></code> assignments is too slow. Combine a binary search over the answer with a fast subset (bitmask) DP check, or use well-pruned backtracking.</p>\n<h4>Constraints</h4><ul><li>1 &le; k &le; n &le; 12</li><li>1 &le; a<sub>i</sub> &le; 10<sup>7</sup></li></ul>\n<h4>Input</h4><p>Line 1: <code>n k</code>. Line 2: <code>n</code> integers.</p>\n<h4>Output</h4><p>The minimum possible maximum working time.</p><h4>Example</h4><p>Input:</p><pre>3 3\n3 2 3</pre><p>Output:</p><pre>3</pre>",
+  "solution": "import sys\ndef main():\n    d = sys.stdin.read().split()\n    n, k = int(d[0]), int(d[1])\n    a = list(map(int, d[2:2 + n]))\n    full = (1 << n) - 1\n    ss = [0] * (1 << n)\n    for m in range(1, 1 << n):\n        low = m & -m\n        ss[m] = ss[m ^ low] + a[low.bit_length() - 1]\n    mx = max(a)\n    cands = sorted(set(v for v in ss if v >= mx))\n    BIG = 1 << 40\n    bits = [(1 << i, a[i]) for i in range(n)]\n    def ok(T):\n        dp = [0] * (1 << n)\n        dp[0] = BIG  # one open worker, load 0\n        for m in range(1, 1 << n):\n            best = None\n            for b, w in bits:\n                if m & b:\n                    p = dp[m ^ b]\n                    if (p & (BIG - 1)) + w <= T:\n                        v = p + w\n                    else:\n                        v = ((p >> 40) + 1 << 40) + w\n                    if best is None or v < best:\n                        best = v\n            dp[m] = best\n        return dp[full] >> 40 <= k\n    lo, hi = 0, len(cands) - 1\n    while lo < hi:\n        mid = (lo + hi) // 2\n        if ok(cands[mid]):\n            hi = mid\n        else:\n            lo = mid + 1\n    print(cands[lo])\nmain()\n",
+  "tests": [
+   {
+    "input": "3 3\n3 2 3\n",
+    "output": "3\n",
+    "hidden": false
+   },
+   {
+    "input": "5 2\n1 2 4 7 8\n",
+    "output": "11\n",
+    "hidden": false
+   },
+   {
+    "input": "1 1\n10000000\n",
+    "output": "10000000\n",
+    "hidden": true
+   },
+   {
+    "input": "6 3\n5 5 4 4 3 3\n",
+    "output": "8\n",
+    "hidden": true
+   },
+   {
+    "input": "7 7\n9 1 1 1 1 1 1\n",
+    "output": "9\n",
+    "hidden": true
+   },
+   {
+    "input": "8 3\n10 10 10 7 7 7 4 4\n",
+    "output": "21\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(901)\nprint(12, 5)\nprint(*[random.randint(1, 10**7) for _ in range(12)])\n",
+    "output": "14671088\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(902)\nprint(12, 4)\nprint(*[random.randint(9 * 10**6, 10**7) for _ in range(12)])\n",
+    "output": "28593856\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(903)\nprint(12, 3)\nprint(*[random.choice([1, 2, 3, 5, 8, 13, 21, 34, 55, 89]) * 10**5 + random.randint(0, 9) for _ in range(12)])\n",
+    "output": "3500006\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "w10",
+  "title": "Sliding Tile Marathon",
+  "category": "Sorting & Searching",
+  "difficulty": "Impossible",
+  "timeLimit": 8,
+  "description": "<p>The 8-puzzle is a 3&times;3 board with tiles 1-8 and one blank (written as 0). A move slides a tile that is horizontally or vertically adjacent to the blank into the blank. The goal board is</p><pre>1 2 3\n4 5 6\n7 8 0</pre>\n<p>Answer <code>t</code> independent queries: for each starting board, print the <b>minimum number of moves</b> to reach the goal, or <code>-1</code> if it is unreachable. Running a separate search for every query is far too slow when <code>t = 1500</code>; note that only 181440 boards are reachable from the goal.</p>\n<h4>Constraints</h4><ul><li>1 &le; t &le; 1500</li><li>Each board is a permutation of 0..8</li></ul>\n<h4>Input</h4><p>Line 1: <code>t</code>. Next <code>t</code> lines: 9 digits separated by spaces, the board in row-major order.</p>\n<h4>Output</h4><p>One line per query: the minimum number of moves, or <code>-1</code>.</p><h4>Example</h4><p>Input:</p><pre>3\n1 2 3 4 5 6 0 7 8\n1 2 3 4 5 6 7 8 0\n2 1 3 4 5 6 7 8 0</pre><p>Output:</p><pre>2\n0\n-1</pre>",
+  "solution": "import sys\nfrom collections import deque\ndef main():\n    d = sys.stdin.read().split()\n    t = int(d[0])\n    qs = [\"\".join(d[1 + 9 * i:10 + 9 * i]) for i in range(t)]\n    adj = [[1, 3], [0, 2, 4], [1, 5], [0, 4, 6], [1, 3, 5, 7], [2, 4, 8], [3, 7], [4, 6, 8], [5, 7]]\n    goal = \"123456780\"\n    dist = {goal: 0}\n    q = deque([(goal, 8)])\n    pop, app = q.popleft, q.append\n    while q:\n        s, z = pop()\n        nd = dist[s] + 1\n        for p in adj[z]:\n            if z < p:\n                u = s[:z] + s[p] + s[z + 1:p] + s[z] + s[p + 1:]\n            else:\n                u = s[:p] + s[z] + s[p + 1:z] + s[p] + s[z + 1:]\n            if u not in dist:\n                dist[u] = nd\n                app((u, p))\n    print(\"\\n\".join(str(dist.get(s, -1)) for s in qs))\nmain()\n",
+  "tests": [
+   {
+    "input": "3\n1 2 3 4 5 6 0 7 8\n1 2 3 4 5 6 7 8 0\n2 1 3 4 5 6 7 8 0\n",
+    "output": "2\n0\n-1\n",
+    "hidden": false
+   },
+   {
+    "input": "2\n8 6 7 2 5 4 3 0 1\n6 4 7 8 5 0 3 2 1\n",
+    "output": "31\n31\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n0 1 2 3 4 5 6 7 8\n",
+    "output": "22\n",
+    "hidden": true
+   },
+   {
+    "input": "2\n1 2 3 4 0 6 7 5 8\n1 2 3 4 5 6 8 7 0\n",
+    "output": "2\n-1\n",
+    "hidden": true
+   },
+   {
+    "input": "1\n4 1 3 0 2 6 7 5 8\n",
+    "output": "5\n",
+    "hidden": true
+   },
+   {
+    "input": "1\n8 7 6 5 4 3 2 1 0\n",
+    "output": "30\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1001)\nt = 1500\nprint(t)\nfor _ in range(t):\n    s = list(range(9))\n    random.shuffle(s)\n    print(*s)\n",
+    "output": "22\n-1\n24\n26\n25\n22\n17\n-1\n-1\n26\n-1\n21\n-1\n22\n-1\n25\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n23\n16\n-1\n18\n-1\n21\n-1\n-1\n25\n-1\n23\n-1\n-1\n-1\n24\n26\n-1\n-1\n-1\n-1\n27\n20\n27\n23\n24\n26\n-1\n22\n-1\n-1\n26\n14\n-1\n-1\n-1\n18\n21\n19\n-1\n-1\n18\n23\n25\n20\n26\n15\n24\n22\n-1\n23\n-1\n22\n29\n-1\n23\n27\n-1\n-1\n-1\n18\n-1\n-1\n-1\n-1\n17\n20\n-1\n25\n-1\n22\n-1\n22\n18\n25\n23\n23\n-1\n25\n23\n-1\n-1\n22\n-1\n24\n27\n18\n22\n19\n30\n-1\n24\n17\n-1\n28\n-1\n-1\n23\n-1\n25\n17\n-1\n-1\n19\n-1\n-1\n-1\n-1\n-1\n-1\n20\n-1\n25\n-1\n18\n-1\n-1\n22\n15\n20\n19\n-1\n26\n-1\n24\n-1\n-1\n23\n-1\n24\n-1\n-1\n21\n-1\n-1\n-1\n-1\n-1\n-1\n24\n-1\n24\n24\n24\n-1\n-1\n-1\n-1\n-1\n23\n25\n23\n24\n24\n-1\n-1\n22\n15\n23\n22\n-1\n26\n29\n26\n21\n-1\n23\n-1\n-1\n-1\n-1\n-1\n22\n22\n-1\n22\n21\n18\n-1\n-1\n12\n18\n-1\n-1\n24\n23\n25\n27\n20\n25\n-1\n24\n-1\n23\n24\n25\n-1\n-1\n24\n25\n-1\n-1\n27\n-1\n-1\n-1\n-1\n-1\n21\n-1\n20\n-1\n-1\n-1\n-1\n20\n22\n25\n-1\n-1\n-1\n-1\n24\n26\n-1\n-1\n14\n23\n-1\n-1\n26\n-1\n18\n19\n-1\n-1\n-1\n24\n-1\n-1\n-1\n23\n21\n-1\n24\n27\n-1\n-1\n20\n20\n-1\n-1\n-1\n-1\n24\n24\n-1\n20\n-1\n-1\n-1\n-1\n18\n19\n20\n20\n-1\n24\n24\n-1\n22\n-1\n22\n17\n22\n18\n-1\n-1\n27\n22\n24\n-1\n-1\n13\n23\n25\n-1\n-1\n-1\n-1\n25\n-1\n21\n22\n26\n-1\n-1\n15\n25\n22\n22\n25\n22\n-1\n-1\n-1\n-1\n22\n-1\n-1\n15\n-1\n24\n-1\n-1\n-1\n26\n18\n15\n22\n-1\n-1\n-1\n-1\n22\n-1\n-1\n-1\n-1\n23\n22\n-1\n-1\n-1\n24\n-1\n22\n14\n-1\n24\n24\n22\n24\n24\n-1\n-1\n24\n-1\n-1\n23\n23\n24\n26\n-1\n-1\n27\n-1\n-1\n-1\n-1\n-1\n-1\n20\n24\n-1\n20\n22\n26\n24\n-1\n22\n-1\n-1\n22\n23\n-1\n17\n24\n-1\n-1\n21\n-1\n25\n22\n22\n-1\n21\n-1\n25\n-1\n-1\n-1\n24\n-1\n23\n23\n22\n15\n-1\n-1\n22\n22\n27\n23\n-1\n23\n-1\n-1\n12\n22\n-1\n-1\n22\n-1\n22\n17\n19\n24\n18\n25\n-1\n23\n-1\n16\n-1\n22\n-1\n24\n-1\n-1\n-1\n-1\n-1\n21\n25\n22\n23\n24\n16\n-1\n26\n-1\n-1\n-1\n26\n-1\n20\n-1\n-1\n20\n18\n-1\n-1\n-1\n18\n-1\n-1\n-1\n-1\n21\n22\n-1\n17\n18\n17\n-1\n-1\n-1\n20\n-1\n-1\n-1\n-1\n24\n26\n-1\n27\n-1\n21\n22\n-1\n22\n18\n24\n21\n20\n-1\n-1\n-1\n-1\n-1\n22\n20\n24\n21\n21\n-1\n20\n20\n21\n-1\n16\n23\n22\n-1\n20\n16\n-1\n19\n-1\n20\n-1\n-1\n30\n26\n-1\n-1\n-1\n-1\n24\n24\n-1\n-1\n-1\n-1\n-1\n-1\n23\n-1\n22\n-1\n23\n20\n24\n-1\n22\n-1\n-1\n25\n-1\n-1\n-1\n-1\n-1\n26\n-1\n19\n27\n-1\n15\n-1\n19\n17\n18\n-1\n24\n-1\n-1\n-1\n25\n-1\n26\n22\n-1\n18\n20\n-1\n25\n-1\n-1\n-1\n-1\n23\n27\n27\n-1\n-1\n-1\n27\n23\n-1\n21\n-1\n-1\n-1\n19\n-1\n-1\n-1\n24\n-1\n13\n-1\n26\n-1\n20\n25\n-1\n16\n24\n24\n-1\n-1\n-1\n23\n27\n19\n-1\n23\n21\n-1\n18\n22\n-1\n22\n-1\n-1\n-1\n-1\n21\n-1\n18\n-1\n21\n-1\n22\n24\n22\n-1\n-1\n-1\n24\n28\n16\n23\n21\n23\n-1\n28\n15\n-1\n-1\n23\n-1\n25\n-1\n25\n-1\n-1\n-1\n28\n21\n21\n-1\n-1\n24\n-1\n24\n26\n-1\n22\n-1\n-1\n23\n25\n18\n22\n-1\n-1\n15\n-1\n-1\n23\n28\n23\n-1\n16\n-1\n23\n-1\n-1\n27\n24\n24\n16\n24\n-1\n26\n-1\n18\n-1\n-1\n-1\n-1\n27\n-1\n-1\n24\n16\n-1\n-1\n-1\n20\n-1\n-1\n23\n-1\n-1\n-1\n25\n-1\n-1\n27\n-1\n21\n26\n-1\n22\n24\n-1\n26\n-1\n25\n-1\n22\n-1\n-1\n-1\n-1\n-1\n23\n6\n-1\n-1\n-1\n23\n19\n-1\n22\n-1\n26\n-1\n24\n18\n20\n22\n24\n-1\n26\n23\n22\n26\n22\n-1\n-1\n-1\n-1\n-1\n-1\n-1\n19\n17\n24\n-1\n23\n17\n24\n-1\n-1\n19\n24\n-1\n19\n20\n22\n-1\n-1\n24\n25\n-1\n-1\n-1\n-1\n25\n-1\n-1\n-1\n-1\n21\n21\n24\n28\n-1\n-1\n-1\n20\n23\n20\n22\n14\n-1\n-1\n-1\n-1\n23\n24\n-1\n23\n-1\n22\n-1\n-1\n18\n21\n19\n-1\n-1\n18\n19\n26\n-1\n-1\n-1\n14\n-1\n-1\n14\n-1\n-1\n24\n-1\n-1\n25\n23\n23\n-1\n-1\n-1\n23\n-1\n-1\n-1\n-1\n-1\n19\n-1\n-1\n-1\n-1\n-1\n24\n23\n-1\n-1\n-1\n-1\n-1\n-1\n21\n-1\n-1\n21\n-1\n28\n22\n21\n-1\n-1\n21\n-1\n-1\n-1\n17\n-1\n27\n-1\n19\n-1\n18\n-1\n24\n25\n26\n-1\n16\n19\n-1\n18\n-1\n22\n21\n-1\n-1\n16\n-1\n21\n22\n28\n19\n-1\n-1\n-1\n-1\n21\n-1\n21\n-1\n-1\n24\n-1\n-1\n25\n21\n-1\n20\n-1\n-1\n-1\n22\n-1\n-1\n21\n-1\n26\n14\n-1\n21\n28\n25\n-1\n26\n-1\n26\n28\n19\n19\n-1\n22\n-1\n-1\n-1\n22\n-1\n-1\n-1\n18\n-1\n25\n-1\n-1\n23\n-1\n24\n-1\n-1\n-1\n15\n24\n-1\n20\n-1\n-1\n-1\n-1\n-1\n-1\n20\n-1\n-1\n16\n19\n-1\n-1\n22\n21\n19\n-1\n-1\n-1\n26\n19\n-1\n13\n26\n-1\n22\n-1\n-1\n-1\n22\n26\n20\n21\n-1\n25\n22\n21\n20\n-1\n20\n-1\n-1\n-1\n-1\n-1\n21\n28\n-1\n28\n-1\n23\n-1\n-1\n-1\n-1\n24\n-1\n-1\n21\n-1\n-1\n26\n-1\n22\n20\n-1\n-1\n-1\n-1\n22\n-1\n-1\n18\n18\n22\n25\n-1\n-1\n22\n19\n28\n-1\n-1\n20\n24\n-1\n-1\n26\n-1\n-1\n-1\n22\n21\n16\n-1\n24\n23\n-1\n-1\n25\n-1\n-1\n-1\n21\n-1\n24\n20\n-1\n20\n-1\n-1\n25\n-1\n-1\n-1\n17\n18\n-1\n21\n-1\n-1\n-1\n-1\n-1\n-1\n18\n-1\n23\n18\n-1\n-1\n23\n23\n25\n21\n-1\n26\n25\n26\n17\n-1\n-1\n19\n-1\n26\n20\n21\n22\n22\n23\n-1\n24\n-1\n-1\n-1\n-1\n-1\n24\n-1\n-1\n-1\n-1\n23\n25\n21\n24\n27\n-1\n17\n20\n24\n26\n-1\n19\n-1\n15\n-1\n-1\n-1\n-1\n-1\n-1\n15\n18\n-1\n26\n21\n19\n-1\n-1\n23\n26\n25\n-1\n20\n10\n-1\n-1\n24\n-1\n22\n-1\n20\n22\n16\n23\n-1\n27\n25\n-1\n18\n-1\n27\n-1\n22\n-1\n24\n23\n-1\n-1\n25\n-1\n19\n22\n-1\n25\n21\n-1\n23\n-1\n-1\n-1\n-1\n26\n-1\n-1\n22\n23\n21\n21\n-1\n-1\n21\n24\n24\n-1\n-1\n-1\n-1\n-1\n-1\n24\n-1\n26\n-1\n-1\n20\n25\n30\n-1\n26\n-1\n23\n-1\n19\n-1\n-1\n-1\n22\n25\n-1\n23\n26\n-1\n-1\n-1\n22\n21\n-1\n25\n17\n-1\n-1\n25\n-1\n-1\n-1\n21\n-1\n-1\n23\n-1\n-1\n17\n24\n25\n-1\n25\n-1\n-1\n21\n-1\n-1\n-1\n20\n22\n20\n19\n-1\n-1\n26\n-1\n-1\n19\n-1\n-1\n-1\n22\n20\n26\n-1\n16\n19\n22\n23\n-1\n23\n22\n18\n-1\n19\n22\n-1\n-1\n27\n23\n-1\n-1\n-1\n-1\n-1\n24\n18\n24\n23\n28\n-1\n25\n-1\n-1\n21\n25\n-1\n25\n21\n-1\n19\n-1\n22\n22\n-1\n-1\n-1\n24\n18\n-1\n19\n-1\n-1\n-1\n26\n-1\n-1\n-1\n26\n-1\n22\n-1\n-1\n22\n23\n-1\n19\n-1\n-1\n18\n-1\n-1\n-1\n20\n26\n24\n-1\n-1\n24\n21\n20\n-1\n26\n-1\n-1\n-1\n-1\n18\n20\n15\n23\n20\n-1\n21\n17\n22\n24\n22\n19\n-1\n-1\n-1\n21\n16\n-1\n20\n-1\n25\n-1\n-1\n23\n-1\n25\n24\n22\n28\n-1\n-1\n-1\n-1\n22\n13\n-1\n24\n25\n-1\n28\n-1\n26\n-1\n19\n23\n-1\n-1\n24\n25\n22\n-1\n-1\n20\n-1\n18\n-1\n-1\n21\n-1\n-1\n-1\n20\n19\n-1\n-1\n-1\n22\n-1\n-1\n-1\n22\n-1\n20\n20\n18\n19\n25\n21\n25\n-1\n24\n-1\n-1\n-1\n23\n-1\n25\n21\n-1\n18\n-1\n22\n-1\n21\n-1\n-1\n27\n-1\n-1\n25\n-1\n-1\n-1\n20\n24\n-1\n-1\n-1\n-1\n-1\n-1\n24\n21\n-1\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1002)\nt = 1500\nadj = [[1, 3], [0, 2, 4], [1, 5], [0, 4, 6], [1, 3, 5, 7], [2, 4, 8], [3, 7], [4, 6, 8], [5, 7]]\nprint(t)\nfor _ in range(t):\n    s = [1, 2, 3, 4, 5, 6, 7, 8, 0]\n    z = 8\n    for _ in range(random.randint(20, 400)):\n        p = random.choice(adj[z])\n        s[z], s[p] = s[p], s[z]\n        z = p\n    print(*s)\n",
+    "output": "22\n23\n5\n7\n26\n25\n24\n11\n23\n22\n20\n25\n24\n24\n3\n15\n25\n26\n18\n25\n23\n17\n20\n2\n18\n22\n17\n23\n24\n23\n23\n20\n12\n22\n24\n28\n22\n23\n16\n7\n25\n22\n26\n22\n14\n2\n15\n24\n21\n22\n21\n27\n19\n23\n20\n22\n19\n21\n11\n18\n8\n14\n25\n25\n12\n24\n20\n20\n21\n22\n24\n24\n22\n11\n11\n25\n19\n16\n6\n22\n21\n22\n22\n22\n22\n26\n19\n8\n22\n18\n13\n21\n21\n24\n22\n10\n21\n20\n22\n23\n24\n20\n16\n17\n20\n18\n22\n23\n17\n26\n14\n30\n26\n20\n26\n21\n20\n19\n18\n13\n14\n16\n16\n21\n26\n17\n20\n23\n19\n24\n11\n23\n18\n22\n15\n24\n22\n22\n21\n21\n25\n11\n26\n25\n21\n26\n17\n25\n10\n7\n23\n26\n25\n24\n19\n15\n21\n20\n22\n18\n21\n24\n21\n23\n18\n8\n1\n25\n22\n22\n10\n22\n25\n22\n24\n13\n25\n18\n9\n25\n20\n13\n17\n20\n28\n21\n26\n18\n23\n22\n19\n24\n3\n26\n23\n9\n24\n7\n20\n19\n19\n16\n22\n22\n24\n27\n27\n15\n16\n26\n13\n19\n24\n17\n23\n22\n20\n11\n17\n22\n22\n18\n3\n15\n19\n21\n15\n19\n14\n19\n23\n20\n21\n18\n19\n20\n8\n20\n24\n19\n27\n19\n15\n16\n22\n8\n11\n25\n20\n20\n19\n25\n23\n21\n17\n13\n17\n26\n24\n25\n16\n17\n24\n11\n24\n19\n21\n24\n23\n19\n16\n15\n24\n21\n21\n27\n22\n19\n21\n21\n24\n22\n26\n17\n22\n17\n23\n10\n23\n22\n22\n6\n19\n20\n25\n19\n20\n21\n19\n20\n22\n25\n16\n23\n16\n23\n14\n23\n24\n22\n11\n24\n21\n25\n22\n25\n22\n7\n25\n22\n19\n25\n24\n15\n13\n22\n22\n18\n24\n18\n24\n13\n13\n22\n14\n25\n21\n21\n21\n27\n27\n18\n22\n24\n14\n19\n24\n23\n22\n17\n24\n24\n23\n24\n6\n23\n13\n21\n23\n26\n21\n20\n21\n21\n20\n23\n24\n18\n13\n12\n16\n24\n21\n15\n26\n20\n21\n23\n19\n21\n1\n15\n25\n15\n17\n21\n14\n14\n5\n18\n17\n18\n20\n22\n15\n15\n22\n23\n28\n21\n22\n21\n21\n23\n23\n7\n14\n20\n26\n15\n19\n23\n18\n27\n12\n25\n11\n25\n21\n6\n13\n26\n25\n24\n20\n28\n19\n9\n18\n23\n22\n4\n24\n21\n26\n19\n20\n6\n18\n15\n28\n27\n18\n22\n8\n24\n23\n19\n16\n12\n16\n24\n26\n15\n27\n20\n19\n25\n19\n22\n23\n23\n24\n24\n22\n11\n11\n20\n21\n21\n20\n22\n17\n24\n17\n19\n15\n20\n27\n21\n27\n20\n23\n20\n25\n20\n11\n28\n24\n6\n23\n21\n19\n17\n24\n20\n25\n22\n26\n25\n18\n19\n3\n12\n21\n23\n24\n12\n23\n15\n17\n14\n20\n19\n24\n25\n24\n20\n20\n27\n9\n11\n20\n8\n21\n27\n21\n19\n12\n23\n18\n25\n19\n18\n19\n20\n26\n23\n26\n21\n18\n19\n23\n19\n18\n21\n13\n25\n21\n24\n27\n13\n24\n19\n21\n23\n23\n24\n17\n24\n21\n24\n23\n24\n25\n14\n16\n17\n29\n12\n14\n23\n20\n25\n15\n24\n22\n3\n19\n24\n6\n28\n21\n27\n24\n8\n22\n17\n24\n23\n25\n22\n11\n21\n24\n16\n26\n19\n21\n22\n19\n7\n20\n23\n23\n24\n16\n20\n23\n22\n14\n24\n24\n22\n18\n11\n22\n20\n6\n22\n24\n23\n21\n23\n18\n17\n23\n24\n26\n23\n25\n23\n16\n7\n12\n27\n24\n25\n24\n16\n19\n20\n19\n23\n24\n17\n19\n15\n11\n16\n27\n10\n22\n14\n15\n19\n23\n18\n19\n22\n24\n16\n16\n25\n13\n8\n12\n22\n21\n19\n21\n18\n21\n25\n23\n24\n25\n19\n18\n21\n11\n21\n20\n22\n22\n26\n22\n21\n9\n6\n21\n25\n21\n21\n24\n21\n21\n28\n21\n17\n6\n25\n25\n23\n21\n20\n15\n20\n22\n21\n21\n17\n26\n22\n20\n22\n26\n20\n17\n23\n25\n28\n23\n15\n24\n7\n12\n24\n5\n12\n4\n23\n24\n23\n20\n18\n23\n17\n18\n23\n25\n18\n24\n23\n24\n21\n20\n8\n22\n19\n24\n4\n23\n19\n20\n23\n25\n19\n24\n24\n19\n24\n22\n17\n23\n20\n11\n21\n22\n20\n22\n24\n7\n8\n19\n24\n18\n24\n26\n24\n16\n21\n19\n28\n23\n22\n21\n13\n22\n11\n19\n26\n26\n17\n22\n19\n23\n20\n21\n24\n24\n18\n15\n26\n12\n23\n18\n28\n25\n19\n3\n18\n9\n18\n18\n19\n10\n19\n19\n12\n22\n15\n17\n26\n20\n22\n18\n21\n12\n19\n19\n22\n21\n27\n3\n23\n20\n27\n20\n26\n21\n21\n19\n24\n17\n22\n20\n16\n19\n17\n8\n20\n23\n16\n26\n15\n7\n10\n23\n24\n25\n17\n16\n21\n0\n22\n21\n24\n21\n23\n24\n2\n20\n24\n22\n23\n21\n21\n28\n23\n24\n21\n21\n25\n18\n19\n18\n24\n10\n23\n19\n25\n25\n4\n16\n24\n19\n24\n17\n15\n25\n25\n24\n14\n26\n16\n21\n23\n27\n15\n25\n18\n26\n21\n21\n16\n26\n25\n7\n22\n15\n16\n23\n5\n13\n16\n12\n18\n13\n18\n21\n25\n19\n19\n18\n22\n22\n19\n22\n1\n25\n22\n11\n20\n22\n24\n17\n24\n19\n20\n24\n27\n18\n22\n9\n24\n26\n19\n17\n22\n25\n20\n6\n23\n22\n6\n25\n22\n17\n23\n11\n18\n25\n26\n26\n23\n30\n25\n21\n23\n16\n19\n23\n18\n22\n23\n21\n21\n28\n13\n23\n9\n13\n14\n18\n24\n20\n19\n17\n27\n23\n23\n20\n23\n23\n23\n23\n20\n10\n19\n7\n21\n25\n20\n22\n23\n16\n26\n23\n18\n21\n5\n18\n24\n26\n26\n23\n20\n21\n26\n18\n17\n9\n23\n23\n9\n26\n19\n23\n17\n18\n24\n19\n21\n15\n18\n25\n22\n20\n23\n24\n21\n22\n25\n20\n6\n15\n20\n22\n18\n20\n18\n18\n18\n21\n23\n15\n18\n22\n16\n16\n11\n21\n28\n19\n9\n5\n22\n22\n20\n21\n26\n20\n24\n27\n19\n22\n19\n16\n23\n15\n24\n18\n22\n23\n20\n21\n6\n27\n17\n22\n14\n18\n24\n21\n19\n20\n23\n9\n25\n7\n25\n18\n19\n5\n26\n26\n24\n17\n23\n23\n17\n19\n24\n23\n11\n27\n20\n14\n18\n18\n27\n8\n24\n18\n26\n5\n7\n23\n19\n3\n20\n26\n6\n5\n21\n24\n21\n23\n21\n21\n8\n18\n15\n22\n10\n20\n20\n24\n26\n22\n12\n21\n15\n25\n16\n18\n26\n8\n20\n0\n21\n23\n20\n28\n19\n2\n22\n28\n21\n24\n18\n11\n22\n23\n24\n29\n23\n23\n22\n22\n25\n20\n19\n21\n2\n23\n26\n19\n24\n26\n13\n8\n23\n26\n21\n9\n20\n18\n11\n11\n26\n18\n19\n23\n27\n10\n22\n13\n19\n18\n8\n25\n25\n23\n18\n18\n21\n6\n22\n24\n22\n28\n17\n19\n20\n23\n15\n19\n20\n17\n21\n21\n20\n24\n22\n23\n21\n25\n17\n22\n16\n16\n16\n20\n26\n16\n21\n14\n9\n20\n26\n16\n20\n11\n21\n17\n26\n14\n21\n17\n22\n27\n24\n24\n18\n18\n25\n20\n15\n20\n15\n14\n18\n23\n24\n26\n25\n27\n21\n22\n12\n16\n23\n16\n7\n17\n20\n18\n13\n6\n5\n22\n24\n26\n20\n28\n27\n22\n22\n20\n17\n25\n26\n19\n24\n23\n24\n16\n24\n27\n25\n19\n27\n24\n17\n23\n18\n9\n6\n21\n14\n21\n24\n20\n23\n23\n22\n11\n15\n13\n12\n23\n18\n18\n19\n20\n5\n21\n5\n25\n19\n20\n15\n13\n3\n18\n15\n18\n24\n22\n19\n25\n13\n20\n22\n16\n20\n25\n22\n21\n24\n24\n23\n23\n16\n20\n10\n18\n18\n22\n16\n5\n21\n22\n23\n19\n14\n11\n19\n17\n26\n23\n21\n20\n25\n10\n25\n19\n15\n18\n25\n26\n8\n25\n19\n26\n18\n4\n25\n14\n25\n16\n28\n17\n21\n18\n12\n22\n25\n8\n9\n16\n20\n10\n19\n8\n20\n22\n20\n25\n23\n13\n22\n23\n26\n15\n26\n16\n20\n23\n26\n22\n20\n26\n19\n9\n6\n21\n21\n29\n24\n20\n26\n18\n23\n19\n17\n25\n24\n25\n21\n21\n20\n18\n23\n26\n23\n28\n8\n25\n22\n17\n19\n26\n25\n10\n22\n25\n27\n15\n18\n22\n21\n22\n23\n22\n17\n12\n18\n24\n14\n23\n23\n16\n26\n24\n22\n21\n18\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "w11",
+  "title": "Fair Pay Crew",
+  "category": "Greedy",
+  "difficulty": "Impossible",
+  "timeLimit": 5,
+  "description": "<p>There are <code>n</code> workers; worker <code>i</code> has quality <code>q<sub>i</sub></code> and minimum wage expectation <code>w<sub>i</sub></code>. You must hire <b>exactly</b> <code>k</code> workers and pay them (real amounts) so that</p><ul><li>every hired worker gets at least their minimum wage, and</li><li>pay is proportional to quality: within the crew, pay<sub>i</sub>/q<sub>i</sub> is the same for everybody.</li></ul>\n<p>Print the <b>minimum total pay</b> exactly, as an irreducible fraction <code>p/q</code> (print <code>q</code> even when it is 1). Floating-point arithmetic is not precise enough to choose between candidates here.</p>\n<h4>Constraints</h4><ul><li>1 &le; k &le; n &le; 10<sup>5</sup></li><li>1 &le; q<sub>i</sub>, w<sub>i</sub> &le; 10<sup>4</sup></li></ul>\n<h4>Input</h4><p>Line 1: <code>n k</code>. Next <code>n</code> lines: <code>q w</code>.</p>\n<h4>Output</h4><p>The minimum total pay as <code>p/q</code> with <code>gcd(p, q) = 1</code>.</p><h4>Example</h4><p>Input:</p><pre>3 2\n10 70\n20 50\n5 30</pre><p>Output:</p><pre>105/1</pre>",
+  "solution": "import sys, heapq\nfrom math import gcd\ndef main():\n    d = sys.stdin.buffer.read().split()\n    n, k = int(d[0]), int(d[1])\n    ws = [(int(d[3 + 2 * i]), int(d[2 + 2 * i])) for i in range(n)]  # (wage, quality)\n    ws.sort(key=lambda t: t[0] / t[1])\n    h = []\n    sq = 0\n    bn, bd = None, None\n    for w, q in ws:\n        heapq.heappush(h, -q)\n        sq += q\n        if len(h) > k:\n            sq += heapq.heappop(h)\n        if len(h) == k:\n            num, den = w * sq, q\n            if bn is None or num * bd < bn * den:\n                bn, bd = num, den\n    g = gcd(bn, bd)\n    print(f\"{bn // g}/{bd // g}\")\nmain()\n",
+  "tests": [
+   {
+    "input": "3 2\n10 70\n20 50\n5 30\n",
+    "output": "105/1\n",
+    "hidden": false
+   },
+   {
+    "input": "5 3\n3 4\n1 8\n10 2\n10 2\n1 7\n",
+    "output": "92/3\n",
+    "hidden": false
+   },
+   {
+    "input": "1 1\n7 3\n",
+    "output": "3/1\n",
+    "hidden": true
+   },
+   {
+    "input": "3 3\n2 2\n3 3\n4 4\n",
+    "output": "9/1\n",
+    "hidden": true
+   },
+   {
+    "input": "4 2\n9999 10000\n10000 9999\n1 1\n3 7\n",
+    "output": "28/3\n",
+    "hidden": true
+   },
+   {
+    "input": "6 1\n5 10\n3 7\n2 9\n8 8\n1 4\n6 3\n",
+    "output": "3/1\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1101)\nn = 100000\nprint(n, 5000)\nprint(\"\\n\".join(f\"{random.randint(1, 10**4)} {random.randint(1, 10**4)}\" for _ in range(n)))\n",
+    "output": "24571475735/7411\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1102)\nn = 100000\nprint(n, 99999)\nprint(\"\\n\".join(f\"{random.randint(9990, 10**4)} {random.randint(9990, 10**4)}\" for _ in range(n)))\n",
+    "output": "999489536000/999\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1103)\nn = 100000\nprint(n, 37)\nrows = []\nfor _ in range(n):\n    q = random.randint(1, 10**4)\n    rows.append(f\"{q} {max(1, min(10**4, q * 7 // 9 + random.randint(-1, 1)))}\")\nprint(\"\\n\".join(rows))\n",
+    "output": "90/1\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "w12",
+  "title": "K-th Smallest Signed Product",
+  "category": "Sorting & Searching",
+  "difficulty": "Impossible",
+  "timeLimit": 5,
+  "description": "<p>Given two sorted arrays <code>A</code> (length <code>n</code>) and <code>B</code> (length <code>m</code>) whose values may be <b>negative, zero or positive</b>, consider all <code>n&middot;m</code> products <code>A[i]&middot;B[j]</code>. Print the <code>k</code>-th smallest of them (1-based, duplicates counted).</p>\n<p>Generating all products is far too slow. Binary search on the value; counting products &le; <code>x</code> needs care for negative factors (the inequality flips) and for zeros, and integer division must round in the right direction.</p>\n<h4>Constraints</h4><ul><li>1 &le; n, m &le; 2&middot;10<sup>4</sup></li><li>-10<sup>5</sup> &le; A[i], B[j] &le; 10<sup>5</sup>; both arrays are sorted in non-decreasing order</li><li>1 &le; k &le; n&middot;m</li></ul>\n<h4>Input</h4><p>Line 1: <code>n m k</code>. Line 2: array <code>A</code>. Line 3: array <code>B</code>.</p>\n<h4>Output</h4><p>The <code>k</code>-th smallest product.</p><h4>Example</h4><p>Input:</p><pre>2 2 2\n2 5\n3 4</pre><p>Output:</p><pre>8</pre>",
+  "solution": "import sys\nfrom bisect import bisect_left, bisect_right\nfrom itertools import repeat\ndef main():\n    d = sys.stdin.buffer.read().split()\n    n, m, k = int(d[0]), int(d[1]), int(d[2])\n    A = list(map(int, d[3:3 + n]))\n    B = list(map(int, d[3 + n:3 + n + m]))\n    pos = [a for a in A if a > 0]\n    neg = [a for a in A if a < 0]\n    z = n - len(pos) - len(neg)\n    nn = len(neg)\n    def cnt(x):\n        c = z * m if x >= 0 else 0\n        c += sum(map(bisect_right, repeat(B, len(pos)), [x // a for a in pos]))\n        c += m * nn - sum(map(bisect_left, repeat(B, nn), [-((-x) // a) for a in neg]))\n        return c\n    lo, hi = -10**10, 10**10\n    while lo < hi:\n        mid = (lo + hi) // 2\n        if cnt(mid) >= k:\n            hi = mid\n        else:\n            lo = mid + 1\n    print(lo)\nmain()\n",
+  "tests": [
+   {
+    "input": "2 2 2\n2 5\n3 4\n",
+    "output": "8\n",
+    "hidden": false
+   },
+   {
+    "input": "2 3 6\n-4 -2\n0 3 5\n",
+    "output": "0\n",
+    "hidden": false
+   },
+   {
+    "input": "1 1 1\n-100000\n100000\n",
+    "output": "-10000000000\n",
+    "hidden": true
+   },
+   {
+    "input": "3 3 5\n0 0 0\n-1 0 1\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "4 5 7\n-3 -1 0 2\n-5 -2 0 4 7\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "3 3 9\n-100000 -100000 -100000\n-100000 1 100000\n",
+    "output": "10000000000\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1201)\nn = m = 20000\nA = sorted(random.randint(-10**5, 10**5) for _ in range(n))\nB = sorted(random.randint(-10**5, 10**5) for _ in range(m))\nprint(n, m, random.randint(1, n * m))\nprint(*A)\nprint(*B)\n",
+    "output": "7027416704\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1202)\nn = 20000; m = 20000\nA = sorted(random.randint(-10**5, -1) for _ in range(n))\nB = sorted(random.randint(-10**5, 10**5) for _ in range(m))\nprint(n, m, n * m // 3)\nprint(*A)\nprint(*B)\n",
+    "output": "-992594233\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1203)\nn = 20000; m = 20000\nA = sorted(random.choice([0, 0, random.randint(-50, 50)]) for _ in range(n))\nB = sorted(random.randint(-10**5, 10**5) for _ in range(m))\nprint(n, m, n * m // 2 + 12345)\nprint(*A)\nprint(*B)\n",
+    "output": "0\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "w13",
+  "title": "Watering the Weakest Plants",
+  "category": "Sorting & Searching",
+  "difficulty": "Impossible",
+  "timeLimit": 6,
+  "description": "<p>A row of <code>n</code> plants has heights <code>a<sub>1</sub>..a<sub>n</sub></code>. One watering chooses <b>exactly</b> <code>w</code> consecutive plants and makes each of them grow by 1. You may water at most <code>k</code> times. Print the <b>maximum possible height of the shortest plant</b>.</p>\n<p><code>k</code> can be 10<sup>9</sup>, so simulating waterings one at a time is too slow. Binary search on the answer and check it greedily with a difference array.</p>\n<h4>Constraints</h4><ul><li>1 &le; w &le; n &le; 2&middot;10<sup>4</sup></li><li>0 &le; k &le; 10<sup>9</sup></li><li>0 &le; a<sub>i</sub> &le; 10<sup>9</sup></li></ul>\n<h4>Input</h4><p>Line 1: <code>n w k</code>. Line 2: <code>n</code> heights.</p>\n<h4>Output</h4><p>The maximum achievable minimum height.</p><h4>Example</h4><p>Input:</p><pre>6 2 3\n2 2 2 2 1 1</pre><p>Output:</p><pre>2</pre>",
+  "solution": "import sys\ndef main():\n    d = sys.stdin.buffer.read().split()\n    n, w, k = int(d[0]), int(d[1]), int(d[2])\n    a = list(map(int, d[3:3 + n]))\n    nw = n - w\n    def ok(T):\n        end = [0] * (n + 1)\n        cur = 0\n        used = 0\n        for i in range(n):\n            cur -= end[i]\n            v = a[i] + cur\n            if v < T:\n                dd = T - v\n                used += dd\n                if used > k:\n                    return False\n                cur += dd\n                s = i if i < nw else nw\n                end[s + w] += dd\n        return True\n    lo, hi = min(a), min(a) + k\n    while lo < hi:\n        mid = (lo + hi + 1) // 2\n        if ok(mid):\n            lo = mid\n        else:\n            hi = mid - 1\n    print(lo)\nmain()\n",
+  "tests": [
+   {
+    "input": "6 2 3\n2 2 2 2 1 1\n",
+    "output": "2\n",
+    "hidden": false
+   },
+   {
+    "input": "3 1 5\n1 2 3\n",
+    "output": "3\n",
+    "hidden": false
+   },
+   {
+    "input": "1 1 1000000000\n0\n",
+    "output": "1000000000\n",
+    "hidden": true
+   },
+   {
+    "input": "5 5 0\n4 2 9 9 1\n",
+    "output": "1\n",
+    "hidden": true
+   },
+   {
+    "input": "5 3 4\n0 5 5 5 0\n",
+    "output": "2\n",
+    "hidden": true
+   },
+   {
+    "input": "4 2 3\n5 0 0 5\n",
+    "output": "3\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1301)\nn = 20000\nprint(n, 137, 10**9)\nprint(*[random.randint(0, 10**9) for _ in range(n)])\n",
+    "output": "15270730\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1302)\nn = 20000\nprint(n, 1, 10**9)\nprint(*[random.randint(10**9 - 10**5, 10**9) for _ in range(n)])\n",
+    "output": "999999922\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1303)\nn = 20000\nprint(n, 9999, 123456789)\nprint(*[random.randint(0, 10**7) for _ in range(n)])\n",
+    "output": "46004361\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "w14",
+  "title": "Merge Archives k at a Time",
+  "category": "Greedy",
+  "difficulty": "Impossible",
+  "timeLimit": 5,
+  "description": "<p>You have <code>n</code> archive files with given sizes. In one operation you choose <b>between 2 and <code>k</code></b> files (any of them, not only neighbours) and merge them into one file whose size is their sum; the operation costs that sum. Print the <b>minimum total cost</b> to end with a single file (0 if <code>n = 1</code>).</p>\n<p>Greedily merging the <code>k</code> smallest files every time is <b>not</b> always optimal: think about how many files the first merge should take.</p>\n<h4>Constraints</h4><ul><li>1 &le; n &le; 10<sup>5</sup></li><li>2 &le; k &le; 10<sup>5</sup> (<code>k</code> may exceed <code>n</code>)</li><li>1 &le; size &le; 10<sup>9</sup></li></ul>\n<h4>Input</h4><p>Line 1: <code>n k</code>. Line 2: <code>n</code> sizes.</p>\n<h4>Output</h4><p>The minimum total cost.</p><h4>Example</h4><p>Input:</p><pre>4 3\n1 2 3 4</pre><p>Output:</p><pre>13</pre>",
+  "solution": "import sys, heapq\ndef main():\n    d = sys.stdin.buffer.read().split()\n    n, k = int(d[0]), int(d[1])\n    h = list(map(int, d[2:2 + n]))\n    if n == 1:\n        print(0)\n        return\n    pad = (k - 1 - (n - 1) % (k - 1)) % (k - 1)\n    h += [0] * pad\n    heapq.heapify(h)\n    cost = 0\n    pop, push = heapq.heappop, heapq.heappush\n    while len(h) > 1:\n        s = 0\n        for _ in range(k):\n            s += pop(h)\n        cost += s\n        push(h, s)\n    print(cost)\nmain()\n",
+  "tests": [
+   {
+    "input": "4 3\n1 2 3 4\n",
+    "output": "13\n",
+    "hidden": false
+   },
+   {
+    "input": "6 3\n1 1 1 1 1 1\n",
+    "output": "11\n",
+    "hidden": false
+   },
+   {
+    "input": "1 2\n1000000000\n",
+    "output": "0\n",
+    "hidden": true
+   },
+   {
+    "input": "3 100000\n5 6 7\n",
+    "output": "18\n",
+    "hidden": true
+   },
+   {
+    "input": "5 2\n4 3 2 6 1\n",
+    "output": "35\n",
+    "hidden": true
+   },
+   {
+    "input": "7 4\n9 1 8 2 7 3 6\n",
+    "output": "48\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1401)\nn = 100000\nprint(n, 7)\nprint(*[random.randint(1, 10**9) for _ in range(n)])\n",
+    "output": "297195537062014\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1402)\nn = 100000\nprint(n, 99999)\nprint(*[random.randint(1, 10**9) for _ in range(n)])\n",
+    "output": "50036011264205\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1403)\nn = 99998\nprint(n, 2)\nprint(*[random.randint(1, 1000) for _ in range(n)])\n",
+    "output": "818741767\n",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "w15",
+  "title": "Festival Event Hopping",
+  "category": "Greedy",
+  "difficulty": "Impossible",
+  "timeLimit": 5,
+  "description": "<p>A festival has <code>n</code> events. Event <code>i</code> runs every day from day <code>s<sub>i</sub></code> to day <code>e<sub>i</sub></code> (inclusive), and attending it takes one whole day: you pick any single day <code>d</code> with <code>s<sub>i</sub> &le; d &le; e<sub>i</sub></code>. You can attend at most one event per day and each event at most once. Print the <b>maximum number of events</b> you can attend.</p>\n<p>Days go up to 10<sup>9</sup>, so you cannot loop over every day; sorting by end day alone is also wrong.</p>\n<h4>Constraints</h4><ul><li>1 &le; n &le; 10<sup>5</sup></li><li>1 &le; s<sub>i</sub> &le; e<sub>i</sub> &le; 10<sup>9</sup></li></ul>\n<h4>Input</h4><p>Line 1: <code>n</code>. Next <code>n</code> lines: <code>s e</code>.</p>\n<h4>Output</h4><p>The maximum number of events.</p><h4>Example</h4><p>Input:</p><pre>3\n1 2\n2 3\n3 4</pre><p>Output:</p><pre>3</pre>",
+  "solution": "import sys, heapq\ndef main():\n    d = sys.stdin.buffer.read().split()\n    n = int(d[0])\n    ev = sorted((int(d[1 + 2 * i]), int(d[2 + 2 * i])) for i in range(n))\n    h = []\n    i = 0\n    day = 0\n    ans = 0\n    pop, push = heapq.heappop, heapq.heappush\n    while i < n or h:\n        if not h:\n            day = max(day, ev[i][0])\n        while i < n and ev[i][0] <= day:\n            push(h, ev[i][1])\n            i += 1\n        while h and h[0] < day:\n            pop(h)\n        if h:\n            pop(h)\n            ans += 1\n            day += 1\n    print(ans)\nmain()\n",
+  "tests": [
+   {
+    "input": "3\n1 2\n2 3\n3 4\n",
+    "output": "3\n",
+    "hidden": false
+   },
+   {
+    "input": "4\n1 2\n2 3\n3 4\n1 2\n",
+    "output": "4\n",
+    "hidden": false
+   },
+   {
+    "input": "1\n1000000000 1000000000\n",
+    "output": "1\n",
+    "hidden": true
+   },
+   {
+    "input": "5\n1 1\n1 1\n1 1\n2 2\n2 2\n",
+    "output": "2\n",
+    "hidden": true
+   },
+   {
+    "input": "4\n1 4\n4 4\n2 2\n3 4\n",
+    "output": "4\n",
+    "hidden": true
+   },
+   {
+    "input": "6\n1 10\n2 2\n2 2\n2 2\n3 3\n1 1\n",
+    "output": "4\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1501)\nn = 100000\nprint(n)\nfor _ in range(n):\n    s = random.randint(1, 10**9)\n    print(s, random.randint(s, min(10**9, s + 10**4)))\n",
+    "output": "100000\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1502)\nn = 100000\nprint(n)\nfor _ in range(n):\n    s = random.randint(1, 60000)\n    print(s, random.randint(s, min(10**9, s + random.choice([0, 1, 5, 100, 10**5]))))\n",
+    "output": "74101\n",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(1503)\nn = 100000\nprint(n)\nfor _ in range(n):\n    s = random.randint(1, 100)\n    print(s, random.randint(s, 10**9))\n",
+    "output": "100000\n",
+    "hidden": true
+   }
+  ]
+ }
+]

@@ -168,7 +168,7 @@ footer button:disabled{opacity:.35}
 </header>
 <main>
   <section class="card c-prob">
-    <div class="itemhead"><div><b id="itemNo">Item 1</b><small>10 points</small></div><span class="tag" id="dtag">Easy</span></div>
+    <div class="itemhead"><div><b id="itemNo">Item 1</b><small id="pts">10 points</small></div><span class="tag" id="dtag">Easy</span></div>
     <div id="desc"></div>
   </section>
   <section class="card c-code">
@@ -230,7 +230,7 @@ def __run(code, stdin):
     out = io.StringIO()
     saved = (sys.stdout, sys.stderr, sys.stdin, builtins.input)
     sys.stdout = out; sys.stderr = out
-    sys.stdin = io.StringIO(stdin)
+    sys.stdin = io.TextIOWrapper(io.BytesIO(stdin.encode()), encoding='utf-8')
     def _inp(prompt=''):
         line = sys.stdin.readline()
         if not line:
@@ -247,39 +247,57 @@ def __run(code, stdin):
     finally:
         sys.stdout, sys.stderr, sys.stdin, builtins.input = saved
     return [out.getvalue(), err]
+def __calib():
+    import time
+    best = 9
+    for _ in range(2):
+        t = time.perf_counter(); s = 0
+        for i in range(1000000): s += i*i % 7
+        best = min(best, time.perf_counter() - t)
+    return best
 \`);
-  postMessage({type:'ready'});
+  const calib = py.runPython('__calib()');
+  postMessage({type:'ready', calib});
 })();
 onmessage = async (e) => {
   await ready;
   const {id, code, stdin} = e.data;
   try {
     py.globals.set('__code', code); py.globals.set('__stdin', stdin);
+    const t0 = performance.now();
     const r = py.runPython('__run(__code, __stdin)').toJs();
-    postMessage({type:'result', id, out:r[0], err:r[1]});
+    postMessage({type:'result', id, out:r[0], err:r[1], ms: performance.now() - t0});
   } catch (err) { postMessage({type:'result', id, out:'', err:String(err)}); }
 };`;
 const TIME_LIMIT = 5000;
+// Device speed factor: 0.24s is the calibration time on the reference PC the limits were tuned on.
+// Slower devices (phones) get proportionally more time, capped at 4x.
+const CALIB_REF = 0.24;
+let speedFactor = 1;
 let worker, workerReady, pending = new Map(), msgId = 0;
 function spawnWorker(){
   setStatus('Loading Python…','');
   worker = new Worker(URL.createObjectURL(new Blob([WORKER_SRC],{type:'text/javascript'})));
   workerReady = new Promise(res => {
     worker.onmessage = (e) => {
-      if (e.data.type === 'ready') { setStatus('Python ready','ok'); res(); return; }
+      if (e.data.type === 'ready') {
+        speedFactor = Math.min(4, Math.max(1, (e.data.calib || CALIB_REF) / CALIB_REF));
+        setStatus('Python ready' + (speedFactor > 1.15 ? ` (slow device: time limits ×${speedFactor.toFixed(1)})` : ''), 'ok');
+        res(); return; }
       const p = pending.get(e.data.id); if (p) { pending.delete(e.data.id); p(e.data); }
     };
   });
   worker.onerror = (e) => setStatus('Worker error: '+e.message,'bad');
 }
-async function runPy(code, stdin){
+async function runPy(code, stdin, baseLimit = TIME_LIMIT){
   await workerReady;
+  const limit = Math.round(baseLimit * speedFactor);
   const id = ++msgId;
   return new Promise(resolve => {
     const t = setTimeout(() => {
       pending.delete(id); worker.terminate(); spawnWorker();
-      resolve({out:'', err:'Time Limit Exceeded (' + TIME_LIMIT/1000 + 's) — infinite loop or waiting on input?', tle:true});
-    }, TIME_LIMIT);
+      resolve({out:'', err:'Time Limit Exceeded (' + limit/1000 + 's) — too slow, infinite loop, or waiting on input?', tle:true});
+    }, limit);
     pending.set(id, d => { clearTimeout(t); resolve(d); });
     worker.postMessage({id, code, stdin});
   });
@@ -399,6 +417,7 @@ function render(){
   if (!p){ $('desc').innerHTML='<p>No problems. Make sure problems.js exists (run <code>python build.py</code>).</p>'; return; }
   $('itemNo').textContent = 'Item ' + (idx+1) + ' · ' + p.category;
   LS.set('current', p.id); filterLabel();
+  $('pts').textContent = '10 points · ' + (p.timeLimit||5) + 's limit' + (p.tests.some(t=>t.gen) ? ' · big tests' : '');
   $('dtag').textContent = p.difficulty; $('dtag').className = 'tag ' + p.difficulty;
   const samples = p.tests.filter(t=>!t.hidden).map((t,i)=>
     `<div class="sample-label">Sample ${i+1}</div><pre><b>Input</b>\n${esc(t.input.replace(/\n$/,''))}\n\n<b>Output</b> <span class="ws">(· = space)</span>\n${ws(t.output)}</pre>`).join('');
@@ -456,7 +475,7 @@ function renderPanel(){
       }
     }
     return `<div class="tc ${cls} ${open.has(i)||(r&&!r.pass&&!r.running&&!t.hidden)?'open':''}" data-i="${i}">
-      <div class="tch"><span>▾</span><span class="dot"></span>Test case ${i+1}<span class="hid">${t.hidden?'🔒':''}</span><span class="sp"></span>
+      <div class="tch"><span>▾</span><span class="dot"></span>Test case ${i+1}<span class="hid">${t.hidden?'🔒':''}${t.gen?' big':''}${r&&r.ms!=null&&!r.running?' · '+(r.ms/1000).toFixed(2)+'s':''}</span><span class="sp"></span>
       <button class="play" data-i="${i}" title="Run this test">▶</button></div><div class="tcb">${body}</div></div>`;
   }).join('');
 }
@@ -469,6 +488,19 @@ document.querySelectorAll('.tabs div').forEach(d=>d.onclick=()=>{
 });
 
 // ---------- actions ----------
+const genCache = new Map();
+async function testInput(p, i){
+  const t = p.tests[i];
+  if (!t.gen) return t.input;
+  const k = p.id + ':' + i;
+  if (!genCache.has(k)){
+    setStatus('Generating big test ' + (i+1) + '…', '');
+    const r = await runPy(t.gen, '', 20000);
+    if (r.err) return null;
+    genCache.set(k, r.out);
+  }
+  return genCache.get(k);
+}
 function busy(b){ $('runBtn').disabled = $('checkBtn').disabled = b; }
 async function runTests(which){
   const p = cur(); busy(true); const code = cm.getValue();
@@ -476,8 +508,10 @@ async function runTests(which){
   which.forEach(i=>results[i]={running:true}); renderPanel();
   for (const i of which){
     const t = p.tests[i];
-    const r = await runPy(code, t.input);
-    results[i] = {out:r.out, err:r.err, pass: !r.err && norm(r.out)===norm(t.output)};
+    const stdin = await testInput(p, i);
+    if (stdin === null){ results[i] = {out:'', err:'Could not generate this test input.', pass:false}; renderPanel(); continue; }
+    const r = await runPy(code, stdin, (p.timeLimit||5)*1000);
+    results[i] = {out:r.out, err:r.err, ms:r.ms, pass: !r.err && norm(r.out)===norm(t.output)};
     if (cur()!==p) { busy(false); return; }
     renderPanel();
   }

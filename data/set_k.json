@@ -773,7 +773,7 @@
   "id": "k17",
   "title": "Unique Quadruplets",
   "category": "Two Pointers",
-  "difficulty": "Impossible",
+  "difficulty": "Hard",
   "description": "<p>Count the number of <b>unique</b> quadruplets of values <code>a &le; b &le; c &le; d</code>, taken from four different positions of the list, with <code>a + b + c + d = T</code>. Two quadruplets are the same if they consist of the same values.</p><p>An O(N<sup>4</sup>) brute force is too slow for the largest tests.</p><p><b>Constraints:</b></p><ul><li><code>1 &le; N &le; 150</code></li><li><code>-10<sup>4</sup> &le; a[i] &le; 10<sup>4</sup></code></li><li><code>|T| &le; 10<sup>5</sup></code></li></ul><h4>Input</h4><p>The first line contains two integers <code>N</code> and <code>T</code>. The second line contains <code>N</code> space-separated integers.</p><h4>Output</h4><p>Print the number of unique quadruplets.</p>",
   "solution": "n, t = map(int, input().split())\na = sorted(map(int, input().split()))\ncnt = 0\nfor i in range(n - 3):\n    if i and a[i] == a[i - 1]:\n        continue\n    for j in range(i + 1, n - 2):\n        if j > i + 1 and a[j] == a[j - 1]:\n            continue\n        l, r = j + 1, n - 1\n        need = t - a[i] - a[j]\n        while l < r:\n            s = a[l] + a[r]\n            if s < need:\n                l += 1\n            elif s > need:\n                r -= 1\n            else:\n                cnt += 1\n                l += 1\n                while l < r and a[l] == a[l - 1]:\n                    l += 1\n                r -= 1\nprint(cnt)\n",
   "tests": [
@@ -823,7 +823,7 @@
   "id": "k18",
   "title": "Counting Inversions",
   "category": "Arrays",
-  "difficulty": "Impossible",
+  "difficulty": "Hard",
   "description": "<p>An <b>inversion</b> is a pair of positions <code>i &lt; j</code> with <code>a[i] &gt; a[j]</code> (strictly). Count the inversions in the list.</p><p>The largest tests are too big for an O(N<sup>2</sup>) double loop; think merge sort or a Fenwick tree.</p><p><b>Constraints:</b></p><ul><li><code>1 &le; N &le; 4000</code></li><li><code>0 &le; a[i] &le; 999</code></li></ul><h4>Input</h4><p>The first line contains an integer <code>N</code>. The second line contains <code>N</code> space-separated integers.</p><h4>Output</h4><p>Print the number of inversions.</p>",
   "solution": "import sys\nsys.setrecursionlimit(10000)\nn = int(input())\na = list(map(int, input().split()))\ndef sort(x):\n    if len(x) <= 1:\n        return x, 0\n    m = len(x) // 2\n    l, c1 = sort(x[:m])\n    r, c2 = sort(x[m:])\n    res = []\n    i = j = 0\n    c = c1 + c2\n    while i < len(l) and j < len(r):\n        if l[i] <= r[j]:\n            res.append(l[i]); i += 1\n        else:\n            res.append(r[j]); j += 1\n            c += len(l) - i\n    res += l[i:] + r[j:]\n    return res, c\nprint(sort(a)[1])\n",
   "tests": [
@@ -873,7 +873,7 @@
   "id": "k19",
   "title": "Shortest Subarray With Sum at Least K",
   "category": "Two Pointers",
-  "difficulty": "Impossible",
+  "difficulty": "Hard",
   "description": "<p>Find the length of the shortest contiguous non-empty sub-list whose sum is <b>at least</b> <code>K</code>. Unlike the simpler version, the list <b>may contain negative numbers</b>, so a plain sliding window does not work.</p><p>Hint: prefix sums plus a monotonic deque give O(N).</p><p><b>Constraints:</b></p><ul><li><code>1 &le; N &le; 3000</code></li><li><code>-10<sup>4</sup> &le; a[i] &le; 10<sup>4</sup></code></li><li><code>1 &le; K &le; 10<sup>8</sup></code></li></ul><h4>Input</h4><p>The first line contains two integers <code>N</code> and <code>K</code>. The second line contains <code>N</code> space-separated integers.</p><h4>Output</h4><p>Print the minimum length, or <code>-1</code> if no such sub-list exists.</p>",
   "solution": "from collections import deque\nn, k = map(int, input().split())\na = list(map(int, input().split()))\np = [0]\nfor x in a:\n    p.append(p[-1] + x)\ndq = deque()\nbest = n + 1\nfor j in range(n + 1):\n    while dq and p[j] - p[dq[0]] >= k:\n        best = min(best, j - dq.popleft())\n    while dq and p[dq[-1]] >= p[j]:\n        dq.pop()\n    dq.append(j)\nprint(best if best <= n else -1)\n",
   "tests": [
@@ -923,7 +923,7 @@
   "id": "k20",
   "title": "Sliding Window Median",
   "category": "Two Pointers",
-  "difficulty": "Impossible",
+  "difficulty": "Hard",
   "description": "<p>A window of size <code>K</code> slides over the list from left to right. For each window position, report the <b>median</b> of the window: the middle element after sorting if <code>K</code> is odd, or the average of the two middle elements if <code>K</code> is even.</p><p><b>Constraints:</b></p><ul><li><code>1 &le; K &le; N &le; 3000</code></li><li><code>-10<sup>4</sup> &le; a[i] &le; 10<sup>4</sup></code></li></ul><h4>Input</h4><p>The first line contains two integers <code>N</code> and <code>K</code>. The second line contains <code>N</code> space-separated integers.</p><h4>Output</h4><p>Print the <code>N - K + 1</code> medians on one line, separated by spaces. Print each median with <b>exactly one</b> decimal place (e.g. <code>3.0</code>, <code>-1.5</code>).</p>",
   "solution": "from bisect import insort, bisect_left\nn, k = map(int, input().split())\na = list(map(int, input().split()))\nw = sorted(a[:k])\ndef med():\n    if k % 2:\n        return f\"{w[k // 2]}.0\"\n    s = w[k // 2 - 1] + w[k // 2]\n    if s % 2 == 0:\n        return f\"{s // 2}.0\"\n    return ('-' if s < 0 else '') + f\"{abs(s) // 2}.5\"\nres = [med()]\nfor i in range(k, n):\n    del w[bisect_left(w, a[i - k])]\n    insort(w, a[i])\n    res.append(med())\nprint(' '.join(res))\n",
   "tests": [

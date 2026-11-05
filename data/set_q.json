@@ -1,0 +1,777 @@
+[
+ {
+  "id": "q01",
+  "title": "Warehouse Ledger: Bulk Adjustments",
+  "category": "Data Structures",
+  "difficulty": "Hard",
+  "timeLimit": 5,
+  "description": "<p>A warehouse keeps <code>N</code> shelves in a row; shelf <code>i</code> holds <code>a<sub>i</sub></code> items (a negative number means items are owed). The manager issues <code>Q</code> commands: either add <code>v</code> items to <b>every</b> shelf from <code>l</code> to <code>r</code>, or report the total number of items on shelves <code>l</code> to <code>r</code>. Both kinds of command must be fast: a loop over the range is too slow.</p><h4>Constraints</h4><ul><li><code>1 &le; N, Q &le; 25000</code></li><li><code>|a<sub>i</sub>|, |v| &le; 10<sup>9</sup></code></li><li><code>1 &le; l &le; r &le; N</code></li></ul><h4>Input</h4><p>The first line contains <code>N Q</code>. The second line contains <code>a<sub>1</sub> &hellip; a<sub>N</sub></code>. Each of the next <code>Q</code> lines is either <code>1 l r v</code> (add <code>v</code> to shelves <code>l..r</code>) or <code>2 l r</code> (query the sum of shelves <code>l..r</code>).</p><h4>Output</h4><p>Let <code>ans<sub>1</sub>, ans<sub>2</sub>, &hellip;, ans<sub>t</sub></code> be the answers to the type-2 queries, in order. To keep the output small, print a single integer: the checksum <code>(1&middot;ans<sub>1</sub> + 2&middot;ans<sub>2</sub> + &hellip; + t&middot;ans<sub>t</sub>) mod 1000000007</code>, taken as a non-negative remainder (exactly what Python's <code>%</code> gives). If <code>t = 0</code>, print <code>0</code>.</p><h4>Example</h4><pre>Input:\n5 5\n1 2 3 4 5\n2 1 5\n1 2 4 10\n2 1 3\n1 1 5 -3\n2 4 5\n\nOutput:\n106</pre><p>In this example the individual answers are <code>15, 26, 13</code>, so the checksum is <code>1&middot;15 + 2&middot;26 + 3&middot;13</code> mod 1000000007 = <code>106</code>.</p>",
+  "solution": "import sys\ndef main():\n    d = sys.stdin.buffer.read().split()\n    n, q = int(d[0]), int(d[1])\n    pre = [0] * (n + 1)\n    s = 0\n    for i in range(n):\n        s += int(d[2 + i]); pre[i + 1] = s\n    B1 = [0] * (n + 2); B2 = [0] * (n + 2)\n    MOD = 10**9 + 7\n    p = 2 + n\n    t = 0; res = 0\n    for _ in range(q):\n        if d[p] == b'1':\n            l = int(d[p + 1]); r = int(d[p + 2]); v = int(d[p + 3]); p += 4\n            i = l; w = v * (l - 1)\n            while i <= n:\n                B1[i] += v; B2[i] += w; i += i & -i\n            i = r + 1; w = v * r\n            while i <= n:\n                B1[i] -= v; B2[i] -= w; i += i & -i\n        else:\n            l = int(d[p + 1]); r = int(d[p + 2]); p += 3\n            def pref(x):\n                a = b = 0; i = x\n                while i > 0:\n                    a += B1[i]; b += B2[i]; i -= i & -i\n                return pre[x] + a * x - b\n            ans = pref(r) - pref(l - 1)\n            t += 1\n            res = (res + t * ans) % MOD\n    print(res)\nmain()\n",
+  "tests": [
+   {
+    "input": "5 5\n1 2 3 4 5\n2 1 5\n1 2 4 10\n2 1 3\n1 1 5 -3\n2 4 5\n",
+    "output": "106",
+    "hidden": false
+   },
+   {
+    "input": "3 4\n-5 0 5\n2 1 1\n1 1 3 1000000000\n2 1 3\n2 3 3\n",
+    "output": "999999954",
+    "hidden": false
+   },
+   {
+    "input": "1 3\n7\n2 1 1\n1 1 1 -7\n2 1 1\n",
+    "output": "7",
+    "hidden": true
+   },
+   {
+    "input": "4 2\n1 1 1 1\n1 1 4 5\n1 2 3 -2\n",
+    "output": "0",
+    "hidden": true
+   },
+   {
+    "input": "6 6\n-1000000000 -1000000000 -1000000000 -1000000000 -1000000000 -1000000000\n1 1 6 -1000000000\n2 1 6\n1 3 3 7\n2 3 3\n2 1 2\n2 4 6\n",
+    "output": "378",
+    "hidden": true
+   },
+   {
+    "input": "30 40\n3 43 -49 -12 -3 -26 -16 22 5 -30 -3 -35 5 -17 21 30 -28 28 20 -27 -5 44 43 -39 17 44 2 24 14 -29\n2 5 11\n1 7 17 8\n2 11 11\n1 23 29 34\n2 28 28\n1 6 15 3\n2 4 25\n1 24 27 17\n2 20 25\n2 8 11\n2 7 30\n1 18 28 25\n2 14 30\n2 5 6\n1 10 10 -21\n1 12 29 -1\n1 11 11 41\n1 15 17 -28\n2 26 26\n2 12 18\n1 25 25 -43\n1 1 21 48\n2 20 26\n1 18 21 34\n2 23 24\n1 3 18 -8\n1 8 14 -14\n1 5 22 39\n1 1 5 13\n2 29 29\n1 30 30 46\n2 13 15\n1 15 28 -27\n1 1 12 0\n2 6 11\n2 27 28\n1 17 28 -35\n1 3 23 -26\n2 21 30\n2 24 25\n",
+    "output": "36050",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(11)\nn, q = 25000, 25000\nout = [f\"{n} {q}\", \" \".join(str(random.randint(-10**9, 10**9)) for _ in range(n))]\nfor _ in range(q):\n    l = random.randint(1, n); r = random.randint(l, n)\n    if random.randint(0, 1): out.append(f\"1 {l} {r} {random.randint(-10**9, 10**9)}\")\n    else: out.append(f\"2 {l} {r}\")\nprint(\"\\n\".join(out))\n",
+    "output": "204298076",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(12)\nn, q = 25000, 25000\nout = [f\"{n} {q}\", \" \".join(str(random.randint(-10**9, 10**9)) for _ in range(n))]\nfor _ in range(q):\n    l = random.randint(1, n); r = random.randint(l, n)\n    if random.randint(0, 1): out.append(f\"1 {l} {r} {random.randint(-10**9, 10**9)}\")\n    else: out.append(f\"2 {l} {r}\")\nprint(\"\\n\".join(out))\n",
+    "output": "813388096",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "q02",
+  "title": "Temperature Spread Queries",
+  "category": "Data Structures",
+  "difficulty": "Hard",
+  "timeLimit": 8,
+  "description": "<p>A weather station recorded <code>N</code> temperature readings. Scientists ask <code>Q</code> questions of the form &ldquo;what is the <b>spread</b> (maximum minus minimum) of the readings from day <code>l</code> to day <code>r</code>?&rdquo;. The data never changes, so preprocess it so each question is answered in O(1).</p><h4>Constraints</h4><ul><li><code>1 &le; N, Q &le; 70000</code></li><li><code>|a<sub>i</sub>| &le; 10<sup>9</sup></code></li><li><code>1 &le; l &le; r &le; N</code></li></ul><h4>Input</h4><p>The first line contains <code>N Q</code>, the second line the <code>N</code> readings, and each of the next <code>Q</code> lines a query <code>l r</code>.</p><h4>Output</h4><p>Let <code>ans<sub>1</sub>, ans<sub>2</sub>, &hellip;, ans<sub>t</sub></code> be the answers to the queries, in order. To keep the output small, print a single integer: the checksum <code>(1&middot;ans<sub>1</sub> + 2&middot;ans<sub>2</sub> + &hellip; + t&middot;ans<sub>t</sub>) mod 1000000007</code>, taken as a non-negative remainder (exactly what Python's <code>%</code> gives). If <code>t = 0</code>, print <code>0</code>.</p><h4>Example</h4><pre>Input:\n6 4\n3 -1 4 1 -5 9\n1 3\n2 5\n4 4\n1 6\n\nOutput:\n79</pre><p>In this example the individual answers are <code>5, 9, 0, 14</code>, so the checksum is <code>1&middot;5 + 2&middot;9 + 3&middot;0 + 4&middot;14</code> mod 1000000007 = <code>79</code>.</p>",
+  "solution": "import sys\ndef main():\n    d = sys.stdin.buffer.read().split()\n    n, q = int(d[0]), int(d[1])\n    a = list(map(int, d[2:2 + n]))\n    mn = [a]; mx = [a]; j = 1\n    while 2 * j <= n:\n        pm = mn[-1]; px = mx[-1]\n        mn.append(list(map(min, pm, pm[j:])))\n        mx.append(list(map(max, px, px[j:])))\n        j *= 2\n    MOD = 10**9 + 7\n    res = 0\n    Qs = list(map(int, d[2 + n:2 + n + 2 * q]))\n    t = 0\n    for l, r in zip(Qs[0::2], Qs[1::2]):\n        l -= 1; t += 1\n        k = (r - l).bit_length() - 1\n        m1 = mn[k]; m2 = mx[k]; o = r - (1 << k)\n        lo = m1[l] if m1[l] < m1[o] else m1[o]\n        hi = m2[l] if m2[l] > m2[o] else m2[o]\n        res = (res + t * (hi - lo)) % MOD\n    print(res)\nmain()\n",
+  "tests": [
+   {
+    "input": "6 4\n3 -1 4 1 -5 9\n1 3\n2 5\n4 4\n1 6\n",
+    "output": "79",
+    "hidden": false
+   },
+   {
+    "input": "4 3\n7 7 7 7\n1 4\n2 3\n1 1\n",
+    "output": "0",
+    "hidden": false
+   },
+   {
+    "input": "1 2\n-1000000000\n1 1\n1 1\n",
+    "output": "0",
+    "hidden": true
+   },
+   {
+    "input": "2 3\n-1000000000 1000000000\n1 2\n1 1\n2 2\n",
+    "output": "999999993",
+    "hidden": true
+   },
+   {
+    "input": "8 4\n1 2 3 4 5 6 7 8\n1 8\n3 6\n5 8\n8 8\n",
+    "output": "22",
+    "hidden": true
+   },
+   {
+    "input": "40 50\n-12 -82 59 -65 -2 -44 -13 -41 -11 -27 76 -19 56 95 73 -99 -61 92 99 59 -79 -73 -85 7 18 -25 60 23 -4 -42 -52 -73 -98 5 67 -3 -25 64 -22 98\n34 39\n19 32\n34 39\n10 36\n15 15\n32 38\n33 35\n11 36\n16 18\n27 40\n21 33\n25 29\n19 29\n24 27\n7 27\n5 32\n27 40\n12 17\n35 35\n12 22\n24 33\n7 18\n22 22\n17 28\n24 25\n21 24\n8 27\n25 35\n7 7\n31 37\n33 38\n31 38\n33 33\n27 27\n19 24\n33 37\n39 40\n2 30\n2 30\n29 30\n24 34\n4 24\n22 31\n28 31\n31 31\n10 10\n39 39\n8 12\n1 30\n16 21\n",
+    "output": "155311",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(21)\nn, q = 70000, 70000\nout = [f\"{n} {q}\", \" \".join(str(random.randint(-10**9, 10**9)) for _ in range(n))]\nfor _ in range(q):\n    l = random.randint(1, n // 2); r = random.randint(n // 2, n)\n    out.append(f\"{l} {r}\")\nprint(\"\\n\".join(out))\n",
+    "output": "28329266",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(22)\nn, q = 70000, 70000\nout = [f\"{n} {q}\", \" \".join(str(random.randint(-10**9, 10**9)) for _ in range(n))]\nfor _ in range(q):\n    l = random.randint(1, n // 2); r = random.randint(n // 2, n)\n    out.append(f\"{l} {r}\")\nprint(\"\\n\".join(out))\n",
+    "output": "509474888",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "q03",
+  "title": "Equal Watchtowers",
+  "category": "Data Structures",
+  "difficulty": "Hard",
+  "timeLimit": 5,
+  "description": "<p>Along a border stand <code>N</code> watchtowers with heights <code>h<sub>1</sub> &hellip; h<sub>N</sub></code>. Two towers <code>i &lt; j</code> can signal each other if they have the <b>same height</b> and <b>no tower strictly between them is taller</b> than they are. Count the pairs of towers that can signal each other.</p><p>An O(N<sup>2</sup>) scan is too slow; a monotonic stack with counts solves it in O(N).</p><h4>Constraints</h4><ul><li><code>1 &le; N &le; 200000</code></li><li><code>1 &le; h<sub>i</sub> &le; 10<sup>9</sup></code></li></ul><h4>Input</h4><p>The first line contains <code>N</code>; the second line contains the <code>N</code> heights.</p><h4>Output</h4><p>Print the number of pairs (it may exceed 2<sup>31</sup>).</p><h4>Example</h4><pre>Input:\n7\n2 1 2 3 2 2 3\n\nOutput:\n3</pre>",
+  "solution": "import sys\ndef main():\n    d = sys.stdin.buffer.read().split()\n    n = int(d[0])\n    sv = []; sc = []\n    ans = 0\n    for k in range(1, n + 1):\n        x = int(d[k])\n        while sv and sv[-1] < x:\n            sv.pop(); sc.pop()\n        if sv and sv[-1] == x:\n            ans += sc[-1]; sc[-1] += 1\n        else:\n            sv.append(x); sc.append(1)\n    print(ans)\nmain()\n",
+  "tests": [
+   {
+    "input": "7\n2 1 2 3 2 2 3\n",
+    "output": "3",
+    "hidden": false
+   },
+   {
+    "input": "4\n5 5 5 5\n",
+    "output": "6",
+    "hidden": false
+   },
+   {
+    "input": "1\n9\n",
+    "output": "0",
+    "hidden": true
+   },
+   {
+    "input": "5\n1 2 3 4 5\n",
+    "output": "0",
+    "hidden": true
+   },
+   {
+    "input": "6\n3 1 3 5 3 3\n",
+    "output": "2",
+    "hidden": true
+   },
+   {
+    "input": "9\n4 1 4 1 4 9 1 1 1\n",
+    "output": "6",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(31)\nn = 200000\nprint(n)\nprint(\" \".join(str(random.randint(1, 1)) for _ in range(n)))\n",
+    "output": "19999900000",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(32)\nn = 200000\nprint(n)\nprint(\" \".join(str(random.randint(1, 60)) for _ in range(n)))\n",
+    "output": "5518608",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(33)\nn = 200000\nprint(n)\nprint(\" \".join(str(random.randint(1, 1000000000)) for _ in range(n)))\n",
+    "output": "0",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "q04",
+  "title": "Collapsing Bridges",
+  "category": "Data Structures",
+  "difficulty": "Hard",
+  "timeLimit": 5,
+  "description": "<p>An archipelago has <code>N</code> islands and <code>M</code> bridges (bridge <code>i</code> joins islands <code>u<sub>i</sub></code> and <code>v<sub>i</sub></code>; a bridge may join an island to itself and two bridges may join the same pair). A storm destroys <code>Q</code> distinct bridges one after another. After each destruction, how many connected groups of islands are there?</p><p>Hint: union-find cannot delete edges&hellip; but it can add them. Process the destruction list backwards.</p><h4>Constraints</h4><ul><li><code>1 &le; N, M &le; 60000</code></li><li><code>0 &le; Q &le; M</code></li><li>Bridge indices in the destruction list are distinct.</li></ul><h4>Input</h4><p>The first line contains <code>N M</code>. Each of the next <code>M</code> lines contains a bridge <code>u v</code> (bridges are numbered <code>1..M</code> in input order). The next line contains <code>Q</code>, and the last line contains the <code>Q</code> bridge numbers in destruction order (the line is empty when <code>Q = 0</code>).</p><h4>Output</h4><p>Let <code>ans<sub>1</sub>, ans<sub>2</sub>, &hellip;, ans<sub>t</sub></code> be the answers to the destructions (ans<sub>i</sub> = number of connected groups right after the i-th destruction), in order. To keep the output small, print a single integer: the checksum <code>(1&middot;ans<sub>1</sub> + 2&middot;ans<sub>2</sub> + &hellip; + t&middot;ans<sub>t</sub>) mod 1000000007</code>, taken as a non-negative remainder (exactly what Python's <code>%</code> gives). If <code>t = 0</code>, print <code>0</code>.</p><h4>Example</h4><pre>Input:\n5 5\n1 2\n2 3\n3 1\n4 5\n2 4\n3\n5 1 2\n\nOutput:\n15</pre><p>In this example the individual answers are <code>2, 2, 3</code>, so the checksum is <code>1&middot;2 + 2&middot;2 + 3&middot;3</code> mod 1000000007 = <code>15</code>.</p>",
+  "solution": "import sys\ndef main():\n    d = sys.stdin.buffer.read().split()\n    n, m = int(d[0]), int(d[1])\n    U = d[2:2 + 2 * m:2]; V = d[3:3 + 2 * m:2]\n    p = 2 + 2 * m\n    q = int(d[p]); rem = [int(x) - 1 for x in d[p + 1:p + 1 + q]]\n    gone = [False] * m\n    for e in rem: gone[e] = True\n    par = list(range(n + 1))\n    def find(x):\n        while par[x] != x:\n            par[x] = par[par[x]]; x = par[x]\n        return x\n    comps = n\n    for e in range(m):\n        if not gone[e]:\n            a = find(int(U[e])); b = find(int(V[e]))\n            if a != b: par[a] = b; comps -= 1\n    ans = [0] * q\n    for i in range(q - 1, -1, -1):\n        ans[i] = comps\n        e = rem[i]\n        a = find(int(U[e])); b = find(int(V[e]))\n        if a != b: par[a] = b; comps -= 1\n    MOD = 10**9 + 7\n    print(sum((i + 1) * x for i, x in enumerate(ans)) % MOD)\nmain()\n",
+  "tests": [
+   {
+    "input": "5 5\n1 2\n2 3\n3 1\n4 5\n2 4\n3\n5 1 2\n",
+    "output": "15",
+    "hidden": false
+   },
+   {
+    "input": "3 2\n1 2\n1 2\n2\n1 2\n",
+    "output": "8",
+    "hidden": false
+   },
+   {
+    "input": "1 1\n1 1\n1\n1\n",
+    "output": "1",
+    "hidden": true
+   },
+   {
+    "input": "4 3\n1 2\n2 3\n3 4\n0\n\n",
+    "output": "0",
+    "hidden": true
+   },
+   {
+    "input": "6 6\n1 2\n2 3\n3 4\n4 5\n5 6\n6 1\n6\n1 3 5 2 4 6\n",
+    "output": "91",
+    "hidden": true
+   },
+   {
+    "input": "15 25\n10 8\n14 11\n5 10\n4 7\n6 3\n3 15\n8 1\n6 12\n5 9\n15 13\n10 8\n9 1\n12 13\n8 1\n9 1\n15 7\n6 8\n6 5\n11 7\n13 15\n15 2\n7 8\n14 10\n5 3\n6 1\n21\n13 9 8 14 21 23 5 6 16 1 22 11 3 10 25 24 20 7 19 15 2\n",
+    "output": "1569",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(41)\nn, m, q = 60000, 60000, 60000\nout = [f\"{n} {m}\"]\nfor _ in range(m):\n    out.append(f\"{random.randint(1, n)} {random.randint(1, n)}\")\nout.append(str(q))\nout.append(\" \".join(map(str, random.sample(range(1, m + 1), q))))\nprint(\"\\n\".join(out))\n",
+    "output": "647743808",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(42)\nn, m, q = 30000, 60000, 40000\nout = [f\"{n} {m}\"]\nfor _ in range(m):\n    out.append(f\"{random.randint(1, n)} {random.randint(1, n)}\")\nout.append(str(q))\nout.append(\" \".join(map(str, random.sample(range(1, m + 1), q))))\nprint(\"\\n\".join(out))\n",
+    "output": "537988784",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "q05",
+  "title": "Budget Shoppers",
+  "category": "Data Structures",
+  "difficulty": "Hard",
+  "timeLimit": 5,
+  "description": "<p>A street has <code>N</code> shops in a row; shop <code>i</code> sells its only item for <code>a<sub>i</sub></code> coins (prices may be negative: the shop pays you). Each of <code>Q</code> shoppers walks from shop <code>l</code> to shop <code>r</code> with a budget of <code>x</code> coins and wants to know how many of those shops have a price <b>at most</b> <code>x</code>.</p><p>Hint: answer the queries offline in increasing order of <code>x</code>.</p><h4>Constraints</h4><ul><li><code>1 &le; N, Q &le; 30000</code></li><li><code>|a<sub>i</sub>|, |x| &le; 10<sup>9</sup></code></li><li><code>1 &le; l &le; r &le; N</code></li></ul><h4>Input</h4><p>The first line contains <code>N</code>, the second the <code>N</code> prices, the third <code>Q</code>; each of the next <code>Q</code> lines contains <code>l r x</code>.</p><h4>Output</h4><p>Let <code>ans<sub>1</sub>, ans<sub>2</sub>, &hellip;, ans<sub>t</sub></code> be the answers to the shoppers, in order. To keep the output small, print a single integer: the checksum <code>(1&middot;ans<sub>1</sub> + 2&middot;ans<sub>2</sub> + &hellip; + t&middot;ans<sub>t</sub>) mod 1000000007</code>, taken as a non-negative remainder (exactly what Python's <code>%</code> gives). If <code>t = 0</code>, print <code>0</code>.</p><h4>Example</h4><pre>Input:\n5\n4 1 3 5 2\n3\n1 5 3\n2 4 2\n3 3 2\n\nOutput:\n5</pre><p>In this example the individual answers are <code>3, 1, 0</code>, so the checksum is <code>1&middot;3 + 2&middot;1 + 3&middot;0</code> mod 1000000007 = <code>5</code>.</p>",
+  "solution": "import sys\ndef main():\n    d = sys.stdin.buffer.read().split()\n    n = int(d[0]); a = list(map(int, d[1:1 + n]))\n    q = int(d[1 + n]); p = 2 + n\n    L = [0] * q; Rr = [0] * q; X = [0] * q\n    for i in range(q):\n        L[i] = int(d[p]); Rr[i] = int(d[p + 1]); X[i] = int(d[p + 2]); p += 3\n    order = sorted(range(n), key=a.__getitem__)\n    qo = sorted(range(q), key=X.__getitem__)\n    B = [0] * (n + 1)\n    ans = [0] * q\n    k = 0\n    for qi in qo:\n        x = X[qi]\n        while k < n and a[order[k]] <= x:\n            i = order[k] + 1\n            while i <= n:\n                B[i] += 1; i += i & -i\n            k += 1\n        s = 0; i = Rr[qi]\n        while i > 0:\n            s += B[i]; i -= i & -i\n        i = L[qi] - 1\n        while i > 0:\n            s -= B[i]; i -= i & -i\n        ans[qi] = s\n    MOD = 10**9 + 7\n    print(sum((i + 1) * v for i, v in enumerate(ans)) % MOD)\nmain()\n",
+  "tests": [
+   {
+    "input": "5\n4 1 3 5 2\n3\n1 5 3\n2 4 2\n3 3 2\n",
+    "output": "5",
+    "hidden": false
+   },
+   {
+    "input": "3\n-2 -2 -2\n2\n1 3 -2\n1 3 -3\n",
+    "output": "3",
+    "hidden": false
+   },
+   {
+    "input": "1\n1000000000\n2\n1 1 1000000000\n1 1 999999999\n",
+    "output": "1",
+    "hidden": true
+   },
+   {
+    "input": "4\n1 2 3 4\n4\n1 4 -1000000000\n1 4 1000000000\n2 3 2\n4 4 4\n",
+    "output": "15",
+    "hidden": true
+   },
+   {
+    "input": "6\n5 5 1 1 5 5\n3\n1 6 1\n3 4 0\n1 6 5\n",
+    "output": "20",
+    "hidden": true
+   },
+   {
+    "input": "40\n-6 13 20 30 21 -28 27 7 -21 22 19 -24 -22 7 -24 18 7 23 12 5 14 15 -24 -21 -27 4 16 -20 -28 -7 28 17 -19 -19 -8 30 6 -7 -20 5\n40\n4 39 0\n12 14 -32\n34 38 23\n24 37 -3\n22 37 -9\n9 15 -16\n34 35 -19\n21 40 13\n19 23 -24\n13 28 3\n20 27 11\n30 32 15\n36 37 19\n1 5 26\n33 35 17\n22 38 -14\n10 29 -32\n23 36 15\n36 37 -7\n15 40 30\n15 27 12\n18 37 -10\n24 35 -6\n14 21 -22\n39 40 -4\n32 34 -19\n20 37 14\n10 34 1\n1 14 -7\n17 21 -14\n11 17 -1\n30 31 -28\n19 34 -12\n27 27 -23\n19 23 -22\n5 7 -28\n21 21 -14\n32 35 -29\n22 30 22\n26 38 17\n",
+    "output": "3868",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(51)\nn, q = 30000, 30000\nout = [str(n), \" \".join(str(random.randint(-10**9, 10**9)) for _ in range(n)), str(q)]\nfor _ in range(q):\n    l = random.randint(1, n // 3); r = random.randint(2 * n // 3, n)\n    out.append(f\"{l} {r} {random.randint(-10**9, 10**9)}\")\nprint(\"\\n\".join(out))\n",
+    "output": "358336871",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(52)\nn, q = 30000, 30000\nout = [str(n), \" \".join(str(random.randint(-10**9, 10**9)) for _ in range(n)), str(q)]\nfor _ in range(q):\n    l = random.randint(1, n // 3); r = random.randint(2 * n // 3, n)\n    out.append(f\"{l} {r} {random.randint(-10**9, 10**9)}\")\nprint(\"\\n\".join(out))\n",
+    "output": "636581895",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "q06",
+  "title": "Bracket Repair Shop",
+  "category": "Data Structures",
+  "difficulty": "Impossible",
+  "timeLimit": 8,
+  "description": "<p>You are given a string of <code>N</code> brackets, each <code>(</code> or <code>)</code>, and <code>Q</code> operations:</p><ul><li><code>1 i</code>: flip the bracket at position <code>i</code> (<code>(</code> becomes <code>)</code> and vice versa);</li><li><code>2 l r</code>: report the length of the <b>longest regular bracket subsequence</b> of the substring <code>s[l..r]</code> (a subsequence keeps the order of characters but may skip some; a regular sequence is a correctly matched one such as <code>(()())</code>).</li></ul><p>A segment tree whose nodes store (matched length, unmatched <code>(</code>, unmatched <code>)</code>) answers each operation in O(log N). Careful: merging is <b>not commutative</b>.</p><h4>Constraints</h4><ul><li><code>1 &le; N, Q &le; 30000</code></li><li><code>1 &le; i &le; N</code>, <code>1 &le; l &le; r &le; N</code></li></ul><h4>Input</h4><p>The first line contains <code>N Q</code>, the second the bracket string, then <code>Q</code> lines with operations.</p><h4>Output</h4><p>Let <code>ans<sub>1</sub>, ans<sub>2</sub>, &hellip;, ans<sub>t</sub></code> be the answers to the type-2 operations, in order. To keep the output small, print a single integer: the checksum <code>(1&middot;ans<sub>1</sub> + 2&middot;ans<sub>2</sub> + &hellip; + t&middot;ans<sub>t</sub>) mod 1000000007</code>, taken as a non-negative remainder (exactly what Python's <code>%</code> gives). If <code>t = 0</code>, print <code>0</code>.</p><h4>Example</h4><pre>Input:\n8 5\n())(())(\n2 1 8\n2 2 3\n1 3\n2 1 8\n2 1 4\n\nOutput:\n32</pre><p>In this example the individual answers are <code>6, 0, 6, 2</code>, so the checksum is <code>1&middot;6 + 2&middot;0 + 3&middot;6 + 4&middot;2</code> mod 1000000007 = <code>32</code>.</p>",
+  "solution": "import sys\ndef main():\n    d = sys.stdin.buffer.read().split()\n    n, q = int(d[0]), int(d[1]); s = d[2]\n    size = 1\n    while size < n: size *= 2\n    M = [0] * (2 * size); O = [0] * (2 * size); C = [0] * (2 * size)\n    for i in range(n):\n        if s[i] == 40: O[size + i] = 1\n        else: C[size + i] = 1\n    def pull(p):\n        l = 2 * p; r = l + 1\n        t = O[l] if O[l] < C[r] else C[r]\n        M[p] = M[l] + M[r] + 2 * t; O[p] = O[l] + O[r] - t; C[p] = C[l] + C[r] - t\n    for p in range(size - 1, 0, -1): pull(p)\n    MOD = 10**9 + 7\n    res = 0; cnt = 0; k = 3\n    for _ in range(q):\n        if d[k] == b'1':\n            i = int(d[k + 1]) - 1 + size; k += 2\n            O[i], C[i] = C[i], O[i]\n            i >>= 1\n            while i:\n                pull(i); i >>= 1\n        else:\n            l = int(d[k + 1]) - 1 + size; r = int(d[k + 2]) + size; k += 3\n            am = ao = ac = 0\n            rights = []\n            while l < r:\n                if l & 1:\n                    t = ao if ao < C[l] else C[l]\n                    am += M[l] + 2 * t; ao += O[l] - t; ac += C[l] - t\n                    l += 1\n                if r & 1:\n                    r -= 1; rights.append(r)\n                l >>= 1; r >>= 1\n            for x in reversed(rights):\n                t = ao if ao < C[x] else C[x]\n                am += M[x] + 2 * t; ao += O[x] - t; ac += C[x] - t\n            cnt += 1\n            res = (res + cnt * am) % MOD\n    print(res)\nmain()\n",
+  "tests": [
+   {
+    "input": "8 5\n())(())(\n2 1 8\n2 2 3\n1 3\n2 1 8\n2 1 4\n",
+    "output": "32",
+    "hidden": false
+   },
+   {
+    "input": "4 3\n))((\n2 1 4\n1 1\n2 1 4\n",
+    "output": "4",
+    "hidden": false
+   },
+   {
+    "input": "1 3\n(\n2 1 1\n1 1\n2 1 1\n",
+    "output": "0",
+    "hidden": true
+   },
+   {
+    "input": "6 4\n((((((\n2 1 6\n1 6\n1 4\n2 1 6\n",
+    "output": "8",
+    "hidden": true
+   },
+   {
+    "input": "10 1\n()()()()()\n1 5\n",
+    "output": "0",
+    "hidden": true
+   },
+   {
+    "input": "60 60\n(()(()))(()))())(())(()(()())))))(())((((())()((()()))))()()\n1 52\n2 11 49\n2 31 33\n1 26\n2 42 48\n1 36\n1 34\n2 48 59\n2 45 47\n2 34 47\n2 60 60\n2 41 49\n1 11\n1 38\n2 35 38\n1 41\n2 15 37\n2 26 57\n1 28\n1 23\n1 8\n1 52\n2 41 48\n2 9 54\n1 12\n1 5\n1 23\n2 5 16\n2 43 52\n2 14 58\n2 3 23\n1 13\n2 29 49\n2 24 39\n1 48\n1 31\n2 8 14\n2 37 42\n2 28 56\n1 17\n2 9 11\n1 16\n2 24 52\n2 36 54\n2 25 28\n2 43 46\n2 16 20\n2 39 59\n2 60 60\n2 31 59\n2 7 13\n1 14\n2 28 28\n1 9\n2 27 43\n2 35 35\n1 2\n1 50\n2 14 51\n1 36\n",
+    "output": "7338",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(61)\nn, q = 30000, 30000\nout = [f\"{n} {q}\", \"\".join(random.choice(\"()\") for _ in range(n))]\nfor _ in range(q):\n    if random.randint(1, 10) <= 4:\n        out.append(f\"1 {random.randint(1, n)}\")\n    else:\n        l = random.randint(1, n // 4); r = random.randint(3 * n // 4, n)\n        out.append(f\"2 {l} {r}\")\nprint(\"\\n\".join(out))\n",
+    "output": "49367532",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(62)\nn, q = 30000, 30000\nout = [f\"{n} {q}\", \"\".join(random.choice(\"()\") for _ in range(n))]\nfor _ in range(q):\n    if random.randint(1, 10) <= 4:\n        out.append(f\"1 {random.randint(1, n)}\")\n    else:\n        l = random.randint(1, n // 4); r = random.randint(3 * n // 4, n)\n        out.append(f\"2 {l} {r}\")\nprint(\"\\n\".join(out))\n",
+    "output": "903914977",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "q07",
+  "title": "Best Streak with Edits",
+  "category": "Data Structures",
+  "difficulty": "Impossible",
+  "timeLimit": 8,
+  "description": "<p>A trader's daily profits are <code>a<sub>1</sub> &hellip; a<sub>N</sub></code> (losses are negative). The records get corrected over time, and analysts keep asking for the best <b>streak</b> inside a period: the maximum sum of a <b>non-empty contiguous</b> block of days within <code>[l, r]</code>.</p><ul><li><code>1 i v</code>: set <code>a<sub>i</sub> = v</code>;</li><li><code>2 l r</code>: report the maximum non-empty subarray sum inside <code>a[l..r]</code>.</li></ul><p>Kadane's algorithm per query is O(N) &mdash; too slow. Store (total, best prefix, best suffix, best) in a segment tree.</p><h4>Constraints</h4><ul><li><code>1 &le; N, Q &le; 20000</code></li><li><code>|a<sub>i</sub>|, |v| &le; 10<sup>9</sup></code></li></ul><h4>Input</h4><p>The first line contains <code>N Q</code>, the second the <code>N</code> profits, then <code>Q</code> operation lines.</p><h4>Output</h4><p>Let <code>ans<sub>1</sub>, ans<sub>2</sub>, &hellip;, ans<sub>t</sub></code> be the answers to the type-2 operations (answers may be negative), in order. To keep the output small, print a single integer: the checksum <code>(1&middot;ans<sub>1</sub> + 2&middot;ans<sub>2</sub> + &hellip; + t&middot;ans<sub>t</sub>) mod 1000000007</code>, taken as a non-negative remainder (exactly what Python's <code>%</code> gives). If <code>t = 0</code>, print <code>0</code>.</p><h4>Example</h4><pre>Input:\n6 5\n2 -3 4 -1 2 -6\n2 1 6\n2 1 2\n1 2 5\n2 1 6\n2 6 6\n\nOutput:\n21</pre><p>In this example the individual answers are <code>5, 2, 12, -6</code>, so the checksum is <code>1&middot;5 + 2&middot;2 + 3&middot;12 + 4&middot;(-6)</code> mod 1000000007 = <code>21</code>.</p>",
+  "solution": "import sys\ndef main():\n    d = sys.stdin.buffer.read().split()\n    n, q = int(d[0]), int(d[1])\n    size = 1\n    while size < n: size *= 2\n    NEG = -(10**18)\n    S = [0] * (2 * size); P = [NEG] * (2 * size); Sf = [NEG] * (2 * size); B = [NEG] * (2 * size)\n    for i in range(n):\n        v = int(d[2 + i]); j = size + i\n        S[j] = P[j] = Sf[j] = B[j] = v\n    def pull(p):\n        l = 2 * p; r = l + 1\n        S[p] = S[l] + S[r]\n        x = S[l] + P[r]; P[p] = P[l] if P[l] > x else x\n        x = S[r] + Sf[l]; Sf[p] = Sf[r] if Sf[r] > x else x\n        x = Sf[l] + P[r]\n        b = B[l] if B[l] > B[r] else B[r]\n        B[p] = b if b > x else x\n    for p in range(size - 1, 0, -1): pull(p)\n    MOD = 10**9 + 7\n    res = 0; cnt = 0; k = 2 + n\n    for _ in range(q):\n        if d[k] == b'1':\n            j = int(d[k + 1]) - 1 + size; v = int(d[k + 2]); k += 3\n            S[j] = P[j] = Sf[j] = B[j] = v\n            j >>= 1\n            while j:\n                pull(j); j >>= 1\n        else:\n            l = int(d[k + 1]) - 1 + size; r = int(d[k + 2]) + size; k += 3\n            left = []; rights = []\n            while l < r:\n                if l & 1: left.append(l); l += 1\n                if r & 1: r -= 1; rights.append(r)\n                l >>= 1; r >>= 1\n            nodes = left + rights[::-1]\n            x = nodes[0]\n            s, pf, sf, b = S[x], P[x], Sf[x], B[x]\n            for y in nodes[1:]:\n                t = sf + P[y]\n                if B[y] > b: b = B[y]\n                if t > b: b = t\n                t = s + P[y]\n                if t > pf: pf = t\n                t = S[y] + sf\n                sf = Sf[y] if Sf[y] > t else t\n                s += S[y]\n            cnt += 1\n            res = (res + cnt * b) % MOD\n    print(res)\nmain()\n",
+  "tests": [
+   {
+    "input": "6 5\n2 -3 4 -1 2 -6\n2 1 6\n2 1 2\n1 2 5\n2 1 6\n2 6 6\n",
+    "output": "21",
+    "hidden": false
+   },
+   {
+    "input": "3 3\n-5 -2 -7\n2 1 3\n1 2 -9\n2 1 3\n",
+    "output": "999999995",
+    "hidden": false
+   },
+   {
+    "input": "1 2\n-1000000000\n2 1 1\n2 1 1\n",
+    "output": "21",
+    "hidden": true
+   },
+   {
+    "input": "5 4\n1 1 1 1 1\n2 1 5\n1 3 -10\n2 1 5\n2 2 4\n",
+    "output": "12",
+    "hidden": true
+   },
+   {
+    "input": "4 1\n1 2 3 4\n1 1 5\n",
+    "output": "0",
+    "hidden": true
+   },
+   {
+    "input": "50 50\n6 -8 -11 17 -1 14 -2 -18 4 -10 3 -9 -15 18 1 -12 -15 15 -7 15 -12 12 19 -7 -5 -8 -11 -9 12 5 -7 -19 -3 -9 6 -1 2 -11 -7 -4 8 9 -6 -4 -10 1 -9 12 19 -19\n2 50 50\n2 4 10\n1 47 13\n2 27 39\n1 23 -13\n1 17 -3\n2 28 31\n2 41 43\n2 33 49\n2 2 6\n1 49 -3\n1 15 2\n1 14 7\n1 37 15\n1 46 -11\n1 33 -8\n2 33 44\n2 40 48\n1 23 5\n2 50 50\n1 49 -14\n2 47 47\n2 45 47\n2 31 33\n1 21 -10\n1 8 4\n1 35 -4\n2 26 35\n2 30 50\n1 17 -1\n2 43 48\n1 45 17\n1 8 4\n1 30 13\n2 41 44\n2 27 33\n1 9 15\n2 30 34\n1 25 -6\n1 38 -4\n1 19 -19\n2 13 15\n2 1 29\n2 49 50\n2 15 23\n2 3 43\n2 24 31\n2 42 46\n2 30 45\n1 8 2\n",
+    "output": "7335",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(71)\nn, q = 20000, 20000\nout = [f\"{n} {q}\", \" \".join(str(random.randint(-10**9, 10**9)) for _ in range(n))]\nfor _ in range(q):\n    if random.randint(1, 10) <= 4:\n        out.append(f\"1 {random.randint(1, n)} {random.randint(-10**9, 10**9)}\")\n    else:\n        l = random.randint(1, n // 4); r = random.randint(3 * n // 4, n)\n        out.append(f\"2 {l} {r}\")\nprint(\"\\n\".join(out))\n",
+    "output": "993233847",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(72)\nn, q = 20000, 20000\nout = [f\"{n} {q}\", \" \".join(str(random.randint(-10**9, 10**9)) for _ in range(n))]\nfor _ in range(q):\n    if random.randint(1, 10) <= 4:\n        out.append(f\"1 {random.randint(1, n)} {random.randint(-10**9, 10**9)}\")\n    else:\n        l = random.randint(1, n // 4); r = random.randint(3 * n // 4, n)\n        out.append(f\"2 {l} {r}\")\nprint(\"\\n\".join(out))\n",
+    "output": "202285055",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "q08",
+  "title": "Reservoir Levels",
+  "category": "Data Structures",
+  "difficulty": "Impossible",
+  "timeLimit": 8,
+  "description": "<p>A chain of <code>N</code> reservoirs has water levels <code>a<sub>1</sub> &hellip; a<sub>N</sub></code> (relative to sea level, so they may be negative). Rain and drought change the level of a whole block of consecutive reservoirs at once, and engineers need the <b>lowest</b> level within a block.</p><ul><li><code>1 l r v</code>: add <code>v</code> to every level in <code>[l, r]</code>;</li><li><code>2 l r</code>: report <code>min(a<sub>l</sub>, &hellip;, a<sub>r</sub>)</code>.</li></ul><p>This needs a segment tree with lazy propagation (range add, range minimum).</p><h4>Constraints</h4><ul><li><code>1 &le; N, Q &le; 20000</code></li><li><code>|a<sub>i</sub>|, |v| &le; 10<sup>9</sup></code></li><li><code>1 &le; l &le; r &le; N</code></li></ul><h4>Input</h4><p>The first line contains <code>N Q</code>, the second the initial levels, then <code>Q</code> operation lines.</p><h4>Output</h4><p>Let <code>ans<sub>1</sub>, ans<sub>2</sub>, &hellip;, ans<sub>t</sub></code> be the answers to the type-2 operations (answers may be negative), in order. To keep the output small, print a single integer: the checksum <code>(1&middot;ans<sub>1</sub> + 2&middot;ans<sub>2</sub> + &hellip; + t&middot;ans<sub>t</sub>) mod 1000000007</code>, taken as a non-negative remainder (exactly what Python's <code>%</code> gives). If <code>t = 0</code>, print <code>0</code>.</p><h4>Example</h4><pre>Input:\n5 5\n3 1 4 1 5\n2 1 5\n1 2 4 3\n2 1 5\n2 2 4\n2 5 5\n\nOutput:\n39</pre><p>In this example the individual answers are <code>1, 3, 4, 5</code>, so the checksum is <code>1&middot;1 + 2&middot;3 + 3&middot;4 + 4&middot;5</code> mod 1000000007 = <code>39</code>.</p>",
+  "solution": "import sys\ndef main():\n    d = sys.stdin.buffer.read().split()\n    n, q = int(d[0]), int(d[1])\n    size = 1; h = 0\n    while size < n: size *= 2; h += 1\n    INF = 1 << 62\n    t = [INF] * (2 * size); dd = [0] * size\n    for i in range(n): t[size + i] = int(d[2 + i])\n    for p in range(size - 1, 0, -1):\n        t[p] = t[2 * p] if t[2 * p] < t[2 * p + 1] else t[2 * p + 1]\n    def build(p):\n        while p > 1:\n            p >>= 1\n            a = t[2 * p]; b = t[2 * p + 1]\n            t[p] = (a if a < b else b) + dd[p]\n    def push(p):\n        for s in range(h, 0, -1):\n            i = p >> s\n            v = dd[i]\n            if v:\n                c = 2 * i\n                t[c] += v; t[c + 1] += v\n                if c < size: dd[c] += v; dd[c + 1] += v\n                dd[i] = 0\n    MOD = 10**9 + 7\n    res = 0; cnt = 0; k = 2 + n\n    for _ in range(q):\n        if d[k] == b'1':\n            l = int(d[k + 1]) - 1 + size; r = int(d[k + 2]) + size; v = int(d[k + 3]); k += 4\n            l0, r0 = l, r\n            while l < r:\n                if l & 1:\n                    t[l] += v\n                    if l < size: dd[l] += v\n                    l += 1\n                if r & 1:\n                    r -= 1; t[r] += v\n                    if r < size: dd[r] += v\n                l >>= 1; r >>= 1\n            build(l0); build(r0 - 1)\n        else:\n            l = int(d[k + 1]) - 1 + size; r = int(d[k + 2]) + size; k += 3\n            push(l); push(r - 1)\n            m = INF\n            while l < r:\n                if l & 1:\n                    if t[l] < m: m = t[l]\n                    l += 1\n                if r & 1:\n                    r -= 1\n                    if t[r] < m: m = t[r]\n                l >>= 1; r >>= 1\n            cnt += 1\n            res = (res + cnt * m) % MOD\n    print(res)\nmain()\n",
+  "tests": [
+   {
+    "input": "5 5\n3 1 4 1 5\n2 1 5\n1 2 4 3\n2 1 5\n2 2 4\n2 5 5\n",
+    "output": "39",
+    "hidden": false
+   },
+   {
+    "input": "3 4\n0 0 0\n1 1 2 -1\n1 2 3 -1\n2 1 3\n2 3 3\n",
+    "output": "1000000003",
+    "hidden": false
+   },
+   {
+    "input": "1 3\n5\n1 1 1 -1000000000\n1 1 1 -1000000000\n2 1 1\n",
+    "output": "19",
+    "hidden": true
+   },
+   {
+    "input": "7 5\n9 8 7 6 5 4 3\n1 7 7 100\n2 1 7\n1 1 6 -6\n2 3 7\n2 7 7\n",
+    "output": "309",
+    "hidden": true
+   },
+   {
+    "input": "4 2\n1 2 3 4\n1 1 4 1\n1 2 2 2\n",
+    "output": "0",
+    "hidden": true
+   },
+   {
+    "input": "50 60\n-11 -9 32 28 -31 9 9 10 27 10 -14 -4 35 3 21 -13 18 -13 15 -34 14 -28 4 -29 -12 15 -23 3 26 31 9 -17 18 -16 -17 8 11 -15 0 -17 36 14 15 -27 17 -25 33 16 -25 -23\n1 38 43 -14\n1 43 44 16\n1 3 5 32\n1 3 49 -36\n2 43 44\n1 21 39 28\n2 48 48\n2 31 31\n2 49 49\n1 39 44 40\n1 21 44 -2\n2 13 24\n2 48 48\n1 45 45 -36\n2 7 11\n2 50 50\n2 41 49\n2 39 48\n1 17 48 22\n1 41 41 28\n1 33 34 1\n2 25 30\n1 16 40 24\n1 14 28 11\n1 45 47 35\n2 9 42\n1 12 17 6\n1 45 49 -21\n1 28 29 -35\n2 14 20\n1 1 34 -38\n2 31 45\n1 25 37 -11\n1 21 23 -31\n2 30 36\n2 12 37\n1 45 45 22\n2 46 49\n2 17 38\n1 40 47 32\n2 3 25\n1 5 7 13\n2 23 27\n1 15 42 30\n1 45 49 -37\n1 40 43 -15\n2 12 46\n1 3 4 -31\n2 1 27\n1 41 48 -33\n1 34 50 2\n1 48 49 23\n1 15 39 -30\n2 47 47\n2 33 35\n1 37 45 25\n1 2 38 23\n2 1 26\n1 34 49 -14\n1 10 50 10\n",
+    "output": "999984469",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(81)\nn, q = 20000, 20000\nout = [f\"{n} {q}\", \" \".join(str(random.randint(-10**9, 10**9)) for _ in range(n))]\nfor _ in range(q):\n    l = random.randint(1, n // 3); r = random.randint(2 * n // 3, n)\n    if random.randint(0, 1): out.append(f\"1 {l} {r} {random.randint(-10**9, 10**9)}\")\n    else: out.append(f\"2 {l} {r}\")\nprint(\"\\n\".join(out))\n",
+    "output": "441054996",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(82)\nn, q = 20000, 20000\nout = [f\"{n} {q}\", \" \".join(str(random.randint(-10**9, 10**9)) for _ in range(n))]\nfor _ in range(q):\n    l = random.randint(1, n // 3); r = random.randint(2 * n // 3, n)\n    if random.randint(0, 1): out.append(f\"1 {l} {r} {random.randint(-10**9, 10**9)}\")\n    else: out.append(f\"2 {l} {r}\")\nprint(\"\\n\".join(out))\n",
+    "output": "559180625",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "q09",
+  "title": "Distinct Visitors",
+  "category": "Data Structures",
+  "difficulty": "Impossible",
+  "timeLimit": 8,
+  "description": "<p>A museum logs the visitor ID of each of its <code>N</code> entries. Auditors ask <code>Q</code> questions: how many <b>distinct</b> visitors entered between entry <code>l</code> and entry <code>r</code> (inclusive)?</p><p>Building a set per query is O(N) each. Sort the queries by <code>r</code> and keep only the <i>last</i> occurrence of every ID marked in a Fenwick tree.</p><h4>Constraints</h4><ul><li><code>1 &le; N, Q &le; 40000</code></li><li><code>1 &le; id<sub>i</sub> &le; 10<sup>9</sup></code></li><li><code>1 &le; l &le; r &le; N</code></li></ul><h4>Input</h4><p>The first line contains <code>N</code>, the second the <code>N</code> IDs, the third <code>Q</code>, and then <code>Q</code> lines <code>l r</code>.</p><h4>Output</h4><p>Let <code>ans<sub>1</sub>, ans<sub>2</sub>, &hellip;, ans<sub>t</sub></code> be the answers to the questions, in order. To keep the output small, print a single integer: the checksum <code>(1&middot;ans<sub>1</sub> + 2&middot;ans<sub>2</sub> + &hellip; + t&middot;ans<sub>t</sub>) mod 1000000007</code>, taken as a non-negative remainder (exactly what Python's <code>%</code> gives). If <code>t = 0</code>, print <code>0</code>.</p><h4>Example</h4><pre>Input:\n6\n1 2 1 3 2 2\n4\n1 6\n2 4\n5 6\n3 3\n\nOutput:\n16</pre><p>In this example the individual answers are <code>3, 3, 1, 1</code>, so the checksum is <code>1&middot;3 + 2&middot;3 + 3&middot;1 + 4&middot;1</code> mod 1000000007 = <code>16</code>.</p>",
+  "solution": "import sys\ndef main():\n    d = sys.stdin.buffer.read().split()\n    n = int(d[0]); a = d[1:1 + n]\n    q = int(d[1 + n]); p = 2 + n\n    L = [0] * q; Rr = [0] * q\n    for i in range(q):\n        L[i] = int(d[p]); Rr[i] = int(d[p + 1]); p += 2\n    qo = sorted(range(q), key=Rr.__getitem__)\n    B = [0] * (n + 1)\n    last = {}\n    ans = [0] * q\n    cur = 0\n    for qi in qo:\n        r = Rr[qi]\n        while cur < r:\n            cur += 1\n            v = a[cur - 1]\n            pl = last.get(v, 0)\n            if pl:\n                i = pl\n                while i <= n:\n                    B[i] -= 1; i += i & -i\n            i = cur\n            while i <= n:\n                B[i] += 1; i += i & -i\n            last[v] = cur\n        s = 0; i = r\n        while i > 0:\n            s += B[i]; i -= i & -i\n        i = L[qi] - 1\n        while i > 0:\n            s -= B[i]; i -= i & -i\n        ans[qi] = s\n    MOD = 10**9 + 7\n    print(sum((i + 1) * v for i, v in enumerate(ans)) % MOD)\nmain()\n",
+  "tests": [
+   {
+    "input": "6\n1 2 1 3 2 2\n4\n1 6\n2 4\n5 6\n3 3\n",
+    "output": "16",
+    "hidden": false
+   },
+   {
+    "input": "5\n7 7 7 7 7\n3\n1 5\n2 3\n4 4\n",
+    "output": "6",
+    "hidden": false
+   },
+   {
+    "input": "1\n1000000000\n1\n1 1\n",
+    "output": "1",
+    "hidden": true
+   },
+   {
+    "input": "5\n1 2 3 4 5\n3\n1 5\n2 4\n5 5\n",
+    "output": "14",
+    "hidden": true
+   },
+   {
+    "input": "8\n4 1 4 1 4 1 4 1\n4\n1 8\n1 1\n2 7\n3 4\n",
+    "output": "18",
+    "hidden": true
+   },
+   {
+    "input": "50\n4 3 3 3 8 4 12 12 11 5 7 7 6 9 11 5 6 10 9 6 10 6 5 7 9 3 5 4 5 1 9 6 9 1 10 2 9 9 2 9 4 2 12 4 1 7 9 11 5 8\n50\n7 13\n36 43\n40 50\n17 43\n16 20\n5 21\n26 43\n26 49\n20 30\n40 47\n39 44\n21 31\n24 30\n1 32\n18 21\n27 43\n1 20\n17 30\n40 50\n36 48\n22 25\n28 28\n24 34\n20 46\n8 29\n17 45\n47 50\n1 34\n39 40\n49 49\n30 33\n16 28\n37 50\n16 32\n21 40\n6 13\n14 49\n37 43\n22 24\n13 39\n1 9\n22 46\n49 49\n44 47\n48 50\n6 46\n11 24\n30 32\n46 46\n20 27\n",
+    "output": "7856",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(91)\nn, q = 40000, 40000\nout = [str(n), \" \".join(str(random.randint(1, 1000)) for _ in range(n)), str(q)]\nfor _ in range(q):\n    l = random.randint(1, n // 3); r = random.randint(2 * n // 3, n)\n    out.append(f\"{l} {r}\")\nprint(\"\\n\".join(out))\n",
+    "output": "19994400",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(92)\nn, q = 40000, 40000\nout = [str(n), \" \".join(str(random.randint(1, 1000000000)) for _ in range(n)), str(q)]\nfor _ in range(q):\n    l = random.randint(1, n // 3); r = random.randint(2 * n // 3, n)\n    out.append(f\"{l} {r}\")\nprint(\"\\n\".join(out))\n",
+    "output": "207327786",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "q10",
+  "title": "Top Performers in Every Window",
+  "category": "Data Structures",
+  "difficulty": "Impossible",
+  "timeLimit": 8,
+  "description": "<p>A league records the scores <code>a<sub>1</sub> &hellip; a<sub>N</sub></code> of <code>N</code> consecutive matches. For every window of <code>W</code> consecutive matches, the committee sums the <code>K</code> <b>largest</b> scores in that window (if values repeat, each occurrence counts separately).</p><p>Sorting every window is far too slow for large <code>W</code>. Maintain the window in a Fenwick tree over value ranks (counts and sums) and walk it with binary lifting &mdash; or use two heaps with lazy deletion.</p><h4>Constraints</h4><ul><li><code>1 &le; K &le; W &le; N &le; 30000</code></li><li><code>|a<sub>i</sub>| &le; 10<sup>9</sup></code></li></ul><h4>Input</h4><p>The first line contains <code>N W K</code>; the second line contains the <code>N</code> scores.</p><h4>Output</h4><p>Let <code>ans<sub>1</sub>, ans<sub>2</sub>, &hellip;, ans<sub>t</sub></code> be the answers to the <code>N - W + 1</code> windows from left to right (ans<sub>i</sub> = sum of the K largest scores in window i), in order. To keep the output small, print a single integer: the checksum <code>(1&middot;ans<sub>1</sub> + 2&middot;ans<sub>2</sub> + &hellip; + t&middot;ans<sub>t</sub>) mod 1000000007</code>, taken as a non-negative remainder (exactly what Python's <code>%</code> gives). If <code>t = 0</code>, print <code>0</code>.</p><h4>Example</h4><pre>Input:\n6 3 2\n5 1 4 -2 8 3\n\nOutput:\n99</pre><p>In this example the individual answers are <code>9, 5, 12, 11</code>, so the checksum is <code>1&middot;9 + 2&middot;5 + 3&middot;12 + 4&middot;11</code> mod 1000000007 = <code>99</code>.</p>",
+  "solution": "import sys\ndef main():\n    d = sys.stdin.buffer.read().split()\n    n, W, K = int(d[0]), int(d[1]), int(d[2])\n    a = list(map(int, d[3:3 + n]))\n    order = sorted(range(n), key=lambda i: (a[i], i))\n    rk = [0] * n\n    for r, i in enumerate(order): rk[i] = r + 1\n    C = [0] * (n + 1); S = [0] * (n + 1)\n    LOG = 1\n    while LOG * 2 <= n: LOG *= 2\n    m = W - K\n    total = 0\n    MOD = 10**9 + 7\n    res = 0; cnt = 0\n    for i in range(n):\n        x = a[i]; j = rk[i]; total += x\n        while j <= n:\n            C[j] += 1; S[j] += x; j += j & -j\n        if i >= W:\n            y = a[i - W]; j = rk[i - W]; total -= y\n            while j <= n:\n                C[j] -= 1; S[j] -= y; j += j & -j\n        if i >= W - 1:\n            pos = 0; rem = m; acc = 0; step = LOG\n            while step and rem:\n                np_ = pos + step\n                if np_ <= n and C[np_] <= rem:\n                    pos = np_; rem -= C[np_]; acc += S[np_]\n                step >>= 1\n            cnt += 1\n            res = (res + cnt * (total - acc)) % MOD\n    print(res)\nmain()\n",
+  "tests": [
+   {
+    "input": "6 3 2\n5 1 4 -2 8 3\n",
+    "output": "99",
+    "hidden": false
+   },
+   {
+    "input": "5 5 5\n-1 -2 -3 -4 -5\n",
+    "output": "999999992",
+    "hidden": false
+   },
+   {
+    "input": "1 1 1\n-1000000000\n",
+    "output": "7",
+    "hidden": true
+   },
+   {
+    "input": "6 2 1\n3 3 3 3 3 3\n",
+    "output": "45",
+    "hidden": true
+   },
+   {
+    "input": "7 4 1\n1 9 2 9 3 9 4\n",
+    "output": "90",
+    "hidden": true
+   },
+   {
+    "input": "8 8 3\n5 -5 5 -5 5 -5 7 7\n",
+    "output": "19",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(101)\nn, W, K = 30000, 10000, 3000\nprint(n, W, K)\nprint(\" \".join(str(random.randint(-10**9, 10**9)) for _ in range(n)))\n",
+    "output": "671111568",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(102)\nn, W, K = 30000, 20000, 19999\nprint(n, W, K)\nprint(\" \".join(str(random.randint(-10**9, 10**9)) for _ in range(n)))\n",
+    "output": "663909149",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(103)\nn, W, K = 30000, 500, 1\nprint(n, W, K)\nprint(\" \".join(str(random.randint(-10**9, 10**9)) for _ in range(n)))\n",
+    "output": "265098334",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "q11",
+  "title": "Most Chaotic Window",
+  "category": "Data Structures",
+  "difficulty": "Impossible",
+  "timeLimit": 8,
+  "description": "<p>A queue of <code>N</code> people has heights <code>a<sub>1</sub> &hellip; a<sub>N</sub></code>. The <b>chaos</b> of a group of consecutive people is the number of inversions in it: pairs of positions <code>i &lt; j</code> in the group with <code>a<sub>i</sub> &gt; a<sub>j</sub></code> (strictly; equal heights are not an inversion). Among all windows of exactly <code>W</code> consecutive people, find the maximum chaos and the window where it happens.</p><p>Recounting each window is O(W log W) or worse. When the window slides, only the inversions involving the removed and the added person change.</p><h4>Constraints</h4><ul><li><code>1 &le; W &le; N &le; 50000</code></li><li><code>1 &le; a<sub>i</sub> &le; 10<sup>9</sup></code></li></ul><h4>Input</h4><p>The first line contains <code>N W</code>; the second line contains the <code>N</code> heights.</p><h4>Output</h4><p>Print two integers separated by a space: the maximum chaos, and the 1-based starting position of the window achieving it. If several windows tie, print the <b>smallest</b> starting position.</p><h4>Example</h4><pre>Input:\n6 3\n3 1 2 5 4 1\n\nOutput:\n3 4</pre>",
+  "solution": "import sys\ndef main():\n    d = sys.stdin.buffer.read().split()\n    n, W = int(d[0]), int(d[1])\n    a = list(map(int, d[2:2 + n]))\n    vals = sorted(set(a))\n    idx = {v: i + 1 for i, v in enumerate(vals)}\n    rk = [idx[v] for v in a]\n    D = len(vals)\n    B = [0] * (D + 1)\n    inv = 0\n    for i in range(W):\n        r = rk[i]; s = 0; j = r\n        while j > 0:\n            s += B[j]; j -= j & -j\n        inv += i - s\n        j = r\n        while j <= D:\n            B[j] += 1; j += j & -j\n    best = inv; bs = 1\n    for i in range(W, n):\n        r = rk[i - W]; j = r\n        while j <= D:\n            B[j] -= 1; j += j & -j\n        s = 0; j = r - 1\n        while j > 0:\n            s += B[j]; j -= j & -j\n        inv -= s\n        r = rk[i]; s = 0; j = r\n        while j > 0:\n            s += B[j]; j -= j & -j\n        inv += (W - 1) - s\n        j = r\n        while j <= D:\n            B[j] += 1; j += j & -j\n        if inv > best:\n            best = inv; bs = i - W + 2\n    print(best, bs)\nmain()\n",
+  "tests": [
+   {
+    "input": "6 3\n3 1 2 5 4 1\n",
+    "output": "3 4",
+    "hidden": false
+   },
+   {
+    "input": "5 2\n1 2 3 4 5\n",
+    "output": "0 1",
+    "hidden": false
+   },
+   {
+    "input": "1 1\n7\n",
+    "output": "0 1",
+    "hidden": true
+   },
+   {
+    "input": "5 5\n5 4 3 2 1\n",
+    "output": "10 1",
+    "hidden": true
+   },
+   {
+    "input": "6 3\n2 2 2 1 1 1\n",
+    "output": "2 2",
+    "hidden": true
+   },
+   {
+    "input": "8 4\n1 4 2 3 4 1 3 2\n",
+    "output": "4 5",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(111)\nn, W = 50000, 20000\nprint(n, W)\nprint(\" \".join(str(random.randint(1, 1000000000)) for _ in range(n)))\n",
+    "output": "100653104 15984",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(112)\nn, W = 50000, 777\nprint(n, W)\nprint(\" \".join(str(random.randint(1, 30)) for _ in range(n)))\n",
+    "output": "157798 42598",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "q12",
+  "title": "Tour Groups and Hotels",
+  "category": "Data Structures",
+  "difficulty": "Impossible",
+  "timeLimit": 5,
+  "description": "<p>A road has <code>N</code> hotels; hotel <code>i</code> (counting from the city gate) has <code>h<sub>i</sub></code> free rooms. <code>M</code> tour groups arrive one by one; group <code>j</code> needs <code>r<sub>j</sub></code> rooms and they must all be in the <b>same</b> hotel. Each group takes the <b>first</b> hotel from the gate that still has at least <code>r<sub>j</sub></code> free rooms, and those rooms become occupied. If no hotel has enough rooms, the group leaves (answer <code>0</code>).</p><p>Scanning hotels from the gate for every group is O(N&middot;M). Descend a max-segment-tree instead.</p><h4>Constraints</h4><ul><li><code>1 &le; N, M &le; 60000</code></li><li><code>1 &le; h<sub>i</sub>, r<sub>j</sub> &le; 10<sup>9</sup></code></li></ul><h4>Input</h4><p>The first line contains <code>N M</code>, the second the free rooms <code>h<sub>1</sub> &hellip; h<sub>N</sub></code>, the third the requests <code>r<sub>1</sub> &hellip; r<sub>M</sub></code>.</p><h4>Output</h4><p>Let <code>ans<sub>1</sub>, ans<sub>2</sub>, &hellip;, ans<sub>t</sub></code> be the answers to the groups (ans<sub>j</sub> = 1-based index of the hotel group j stays in, or 0), in order. To keep the output small, print a single integer: the checksum <code>(1&middot;ans<sub>1</sub> + 2&middot;ans<sub>2</sub> + &hellip; + t&middot;ans<sub>t</sub>) mod 1000000007</code>, taken as a non-negative remainder (exactly what Python's <code>%</code> gives). If <code>t = 0</code>, print <code>0</code>.</p><h4>Example</h4><pre>Input:\n8 5\n3 2 4 1 5 5 2 6\n4 4 7 1 1\n\nOutput:\n22</pre><p>In this example the individual answers are <code>3, 5, 0, 1, 1</code>, so the checksum is <code>1&middot;3 + 2&middot;5 + 3&middot;0 + 4&middot;1 + 5&middot;1</code> mod 1000000007 = <code>22</code>.</p>",
+  "solution": "import sys\ndef main():\n    d = sys.stdin.buffer.read().split()\n    n, m = int(d[0]), int(d[1])\n    size = 1\n    while size < n: size *= 2\n    t = [0] * (2 * size)\n    for i in range(n): t[size + i] = int(d[2 + i])\n    for p in range(size - 1, 0, -1):\n        a = t[2 * p]; b = t[2 * p + 1]; t[p] = a if a > b else b\n    MOD = 10**9 + 7\n    res = 0\n    for g in range(m):\n        need = int(d[2 + n + g])\n        if t[1] < need:\n            ans = 0\n        else:\n            p = 1\n            while p < size:\n                p *= 2\n                if t[p] < need: p += 1\n            ans = p - size + 1\n            t[p] -= need\n            p >>= 1\n            while p:\n                a = t[2 * p]; b = t[2 * p + 1]; t[p] = a if a > b else b\n                p >>= 1\n        res = (res + (g + 1) * ans) % MOD\n    print(res)\nmain()\n",
+  "tests": [
+   {
+    "input": "8 5\n3 2 4 1 5 5 2 6\n4 4 7 1 1\n",
+    "output": "22",
+    "hidden": false
+   },
+   {
+    "input": "3 3\n1 1 1\n2 1 1\n",
+    "output": "8",
+    "hidden": false
+   },
+   {
+    "input": "1 3\n1000000000\n999999999 1 1\n",
+    "output": "3",
+    "hidden": true
+   },
+   {
+    "input": "4 4\n5 5 5 5\n5 5 5 5\n",
+    "output": "30",
+    "hidden": true
+   },
+   {
+    "input": "5 6\n1 2 3 4 5\n5 4 3 2 1 6\n",
+    "output": "35",
+    "hidden": true
+   },
+   {
+    "input": "6 6\n2 9 2 9 2 9\n3 3 3 3 3 3\n",
+    "output": "72",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(121)\nn, m = 60000, 60000\nh = [random.randint(1, 10) for _ in range(n - 20)] + [random.randint(10**8, 10**9) for _ in range(20)]\ng = [random.randint(11, 5000) for _ in range(m)]\nprint(n, m)\nprint(\" \".join(map(str, h)))\nprint(\" \".join(map(str, g)))\n",
+    "output": "598674231",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(122)\nn, m = 60000, 60000\nh = [random.randint(1, 10) for _ in range(n - 3000)] + [random.randint(10**8, 10**9) for _ in range(3000)]\ng = [random.randint(11, 5000) for _ in range(m)]\nprint(n, m)\nprint(\" \".join(map(str, h)))\nprint(\" \".join(map(str, g)))\n",
+    "output": "509311779",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "q13",
+  "title": "Consistent Measurements",
+  "category": "Data Structures",
+  "difficulty": "Impossible",
+  "timeLimit": 5,
+  "description": "<p>A lab has <code>N</code> samples with unknown masses <code>m<sub>1</sub> &hellip; m<sub>N</sub></code>. It processes <code>Q</code> records in order:</p><ul><li><code>1 x y w</code>: a technician claims <code>m<sub>y</sub> - m<sub>x</sub> = w</code>. If this <b>contradicts</b> the claims accepted so far, the claim is rejected (and counted as a contradiction); otherwise it is accepted. (A claim with <code>x = y</code> is consistent exactly when <code>w = 0</code>.)</li><li><code>2 x y</code>: a researcher asks for <code>m<sub>y</sub> - m<sub>x</sub></code>. It is <b>determined</b> if the accepted claims force a single value, otherwise unknown.</li></ul><p>Use a union-find where every node also stores its offset to its root (weighted DSU with path compression).</p><h4>Constraints</h4><ul><li><code>1 &le; N, Q &le; 100000</code></li><li><code>|w| &le; 2&middot;10<sup>9</sup></code></li></ul><h4>Input</h4><p>The first line contains <code>N Q</code>; each of the next <code>Q</code> lines is a record as described.</p><h4>Output</h4><p>Print three integers on one line: <code>C U S</code>, where <code>C</code> is the number of rejected claims, <code>U</code> the number of type-2 questions whose answer is unknown, and <code>S</code> a checksum of the determined answers: number the type-2 questions <code>1, 2, 3, &hellip;</code> in order (unknown ones included), and let <code>S = (sum of k&middot;ans<sub>k</sub> over the determined questions k) mod 1000000007</code>, as a non-negative remainder.</p><h4>Example</h4><pre>Input:\n4 7\n1 1 2 5\n1 2 3 -2\n2 1 3\n2 3 4\n1 1 3 4\n1 4 4 0\n2 3 1\n\nOutput:\n1 1 1000000001</pre>",
+  "solution": "import sys\ndef main():\n    d = sys.stdin.buffer.read().split()\n    n, q = int(d[0]), int(d[1])\n    par = list(range(n + 1)); pot = [0] * (n + 1); sz = [1] * (n + 1)\n    def find(x):\n        path = []\n        while par[x] != x:\n            path.append(x); x = par[x]\n        for v in reversed(path):\n            p = par[v]\n            if p != x:\n                pot[v] += pot[p]; par[v] = x\n        return x\n    MOD = 10**9 + 7\n    contra = 0; unknown = 0; s = 0; qi = 0; k = 2\n    for _ in range(q):\n        if d[k] == b'1':\n            x = int(d[k + 1]); y = int(d[k + 2]); w = int(d[k + 3]); k += 4\n            rx = find(x); ry = find(y)\n            if rx == ry:\n                if pot[y] - pot[x] != w: contra += 1\n            else:\n                dlt = w + pot[x] - pot[y]\n                if sz[rx] < sz[ry]:\n                    par[rx] = ry; pot[rx] = -dlt; sz[ry] += sz[rx]\n                else:\n                    par[ry] = rx; pot[ry] = dlt; sz[rx] += sz[ry]\n        else:\n            x = int(d[k + 1]); y = int(d[k + 2]); k += 3\n            qi += 1\n            if find(x) == find(y):\n                s = (s + qi * (pot[y] - pot[x])) % MOD\n            else:\n                unknown += 1\n    print(contra, unknown, s)\nmain()\n",
+  "tests": [
+   {
+    "input": "4 7\n1 1 2 5\n1 2 3 -2\n2 1 3\n2 3 4\n1 1 3 4\n1 4 4 0\n2 3 1\n",
+    "output": "1 1 1000000001",
+    "hidden": false
+   },
+   {
+    "input": "3 5\n1 1 2 1\n1 2 1 1\n2 2 1\n2 1 1\n1 3 3 7\n",
+    "output": "2 0 1000000006",
+    "hidden": false
+   },
+   {
+    "input": "1 2\n2 1 1\n1 1 1 0\n",
+    "output": "0 0 0",
+    "hidden": true
+   },
+   {
+    "input": "5 6\n1 1 2 -1000000000\n1 2 3 -1000000000\n1 3 4 -1000000000\n1 4 5 -1000000000\n2 5 1\n2 1 5\n",
+    "output": "0 0 28",
+    "hidden": true
+   },
+   {
+    "input": "6 8\n1 1 2 3\n1 3 4 3\n1 5 6 3\n1 2 3 3\n1 4 5 3\n1 1 6 14\n2 1 6\n2 6 2\n",
+    "output": "1 0 999999998",
+    "hidden": true
+   },
+   {
+    "input": "2 3\n1 2 1 -4\n2 2 2\n2 1 2\n",
+    "output": "0 0 8",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(131)\nn, q = 100000, 100000\nval = [random.randint(-10**9, 10**9) for _ in range(n + 1)]\nout = [f\"{n} {q}\"]\nfor _ in range(q):\n    x = random.randint(1, n); y = random.randint(1, n)\n    if random.randint(1, 10) <= 6:\n        w = val[y] - val[x]\n        if random.randint(1, 50) == 1: w += random.randint(1, 5)\n        out.append(f\"1 {x} {y} {w}\")\n    else:\n        out.append(f\"2 {x} {y}\")\nprint(\"\\n\".join(out))\n",
+    "output": "383 39775 801142075",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(132)\nn, q = 1000, 100000\nval = [random.randint(-10**9, 10**9) for _ in range(n + 1)]\nout = [f\"{n} {q}\"]\nfor _ in range(q):\n    x = random.randint(1, n); y = random.randint(1, n)\n    if random.randint(1, 10) <= 3:\n        w = val[y] - val[x]\n        if random.randint(1, 50) == 1: w += random.randint(1, 5)\n        out.append(f\"1 {x} {y} {w}\")\n    else:\n        out.append(f\"2 {x} {y}\")\nprint(\"\\n\".join(out))\n",
+    "output": "9664 2515 264421657",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "q14",
+  "title": "Sprinkler Coverage",
+  "category": "Data Structures",
+  "difficulty": "Impossible",
+  "timeLimit": 8,
+  "description": "<p>A park is watered by <code>N</code> sprinklers; sprinkler <code>i</code> wets the axis-aligned rectangle of all points <code>(x, y)</code> with <code>x1 &le; x &le; x2</code> and <code>y1 &le; y &le; y2</code> (borders included; a rectangle may be a segment or a single point). For each of <code>Q</code> flower beds at point <code>(x, y)</code>, count how many sprinklers wet it.</p><p>Checking every pair is O(N&middot;Q). Sweep over <code>x</code> and keep a Fenwick tree over the (compressed) <code>y</code> coordinates with range-add / point-query.</p><h4>Constraints</h4><ul><li><code>0 &le; N &le; 30000</code>, <code>1 &le; Q &le; 30000</code></li><li>All coordinates satisfy <code>|c| &le; 10<sup>9</sup></code>, with <code>x1 &le; x2</code> and <code>y1 &le; y2</code>.</li></ul><h4>Input</h4><p>The first line contains <code>N</code>; each of the next <code>N</code> lines contains <code>x1 y1 x2 y2</code>. The next line contains <code>Q</code>; each of the next <code>Q</code> lines contains <code>x y</code>.</p><h4>Output</h4><p>Let <code>ans<sub>1</sub>, ans<sub>2</sub>, &hellip;, ans<sub>t</sub></code> be the answers to the flower beds, in input order, in order. To keep the output small, print a single integer: the checksum <code>(1&middot;ans<sub>1</sub> + 2&middot;ans<sub>2</sub> + &hellip; + t&middot;ans<sub>t</sub>) mod 1000000007</code>, taken as a non-negative remainder (exactly what Python's <code>%</code> gives). If <code>t = 0</code>, print <code>0</code>.</p><h4>Example</h4><pre>Input:\n3\n0 0 4 4\n2 2 6 6\n3 -1 3 10\n4\n3 3\n1 1\n5 5\n7 0\n\nOutput:\n8</pre><p>In this example the individual answers are <code>3, 1, 1, 0</code>, so the checksum is <code>1&middot;3 + 2&middot;1 + 3&middot;1 + 4&middot;0</code> mod 1000000007 = <code>8</code>.</p>",
+  "solution": "import sys\nfrom bisect import bisect_left, bisect_right\ndef main():\n    d = sys.stdin.buffer.read().split()\n    n = int(d[0]); p = 1\n    rects = []\n    for _ in range(n):\n        rects.append((int(d[p]), int(d[p + 1]), int(d[p + 2]), int(d[p + 3]))); p += 4\n    q = int(d[p]); p += 1\n    PX = [0] * q; PY = [0] * q\n    for i in range(q):\n        PX[i] = int(d[p]); PY[i] = int(d[p + 1]); p += 2\n    ys = sorted(set(PY))\n    D = len(ys)\n    ev = []\n    for x1, y1, x2, y2 in rects:\n        lo = bisect_left(ys, y1) + 1; hi = bisect_right(ys, y2)\n        if lo <= hi:\n            ev.append((x1, 0, lo, hi, 1)); ev.append((x2 + 1, 0, lo, hi, -1))\n    for i in range(q):\n        ev.append((PX[i], 1, i, 0, 0))\n    ev.sort()\n    B = [0] * (D + 2)\n    yi = {y: i + 1 for i, y in enumerate(ys)}\n    ans = [0] * q\n    for x, typ, a, b, v in ev:\n        if typ == 0:\n            i = a\n            while i <= D:\n                B[i] += v; i += i & -i\n            i = b + 1\n            while i <= D:\n                B[i] -= v; i += i & -i\n        else:\n            s = 0; i = yi[PY[a]]\n            while i > 0:\n                s += B[i]; i -= i & -i\n            ans[a] = s\n    MOD = 10**9 + 7\n    print(sum((i + 1) * c for i, c in enumerate(ans)) % MOD)\nmain()\n",
+  "tests": [
+   {
+    "input": "3\n0 0 4 4\n2 2 6 6\n3 -1 3 10\n4\n3 3\n1 1\n5 5\n7 0\n",
+    "output": "8",
+    "hidden": false
+   },
+   {
+    "input": "2\n1 1 1 1\n1 1 1 1\n3\n1 1\n1 2\n0 1\n",
+    "output": "2",
+    "hidden": false
+   },
+   {
+    "input": "0\n2\n5 5\n-5 -5\n",
+    "output": "0",
+    "hidden": true
+   },
+   {
+    "input": "1\n-1000000000 -1000000000 1000000000 1000000000\n3\n-1000000000 1000000000\n0 0\n1000000000 -1000000000\n",
+    "output": "6",
+    "hidden": true
+   },
+   {
+    "input": "3\n0 0 10 0\n0 0 0 10\n5 -5 5 5\n5\n0 0\n5 0\n10 0\n0 10\n10 10\n",
+    "output": "13",
+    "hidden": true
+   },
+   {
+    "input": "5\n1 -3 5 -3\n4 0 4 0\n4 4 6 4\n0 3 3 3\n1 1 5 4\n3\n0 -5\n0 -2\n-1 3\n",
+    "output": "0",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(141)\nn, q, C = 30000, 30000, 500000000\nout = [str(n)]\nfor _ in range(n):\n    x1 = random.randint(-C, C); y1 = random.randint(-C, C)\n    out.append(f\"{x1} {y1} {x1 + random.randint(0, C)} {y1 + random.randint(0, C)}\")\nout.append(str(q))\nfor _ in range(q):\n    out.append(f\"{random.randint(-C, C)} {random.randint(-C, C)}\")\nprint(\"\\n\".join(out))\n",
+    "output": "522964579",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(142)\nn, q, C = 30000, 30000, 300\nout = [str(n)]\nfor _ in range(n):\n    x1 = random.randint(-C, C); y1 = random.randint(-C, C)\n    out.append(f\"{x1} {y1} {x1 + random.randint(0, C)} {y1 + random.randint(0, C)}\")\nout.append(str(q))\nfor _ in range(q):\n    out.append(f\"{random.randint(-C, C)} {random.randint(-C, C)}\")\nprint(\"\\n\".join(out))\n",
+    "output": "741937095",
+    "hidden": true
+   }
+  ]
+ },
+ {
+  "id": "q15",
+  "title": "Smallest Missing Ticket",
+  "category": "Data Structures",
+  "difficulty": "Impossible",
+  "timeLimit": 8,
+  "description": "<p>A cinema handed out <code>N</code> tickets in a row; ticket <code>i</code> has the number <code>a<sub>i</sub></code> (numbers are non-negative and may repeat). For each of <code>Q</code> queries <code>l r</code>, find the <b>MEX</b> of <code>a<sub>l</sub> &hellip; a<sub>r</sub></code>: the smallest non-negative integer that does <b>not</b> appear among them.</p><p>Process queries offline by <code>r</code>; in a segment tree indexed by value, store the last position where each value appeared, and descend to the first value whose last position is before <code>l</code>.</p><h4>Constraints</h4><ul><li><code>1 &le; N, Q &le; 50000</code></li><li><code>0 &le; a<sub>i</sub> &le; 10<sup>9</sup></code></li><li><code>1 &le; l &le; r &le; N</code></li></ul><h4>Input</h4><p>The first line contains <code>N</code>, the second the <code>N</code> ticket numbers, the third <code>Q</code>, followed by <code>Q</code> lines <code>l r</code>.</p><h4>Output</h4><p>Let <code>ans<sub>1</sub>, ans<sub>2</sub>, &hellip;, ans<sub>t</sub></code> be the answers to the queries, in order. To keep the output small, print a single integer: the checksum <code>(1&middot;ans<sub>1</sub> + 2&middot;ans<sub>2</sub> + &hellip; + t&middot;ans<sub>t</sub>) mod 1000000007</code>, taken as a non-negative remainder (exactly what Python's <code>%</code> gives). If <code>t = 0</code>, print <code>0</code>.</p><h4>Example</h4><pre>Input:\n7\n0 1 2 0 3 1 4\n4\n1 7\n2 4\n2 3\n5 7\n\nOutput:\n11</pre><p>In this example the individual answers are <code>5, 3, 0, 0</code>, so the checksum is <code>1&middot;5 + 2&middot;3 + 3&middot;0 + 4&middot;0</code> mod 1000000007 = <code>11</code>.</p>",
+  "solution": "import sys\ndef main():\n    d = sys.stdin.buffer.read().split()\n    n = int(d[0]); a = list(map(int, d[1:1 + n]))\n    q = int(d[1 + n]); p = 2 + n\n    L = [0] * q; Rr = [0] * q\n    for i in range(q):\n        L[i] = int(d[p]); Rr[i] = int(d[p + 1]); p += 2\n    size = 1\n    while size < n + 2: size *= 2\n    t = [0] * (2 * size)\n    qo = sorted(range(q), key=Rr.__getitem__)\n    ans = [0] * q\n    cur = 0\n    for qi in qo:\n        r = Rr[qi]\n        while cur < r:\n            cur += 1\n            v = a[cur - 1]\n            if v <= n:\n                j = size + v; t[j] = cur; j >>= 1\n                while j:\n                    x = t[2 * j]; y = t[2 * j + 1]; t[j] = x if x < y else y\n                    j >>= 1\n        l = L[qi]; j = 1\n        while j < size:\n            j *= 2\n            if t[j] >= l: j += 1\n        ans[qi] = j - size\n    MOD = 10**9 + 7\n    print(sum((i + 1) * v for i, v in enumerate(ans)) % MOD)\nmain()\n",
+  "tests": [
+   {
+    "input": "7\n0 1 2 0 3 1 4\n4\n1 7\n2 4\n2 3\n5 7\n",
+    "output": "11",
+    "hidden": false
+   },
+   {
+    "input": "4\n1 2 3 4\n2\n1 4\n2 2\n",
+    "output": "0",
+    "hidden": false
+   },
+   {
+    "input": "1\n0\n1\n1 1\n",
+    "output": "1",
+    "hidden": true
+   },
+   {
+    "input": "3\n1000000000 0 1000000000\n3\n1 1\n1 3\n2 2\n",
+    "output": "5",
+    "hidden": true
+   },
+   {
+    "input": "6\n0 0 0 1 1 1\n3\n1 6\n1 3\n4 6\n",
+    "output": "4",
+    "hidden": true
+   },
+   {
+    "input": "8\n0 3 4 2 1 0 4 10\n2\n1 6\n6 7\n",
+    "output": "7",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(151)\nn, q = 50000, 50000\na = list(range(3000)) * (n // 3000) + [random.randint(0, 10**9) for _ in range(n % 3000)]\nfor i in range(n):\n    if random.randint(1, 20) == 1: a[i] = random.randint(0, 10**9)\nprint(n)\nprint(\" \".join(map(str, a)))\nprint(q)\nout = []\nfor _ in range(q):\n    l = random.randint(1, n // 3); r = random.randint(2 * n // 3, n)\n    out.append(f\"{l} {r}\")\nprint(\"\\n\".join(out))\n",
+    "output": "74973750",
+    "hidden": true
+   },
+   {
+    "gen": "import random\nrandom.seed(152)\nn, q = 50000, 50000\na = list(range(40)) * (n // 40) + [random.randint(0, 10**9) for _ in range(n % 40)]\nfor i in range(n):\n    if random.randint(1, 20) == 1: a[i] = random.randint(0, 10**9)\nprint(n)\nprint(\" \".join(map(str, a)))\nprint(q)\nout = []\nfor _ in range(q):\n    l = random.randint(1, n // 3); r = random.randint(2 * n // 3, n)\n    out.append(f\"{l} {r}\")\nprint(\"\\n\".join(out))\n",
+    "output": "999650",
+    "hidden": true
+   }
+  ]
+ }
+]
